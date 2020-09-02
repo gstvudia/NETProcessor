@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "mV0IWkd2TgWGoQ/b9iH8Ky1nthS5wCdhUkjP+t8Tlc1ERqDa++mrcDVXcyCoPq1SFma4DaxCr+5NOAIhzZuwwA==",
+  "dgSpecHash": "GxGWBVlNi9+wWn1wg3GEDThy5USYPDxGAh2ii7YAt5JUf9VAEk28dmCta5/hg1Xfoc4zk+gClQFDGpfAINfreA==",
   "success": true,
   "projectFilePath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
   "expectedPackageFiles": [
@@ -33,6 +33,7 @@
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\microsoft.extensions.configuration\\2.1.1\\microsoft.extensions.configuration.2.1.1.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\2.1.1\\microsoft.extensions.configuration.abstractions.2.1.1.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\microsoft.extensions.configuration.binder\\2.1.1\\microsoft.extensions.configuration.binder.2.1.1.nupkg.sha512",
+    "C:\\Users\\Gustavo Melo\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\3.1.7\\microsoft.extensions.dependencyinjection.3.1.7.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\3.1.7\\microsoft.extensions.dependencyinjection.abstractions.3.1.7.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\microsoft.extensions.dependencymodel\\2.1.0\\microsoft.extensions.dependencymodel.2.1.0.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\microsoft.extensions.fileproviders.abstractions\\3.1.4\\microsoft.extensions.fileproviders.abstractions.3.1.4.nupkg.sha512",

@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace NET.Processor.Core.Services
 {
-    class SolutionService : ISolutionService
+    public class SolutionService : ISolutionService
     {
 
         public SolutionService()
@@ -19,11 +19,9 @@ namespace NET.Processor.Core.Services
 
         }
 
-        async Task<Solution> LoadSolutionAsync(string SolutionPath)
+        public Solution LoadSolution(string SolutionPath)
         {
-            // @"C:\Users\Gustavo Melo\Documents\BGDoc\EXAMPLS\nopCommerce-develop\nopCommerce-develop\src\NopCommerce.sln";
-
-            var solution = new Solution;
+            Solution solution = null;
 
             MSBuildLocator.RegisterDefaults();
 
@@ -33,7 +31,7 @@ namespace NET.Processor.Core.Services
                 {
                     solution = msWorkspace.OpenSolutionAsync(SolutionPath).Result;
                 }
-                catch(Exception)
+                catch (Exception)
                 {
                     //We can log diagnosis later
                     ImmutableList<WorkspaceDiagnostic> diagnostics = msWorkspace.Diagnostics;

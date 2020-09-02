@@ -759,6 +759,18 @@
           "lib/netstandard2.0/Microsoft.Extensions.Configuration.Binder.dll": {}
         }
       },
+      "Microsoft.Extensions.DependencyInjection/3.1.7": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "3.1.7"
+        },
+        "compile": {
+          "lib/netcoreapp3.1/Microsoft.Extensions.DependencyInjection.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp3.1/Microsoft.Extensions.DependencyInjection.dll": {}
+        }
+      },
       "Microsoft.Extensions.DependencyInjection.Abstractions/3.1.7": {
         "type": "package",
         "compile": {
@@ -2794,6 +2806,23 @@
         "runtime": {
           "lib/netstandard1.3/System.Xml.XDocument.dll": {}
         }
+      },
+      "NET.Processor.Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v3.1",
+        "dependencies": {
+          "Microsoft.Build.Locator": "1.2.6",
+          "Microsoft.CodeAnalysis": "3.7.0",
+          "Microsoft.CodeAnalysis.CSharp": "3.7.0",
+          "Microsoft.CodeAnalysis.CSharp.Workspaces": "3.7.0",
+          "Microsoft.CodeAnalysis.Workspaces.MSBuild": "3.7.0"
+        },
+        "compile": {
+          "bin/placeholder/NET.Processor.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/NET.Processor.Core.dll": {}
+        }
       }
     }
   },
@@ -3648,6 +3677,26 @@
         "lib/netstandard2.0/Microsoft.Extensions.Configuration.Binder.xml",
         "microsoft.extensions.configuration.binder.2.1.1.nupkg.sha512",
         "microsoft.extensions.configuration.binder.nuspec"
+      ]
+    },
+    "Microsoft.Extensions.DependencyInjection/3.1.7": {
+      "sha512": "yp38AFc5tJQZkjINjXBcxq+dANU06lo27D84duitZthtRPsgKJL87uf9RWRsDdRsWd+kXflmdMWFLKFjyKx6Pw==",
+      "type": "package",
+      "path": "microsoft.extensions.dependencyinjection/3.1.7",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "lib/net461/Microsoft.Extensions.DependencyInjection.dll",
+        "lib/net461/Microsoft.Extensions.DependencyInjection.xml",
+        "lib/netcoreapp3.1/Microsoft.Extensions.DependencyInjection.dll",
+        "lib/netcoreapp3.1/Microsoft.Extensions.DependencyInjection.xml",
+        "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.dll",
+        "lib/netstandard2.0/Microsoft.Extensions.DependencyInjection.xml",
+        "lib/netstandard2.1/Microsoft.Extensions.DependencyInjection.dll",
+        "lib/netstandard2.1/Microsoft.Extensions.DependencyInjection.xml",
+        "microsoft.extensions.dependencyinjection.3.1.7.nupkg.sha512",
+        "microsoft.extensions.dependencyinjection.nuspec"
       ]
     },
     "Microsoft.Extensions.DependencyInjection.Abstractions/3.1.7": {
@@ -8476,6 +8525,11 @@
         "system.xml.xdocument.4.3.0.nupkg.sha512",
         "system.xml.xdocument.nuspec"
       ]
+    },
+    "NET.Processor.Core/1.0.0": {
+      "type": "project",
+      "path": "../NET.Processor.Services/NET.Processor.Core.csproj",
+      "msbuildProject": "../NET.Processor.Services/NET.Processor.Core.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -8496,9 +8550,11 @@
       "Microsoft.CodeAnalysis.VisualBasic >= 3.7.0",
       "Microsoft.CodeAnalysis.Workspaces.Common >= 3.7.0",
       "Microsoft.CodeAnalysis.Workspaces.MSBuild >= 3.7.0",
+      "Microsoft.Extensions.DependencyInjection >= 3.1.7",
       "Microsoft.Extensions.DependencyInjection.Abstractions >= 3.1.7",
       "Microsoft.Extensions.FileProviders.Abstractions >= 3.1.4",
       "Microsoft.Extensions.FileProviders.Physical >= 3.1.4",
+      "NET.Processor.Core >= 1.0.0",
       "NuGet.Frameworks >= 5.7.0",
       "NuGet.ProjectModel >= 5.7.0",
       "StackExchange.Redis >= 2.1.58"
@@ -8529,7 +8585,11 @@
       },
       "frameworks": {
         "netcoreapp3.1": {
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
+              "projectPath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
@@ -8606,6 +8666,10 @@
           "Microsoft.CodeAnalysis.Workspaces.MSBuild": {
             "target": "Package",
             "version": "[3.7.0, )"
+          },
+          "Microsoft.Extensions.DependencyInjection": {
+            "target": "Package",
+            "version": "[3.1.7, )"
           },
           "Microsoft.Extensions.DependencyInjection.Abstractions": {
             "target": "Package",

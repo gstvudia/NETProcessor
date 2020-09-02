@@ -12,70 +12,85 @@ using Microsoft.CodeAnalysis.FindSymbols;
 using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.Build.Locator;
 using System.Collections.Immutable;
+using Microsoft.Extensions.DependencyInjection;
+using NET.Processor.Core.Interfaces;
+using NET.Processor.Core.Services;
 
 namespace NETProcessor.Main
 {
     public class Program
     {
-        string syntaxTree = GetSyntaxTree();
         public static void Main(string[] args)
         {
-            Roslyn();
-            //var output = File.CreateText(Path.Combine(@"C:\Users\Gustavo Melo\Documents\BGDoc",
-            //                (string.IsNullOrEmpty("") ? "adasdssa" : "") + ".decompiled.cs"));
-            //Decompile("Nop.Core.dll", output, null);
+            //setup our DI
+            var serviceProvider = new ServiceCollection()
+                .AddSingleton<ISolutionService, SolutionService>()
+                .AddSingleton<IMethodService, MethodService>()
+                .BuildServiceProvider();
+
+            var _solutionService = serviceProvider.GetService<ISolutionService>();
+            var _methodService = serviceProvider.GetService<IMethodService>();
+
+            //this path works only local, obviously :)
+            string pathSolution = @"C:\Users\Gustavo Melo\Documents\BGDoc\EXAMPLS\nopCommerce-develop\nopCommerce-develop\src\NopCommerce.sln";
+            var solution = _solutionService.LoadSolution(pathSolution);
+
+
+            //Gets all method references
+            var references = _methodService.GetMethodReferences("ProcessPayment",solution);
         }
+
         
 
-        static void DiscoverProperties()
-        {
-            var me = Assembly.GetExecutingAssembly().Location;
-            var dir = Path.GetDirectoryName(me);
-            var theClasses = @"C:\Users\Gustavo Melo\Documents\BGDoc\NETProcessor\NETProcessor.Main\DLL\Nop.Core.dll";
-            
-
-            var assembly = Assembly.LoadFrom(theClasses);
-            var types = assembly.GetTypes().ToList();
-
-            Type myType = assembly.GetTypes()[79];
-            MethodInfo Method = myType.GetMethod("get_PickupFee");
-            object myInstance = Activator.CreateInstance(myType);
-            object threadexecMethod = Method.Invoke(myInstance, null);
-
-            var stack = new StackTrace();
-            Method.Invoke(myInstance, null);
-            var callerAssemblies = new StackTrace().GetFrames().ToList();
-
-            int propCount = 0 ;
-            string propertiesList= string.Empty;
-            string cName;
-            string tempString;
-            //ProjectInfoProvider decomp = new ProjectInfoProvider();
-
-            //decomp.DecompileProject
-            try
-            {
-                foreach (var t in types)
-                {
-                    
-                    cName = t.Name;
-
-                    foreach (var prop in t.GetProperties())
-                    {
-                        propCount++;
-                        tempString = $"{prop.Name}:{prop.PropertyType.Name} ";
-                        propertiesList = propertiesList += tempString;
-                    }
-                }
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            
-
-            Console.WriteLine(propertiesList);
-        }
+        //static void DiscoverProperties()
+        //{
+        //    var me = Assembly.GetExecutingAssembly().Location;
+        //    var dir = Path.GetDirectoryName(me);
+        //    var theClasses = @"C:\Users\Gustavo Melo\Documents\BGDoc\NETProcessor\NETProcessor.Main\DLL\Nop.Core.dll";
+        //    
+        //
+        //    var assembly = Assembly.LoadFrom(theClasses);
+        //    var types = assembly.GetTypes().ToList();
+        //
+        //    Type myType = assembly.GetTypes()[79];
+        //    MethodInfo Method = myType.GetMethod("get_PickupFee");
+        //    object myInstance = Activator.CreateInstance(myType);
+        //    object threadexecMethod = Method.Invoke(myInstance, null);
+        //
+        //    var stack = new StackTrace();
+        //    Method.Invoke(myInstance, null);
+        //    var callerAssemblies = new StackTrace().GetFrames().ToList();
+        //
+        //    int propCount = 0 ;
+        //    string propertiesList= string.Empty;
+        //    string cName;
+        //    string tempString;
+        //    //ProjectInfoProvider decomp = new ProjectInfoProvider();
+        //
+        //    //decomp.DecompileProject
+        //    try
+        //    {
+        //        foreach (var t in types)
+        //        {
+        //            
+        //            cName = t.Name;
+        //
+        //            foreach (var prop in t.GetProperties())
+        //            {
+        //                propCount++;
+        //                tempString = $"{prop.Name}:{prop.PropertyType.Name} ";
+        //                propertiesList = propertiesList += tempString;
+        //            }
+        //        }
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        Console.WriteLine(ex.Message);
+        //    }
+        //    
+        //
+        //    Console.WriteLine(propertiesList);
+        //}
 
         public static void Roslyn()
         {
@@ -151,23 +166,6 @@ namespace NETProcessor.Main
 
             }
             
-        }
-        // BENNY
-        //public static object RunDll()
-        //{
-        //    byte[] byteAssembly = System.IO.File.ReadAllBytes(@"C:\Users\Gustavo Melo\Documents\BGDoc\NETProcessor\NETProcessor.Main\DLL\Nop.Core.dll");
-        //    Assembly assembly = Assembly.Load(byteAssembly);
-        //    Type exampleClassType = assembly.GetType("CommonHelper");
-        //    var instance = Activator.CreateInstance(exampleClassType);
-        //    MethodInfo Ç = exampleClassType.GetMethod("GetPrivateFieldValue");
-        //    var result = EntryPoint.Invoke(instance, null);
-        //    return result;
-        //}
-        public static string GetSyntaxTree()
-        {
-            StringBuilder sb = new StringBuilder();
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-            return sb.ToString();
         }
     }
 }
