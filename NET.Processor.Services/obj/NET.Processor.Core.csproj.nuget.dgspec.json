@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {}
+    "C:\\Users\\Benny\\Source\\Repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
+    "C:\\Users\\Benny\\Source\\Repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+        "projectUniqueName": "C:\\Users\\Benny\\Source\\Repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
         "projectName": "NET.Processor.Core",
-        "projectPath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
-        "packagesPath": "C:\\Users\\Gustavo Melo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\obj\\",
+        "projectPath": "C:\\Users\\Benny\\Source\\Repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+        "packagesPath": "C:\\Users\\Benny\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Benny\\Source\\Repos\\NETProcessor\\NET.Processor.Services\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Gustavo Melo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Benny\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -38,15 +38,15 @@
       "frameworks": {
         "netcoreapp3.1": {
           "dependencies": {
+            "Microsoft.Build": {
+              "target": "Package",
+              "version": "[16.6.0, )"
+            },
             "Microsoft.Build.Locator": {
               "target": "Package",
               "version": "[1.2.6, )"
             },
             "Microsoft.CodeAnalysis": {
-              "target": "Package",
-              "version": "[3.7.0, )"
-            },
-            "Microsoft.CodeAnalysis.CSharp": {
               "target": "Package",
               "version": "[3.7.0, )"
             },

@@ -1,0 +1,10 @@
+﻿################################################################################
+# Diese .gitignore-Datei wurde von Microsoft(R) Visual Studio automatisch erstellt.
+################################################################################
+
+/.vs/NETProcessor/v16/.suo
+/.vs/NETProcessor/DesignTimeBuild/.dtbcache.v2
+/NET.Processor.Services/bin/Debug/netcoreapp3.1/NET.Processor.Core.pdb
+/NET.Processor.Services/obj/Debug/netcoreapp3.1
+/NETProcessor.Main/bin/Debug/netcoreapp3.1
+/NETProcessor.Main/obj/Debug/netcoreapp3.1

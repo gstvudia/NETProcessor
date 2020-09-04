@@ -2811,9 +2811,9 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
+          "Microsoft.Build": "16.6.0",
           "Microsoft.Build.Locator": "1.2.6",
           "Microsoft.CodeAnalysis": "3.7.0",
-          "Microsoft.CodeAnalysis.CSharp": "3.7.0",
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "3.7.0",
           "Microsoft.CodeAnalysis.Workspaces.MSBuild": "3.7.0"
         },
@@ -8561,19 +8561,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Gustavo Melo\\.nuget\\packages\\": {}
+    "C:\\Users\\Benny\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
+      "projectUniqueName": "C:\\Users\\Benny\\Source\\Repos\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
       "projectName": "NETProcessor.Main",
-      "projectPath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
-      "packagesPath": "C:\\Users\\Gustavo Melo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NETProcessor.Main\\obj\\",
+      "projectPath": "C:\\Users\\Benny\\Source\\Repos\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
+      "packagesPath": "C:\\Users\\Benny\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Benny\\Source\\Repos\\NETProcessor\\NETProcessor.Main\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Gustavo Melo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Benny\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -8586,8 +8586,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
-              "projectPath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj"
+            "C:\\Users\\Benny\\Source\\Repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
+              "projectPath": "C:\\Users\\Benny\\Source\\Repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj"
             }
           }
         }
