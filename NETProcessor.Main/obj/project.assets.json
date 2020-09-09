@@ -2813,7 +2813,6 @@
         "dependencies": {
           "Microsoft.Build.Locator": "1.2.6",
           "Microsoft.CodeAnalysis": "3.7.0",
-          "Microsoft.CodeAnalysis.CSharp": "3.7.0",
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "3.7.0",
           "Microsoft.CodeAnalysis.Workspaces.MSBuild": "3.7.0"
         },
@@ -8566,11 +8565,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
+      "projectUniqueName": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
       "projectName": "NETProcessor.Main",
-      "projectPath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
+      "projectPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
       "packagesPath": "C:\\Users\\Gustavo Melo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NETProcessor.Main\\obj\\",
+      "outputPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NETProcessor.Main\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Gustavo Melo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -8586,8 +8585,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
-              "projectPath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj"
+            "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
+              "projectPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj"
             }
           }
         }

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "RHilkxZUgezIKM8/GoWoAit2CtuFBsJBqm+s6uFYEGEC/8wKxG5LHYD/cNNC2n6g+NzFbwQv3O/6/ztKTX2/qQ==",
+  "dgSpecHash": "VNzfgLe8HTEW4ducmiRqhlBGKrdoIJyO54EJOgJqv66STkiLXDYLRmNO7NEc7IWBWTLu78JftB8ezOxpJLJzYg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+  "projectFilePath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\humanizer.core\\2.2.0\\humanizer.core.2.2.0.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.0\\microsoft.bcl.asyncinterfaces.1.1.0.nupkg.sha512",

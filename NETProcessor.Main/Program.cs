@@ -37,7 +37,7 @@ namespace NETProcessor.Main
 
 
             //Gets all method references
-            var references = _methodService.GetMethodReferences("ProcessPayment",solution);
+            var references = _methodService.GetAllMethods( solution);
         }
 
         

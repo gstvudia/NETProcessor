@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "GxGWBVlNi9+wWn1wg3GEDThy5USYPDxGAh2ii7YAt5JUf9VAEk28dmCta5/hg1Xfoc4zk+gClQFDGpfAINfreA==",
+  "dgSpecHash": "qTq2JPg2yWwONMYtI4syqfuY55+EP2KCzM3CgqzfLkBEhLSthUmTti3W1F39TPJ5FNvT78/6eVjjr0lVzsv/hA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
+  "projectFilePath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\automapper\\9.0.0\\automapper.9.0.0.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\buildalyzer\\3.0.1\\buildalyzer.3.0.1.nupkg.sha512",

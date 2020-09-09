@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {}
+    "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
+    "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+        "projectUniqueName": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
         "projectName": "NET.Processor.Core",
-        "projectPath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+        "projectPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
         "packagesPath": "C:\\Users\\Gustavo Melo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Gustavo Melo\\Documents\\BGDoc\\NETProcessor\\NET.Processor.Services\\obj\\",
+        "outputPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Gustavo Melo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -43,10 +43,6 @@
               "version": "[1.2.6, )"
             },
             "Microsoft.CodeAnalysis": {
-              "target": "Package",
-              "version": "[3.7.0, )"
-            },
-            "Microsoft.CodeAnalysis.CSharp": {
               "target": "Package",
               "version": "[3.7.0, )"
             },

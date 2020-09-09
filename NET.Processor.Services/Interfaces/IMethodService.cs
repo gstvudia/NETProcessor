@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.FindSymbols;
+using NET.Processor.Core.Models;
 using System.Collections.Generic;
 
 namespace NET.Processor.Core.Interfaces
@@ -12,6 +13,6 @@ namespace NET.Processor.Core.Interfaces
         /// <param name="methodName"></param>
         /// <param name="projects"></param>
         /// <returns>Projects</returns>
-        IEnumerable<ReferenceLocation> GetMethodReferences(string methodName, Solution solution);
+        List<Method> GetAllMethods(Solution solution);
     }
 }
