@@ -13,6 +13,7 @@ namespace NET.Processor.Core.Interfaces
         /// <param name="methodName"></param>
         /// <param name="projects"></param>
         /// <returns>Projects</returns>
-        List<Method> GetAllMethods(Solution solution);
+        IEnumerable<Method> GetAllMethods(Solution solution);
+        IEnumerable<MethodReference> GetMethodReferencesByName(string methodName, Solution solution);
     }
 }

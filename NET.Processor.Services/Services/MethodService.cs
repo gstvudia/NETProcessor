@@ -23,7 +23,7 @@ namespace NET.Processor.Core.Services
 
         }
 
-        public List<Method> GetAllMethods(Solution solution)
+        public IEnumerable<Method> GetAllMethods(Solution solution)
         {
             List<Method> Methods = new List<Method>();
 
@@ -64,82 +64,79 @@ namespace NET.Processor.Core.Services
             return Methods;
         }
 
-
-        public void GetMethodReferencesByName(string method,Solution solution)
+        
+        public IEnumerable<MethodReference> GetMethodReferencesByName(string methodName,Solution solution)
         {
-            //List<ReferencedSymbol> referencesToMethod = new List<ReferencedSymbol>();
-            //ISymbol methodSymbol = null;
-            //List<ReferenceLocation> allReferences = new List<ReferenceLocation>();
-            //
-            //
-            //foreach (var project in solution.Projects)
-            //{
-            //    //TODO: THINK OF A BETTER SOLUTION FOR THIS
-            //    //DO A UNIFIER FOR VB AND C#, TREAT .NET AS UNIQUE
-            //    if (project.Language == "C#")
-            //    {
-            //        foreach (var document in project.Documents)
-            //        {
-            //
-            //            var model = document.GetSemanticModelAsync().Result;
-            //
-            //            var methodInvocation = document.GetSyntaxRootAsync().Result;
-            //            //meu
-            //            var documentIsClass = model.GetType().IsClass;
-            //            var IsInterface = methodInvocation.DescendantNodes().OfType<InterfaceDeclarationSyntax>();
-            //            //
-            //            InvocationExpressionSyntax node = null;
-            //
-            //            //to make sure it's a class or a struct, not an interface
-            //
-            //            if (!IsInterface.Any())
-            //            {
-            //                try
-            //                { //meu
-            //
-            //                    var members = methodInvocation.DescendantNodes().OfType<MemberDeclarationSyntax>().Distinct();
-            //
-            //                    foreach (var member in members)
-            //                    {
-            //                        var method = member as MethodDeclarationSyntax;
-            //                        if (method != null)
-            //                        {
-            //                            Console.WriteLine("Class: " + document.Name + " - - - Method: " + method.Identifier.Text);
-            //                        }
-            //
-            //                    }
-            //                    //aaaaa
-            //                    //node = methodInvocation.DescendantNodes().OfType<InvocationExpressionSyntax>()
-            //                    // .Where(x => ((MemberAccessExpressionSyntax)x.Expression).Name.ToString() == methodName).FirstOrDefault();
-            //                    //
-            //                    //if (node == null)
-            //                    //    continue;
-            //                }
-            //                catch (Exception exception)
-            //                {
-            //                    // Swallow the exception of type cast. 
-            //                    // Could be avoided by a better filtering on above linq.
-            //                    continue;
-            //                }
-            //            }
-            //
-            //
-            //            //methodSymbol = model.GetSymbolInfo(node).Symbol;
-            //            //break;
-            //        }
-            //    }
-            //}
-            //
-            ////foreach (var item in SymbolFinder.FindReferencesAsync(methodSymbol, solution).Result)
-            ////{
-            ////    foreach (var location in item.Locations)
-            ////    {
-            ////        allReferences.Add(location);
-            ////    }
-            ////    
-            ////}
-            //
-            //return allReferences;
+            List<ReferencedSymbol> referencesToMethod = new List<ReferencedSymbol>();
+            ISymbol methodSymbol = null;
+            List<MethodReference> callingMethods = new List<MethodReference>();
+
+
+            foreach (var project in solution.Projects)
+            {
+                //TODO: THINK OF A BETTER SOLUTION FOR THIS
+                //DO A UNIFIER FOR VB AND C#, TREAT .NET AS UNIQUE
+                if (project.Language == "C#")
+                {
+                    foreach (var document in project.Documents)
+                    {
+            
+                        var model = document.GetSemanticModelAsync().Result;
+            
+                        var methodInvocation = document.GetSyntaxRootAsync().Result;
+                        InvocationExpressionSyntax node = null;
+
+                        //to make sure it's a class or a struct, not an interface
+                        
+                            try
+                            { 
+                                node = methodInvocation.DescendantNodes().OfType<InvocationExpressionSyntax>()
+                                 .Where(x => ((MemberAccessExpressionSyntax)x.Expression).Name.ToString() == methodName).FirstOrDefault();
+                                
+                                if (node == null)
+                                    continue;
+                            }
+                            catch (Exception exception)
+                            {
+                                // Swallow the exception of type cast. 
+                                // Could be avoided by a better filtering on above linq.
+                                continue;
+                            }
+
+
+                        methodSymbol = model.GetSymbolInfo(node).Symbol;
+                        break;
+                    }
+                }
+            }
+
+            foreach (var item in SymbolFinder.FindReferencesAsync(methodSymbol, solution).Result)
+            {
+                foreach (var location in item.Locations)
+                {
+                    int spanStart = location.Location.SourceSpan.Start;
+                    var doc = location.Document;
+
+                    var indexerInvokation = doc.GetSyntaxRootAsync().Result
+                        .DescendantNodes()
+                        .FirstOrDefault(node => node.GetLocation().SourceSpan.Start == spanStart);
+
+                    var methodCalling = indexerInvokation.Ancestors()
+                        .OfType<MethodDeclarationSyntax>()
+                        .FirstOrDefault()
+                        ?.Identifier.Text ?? String.Empty;
+
+
+                    var className = indexerInvokation.Ancestors()
+                        .OfType<ClassDeclarationSyntax>()
+                        .FirstOrDefault()
+                        ?.Identifier.Text ?? String.Empty;
+
+                    callingMethods.Add(new MethodReference { MethodCallerClass = className, MethodCaller = methodCalling, MethodCalled = methodName });
+                }                
+            }
+
+            return callingMethods;
         }
     }
 

@@ -13,6 +13,7 @@ using System.Collections.Immutable;
 using Microsoft.Extensions.DependencyInjection;
 using NET.Processor.Core.Interfaces;
 using NET.Processor.Core.Services;
+using NET.Processor.Core.Models;
 
 namespace NETProcessor.Main
 {
@@ -34,18 +35,37 @@ namespace NETProcessor.Main
             string workingDirectory = Environment.CurrentDirectory;
             string rootPath = Directory.GetParent(workingDirectory).Parent.Parent.FullName;
             // string projectPath = "/TestProject/nopCommerce-develop/src/NopCommerce.sln";
-            string projectPath = "/TestProject/TestProject/TestProject.sln";
-            string pathSolution = rootPath + projectPath;
+            //string projectPath = "/TestProject/TestProject/TestProject.sln";
+            //string pathSolution = rootPath + projectPath; 
+
+            //** REPO : https://github.com/ardalis/CleanArchitecture   ** //
+            string pathSolution = @"C:\Users\Gustavo Melo\Documents\BGDoc\EXAMPLS\CleanArchitecture-master\CleanArchitecture.sln";
             // Load solution information
             var solution = _solutionService.LoadSolution(pathSolution);
             // Load files of solution
-            var csharpCompileFileList = _solutionService.LoadFilePaths(pathSolution);
+            //var csharpCompileFileList = _solutionService.LoadFilePaths(pathSolution);
 
-            //Gets all method references
-            // var references = _methodService.GetMethodReferences("ProcessPayment",  solution);
+
+
+            //********METHODS RELATION GRAPH*****//
+            //Gets all method inside solution and its references
+            var references = new List<MethodReference>();
+
+            if (solution != null)
+            {
+                var allmethods = _methodService.GetAllMethods(solution);
+
+                foreach(var method in allmethods)
+                {
+                    references.AddRange(_methodService.GetMethodReferencesByName(method.Name, solution).ToList());
+                }
+            }            
+
+
+            //********COMENTS*****//
             // Get all comments
             var comments = _commentService.GetCommentReferences(csharpCompileFileList);
-            var references = _methodService.GetAllMethods( solution);
+            
         }
 
         
