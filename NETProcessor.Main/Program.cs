@@ -39,9 +39,11 @@ namespace NETProcessor.Main
             //string pathSolution = rootPath + projectPath; 
 
             //** REPO : https://github.com/ardalis/CleanArchitecture   ** //
-            string pathSolution = @"C:\Users\Gustavo Melo\Documents\BGDoc\EXAMPLS\CleanArchitecture-master\CleanArchitecture.sln";
+            //string pathSolution = @"C:\Users\Gustavo Melo\Documents\BGDoc\EXAMPLS\CleanArchitecture-master\CleanArchitecture.sln";
+            string pathSolution = "https://github.com/ardalis/CleanArchitecture/CleanArchitecture.sln";
             // Load solution information
-            var solution = _solutionService.LoadSolution(pathSolution);
+            _solutionService.GetSolutionFromRepo(new WebHook() { RepositoryURL = "https://github.com/ardalis/CleanArchitecture/", User = "", Password = "" });
+            //var solution = _solutionService.LoadSolution(pathSolution);
             // Load files of solution
             //var csharpCompileFileList = _solutionService.LoadFilePaths(pathSolution);
 
@@ -51,20 +53,21 @@ namespace NETProcessor.Main
             //Gets all method inside solution and its references
             var references = new List<MethodReference>();
 
-            if (solution != null)
-            {
-                var allmethods = _methodService.GetAllMethods(solution);
-
-                foreach(var method in allmethods)
-                {
-                    references.AddRange(_methodService.GetMethodReferencesByName(method.Name, solution).ToList());
-                }
-            }            
+            //if (solution != null)
+            //{
+            //    _solutionService.GetSolutionItens(solution);
+            //    var allmethods = _methodService.GetAllMethods(solution);
+            //     
+            //    foreach(var method in allmethods)
+            //    {
+            //        references.AddRange(_methodService.GetMethodReferencesByName(method.Name, solution).ToList());
+            //    }
+            //}            
 
 
             //********COMENTS*****//
             // Get all comments
-            var comments = _commentService.GetCommentReferences(csharpCompileFileList);
+            //var comments = _commentService.GetCommentReferences(csharpCompileFileList);
             
         }
 
@@ -120,80 +123,5 @@ namespace NETProcessor.Main
         //    Console.WriteLine(propertiesList);
         //}
 
-        public static void Roslyn()
-        {
-            string methodName = "ProcessPayment";
-            string solutionPath = @"C:\Users\Gustavo Melo\Documents\BGDoc\EXAMPLS\nopCommerce-develop\nopCommerce-develop\src\NopCommerce.sln";
-            //string solutionPath = @"C:\Users\Gustavo Melo\Documents\BGDoc\AnalyzingSourceCodeUsingRoslyn-master\AnalyzingSourceCodeUsingRoslyn.sln";
-            // AnalyzerManager manager = new AnalyzerManager();
-            // ProjectAnalyzer analyzer = (ProjectAnalyzer)manager.GetProject(@"C:\MyCode\MyProject.csproj");
-            // AdhocWorkspace workspace = analyzer.GetWorkspace();
-            MSBuildLocator.RegisterDefaults();
-
-            using (var msWorkspace = MSBuildWorkspace.Create())
-            {
-                List<ReferencedSymbol> referencesToMethod = new List<ReferencedSymbol>();
-                Console.WriteLine("Searching for method \"{0}\" reference in solution {1} ", methodName, Path.GetFileName(solutionPath));
-                ISymbol methodSymbol = null;
-                bool found = false;
-
-                //Add await here
-                var solution = msWorkspace.OpenSolutionAsync(solutionPath).Result;
-
-                var teste = solution.Projects.FirstOrDefault(m => m.HasDocuments == true);
-                ImmutableList<WorkspaceDiagnostic> diagnostics = msWorkspace.Diagnostics;
-                foreach (var diagnostic in diagnostics)
-                {
-                    Console.WriteLine(diagnostic.Message);
-                }
-
-
-
-                foreach (var project in solution.Projects)
-                {
-   
-                    foreach (var document in project.Documents)
-                    {
-                        var model = document.GetSemanticModelAsync().Result;
-
-                        var methodInvocation = document.GetSyntaxRootAsync().Result;
-                        InvocationExpressionSyntax node = null;
-                        try
-                        {
-                            node = methodInvocation.DescendantNodes().OfType<InvocationExpressionSyntax>()
-                             .Where(x => ((MemberAccessExpressionSyntax)x.Expression).Name.ToString() == methodName).FirstOrDefault();
-
-                            if (node == null)
-                                continue;
-                        }
-                        catch (Exception exception)
-                        {
-                            // Swallow the exception of type cast. 
-                            // Could be avoided by a better filtering on above linq.
-                            continue;
-                        }
-
-                        methodSymbol = model.GetSymbolInfo(node).Symbol;
-                        found = true;
-                        break;
-                    }
-
-                    if (found) break;
-                }
-                var teststst = SymbolFinder.FindReferencesAsync(methodSymbol, solution);
-                foreach (var item in SymbolFinder.FindReferencesAsync(methodSymbol, solution).Result)
-                {
-                    foreach (var location in item.Locations)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("Project Assembly -> {0}", location.Document.Project.AssemblyName);
-                        Console.ResetColor();
-                    }
-
-                }
-
-            }
-            
-        }
     }
 }

@@ -38,9 +38,21 @@
       "frameworks": {
         "netcoreapp3.1": {
           "dependencies": {
-            "Microsoft.Build.Locator": {
+            "DynamicData": {
               "target": "Package",
-              "version": "[1.2.6, )"
+              "version": "[6.16.9, )"
+            },
+            "Microsoft.Build": {
+              "target": "Package",
+              "version": "[16.6.0, )"
+            },
+            "Microsoft.Build.Framework": {
+              "target": "Package",
+              "version": "[16.6.0, )"
+            },
+            "Microsoft.Build.Tasks.Core": {
+              "target": "Package",
+              "version": "[16.6.0, )"
             },
             "Microsoft.CodeAnalysis": {
               "target": "Package",
@@ -53,6 +65,22 @@
             "Microsoft.CodeAnalysis.Workspaces.MSBuild": {
               "target": "Package",
               "version": "[3.7.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[12.0.3, )"
+            },
+            "Octokit": {
+              "target": "Package",
+              "version": "[0.48.0, )"
+            },
+            "ReactiveUI": {
+              "target": "Package",
+              "version": "[11.5.35, )"
+            },
+            "System.Reactive": {
+              "target": "Package",
+              "version": "[4.4.1, )"
             }
           },
           "imports": [
@@ -123,16 +151,6 @@
             "Microsoft.AspNetCore.Http.Abstractions": {
               "target": "Package",
               "version": "[2.2.0, )"
-            },
-            "Microsoft.Build": {
-              "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "target": "Package",
-              "version": "[16.6.0, )"
-            },
-            "Microsoft.Build.Framework": {
-              "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-              "target": "Package",
-              "version": "[16.6.0, )"
             },
             "Microsoft.Build.Locator": {
               "target": "Package",

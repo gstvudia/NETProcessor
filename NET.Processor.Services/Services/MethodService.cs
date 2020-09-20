@@ -1,5 +1,4 @@
-﻿using Microsoft.Build.Locator;
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.FindSymbols;
@@ -12,6 +11,8 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+
 
 namespace NET.Processor.Core.Services
 {
@@ -33,7 +34,7 @@ namespace NET.Processor.Core.Services
                 //DO A UNIFIER FOR VB AND C#, TREAT .NET AS UNIQUE
                 if(project.Language == "C#") {
                     foreach (var documentClass in project.Documents)
-                    { 
+                    {
                         var model = documentClass.GetSemanticModelAsync().Result;
                         var methodInvocation = documentClass.GetSyntaxRootAsync().Result;
                         var IsInterface = methodInvocation.DescendantNodes().OfType<InterfaceDeclarationSyntax>();
