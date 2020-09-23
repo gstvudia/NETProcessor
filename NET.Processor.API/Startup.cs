@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NET.Processor.Core.Interfaces;
+using NET.Processor.Core.Services;
 
 namespace NETWebTest
 {
@@ -24,6 +26,9 @@ namespace NETWebTest
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddControllers();
+            services.AddCors();
+            services.AddScoped<ISolutionService, SolutionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,7 +48,7 @@ namespace NETWebTest
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseCors(cors => cors.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -1,16 +1,23 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
-WORKDIR /app
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-# Do not expose any port as heroku does not allow it 
-# for security reasons 
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+WORKDIR /app
 #EXPOSE 80
+#EXPOSE 443
 
-# Copy everything else and build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+WORKDIR /src
+COPY ["NET.Processor.API/NET.Processor.API.csproj", "NET.Processor.API/"]
+COPY ["NET.Processor.Services/NET.Processor.Core.csproj", "NET.Processor.Services/"]
+RUN dotnet restore "NET.Processor.API/NET.Processor.API.csproj"
 COPY . .
-#Publish
-RUN dotnet publish NETProcessor.sln -c Release -o out
+WORKDIR "/src/NET.Processor.API"
+RUN dotnet build "NET.Processor.API.csproj" -c Release -o /app/build
 
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+FROM build AS publish
+RUN dotnet publish "NET.Processor.API.csproj" -c Release -o /app/publish
+
+FROM base AS final
 WORKDIR /app
-COPY --from=build-env /app/NETProcessor/out .
-ENTRYPOINT ["dotnet", "NETProcessor.dll"]
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "NET.Processor.API.dll"]
