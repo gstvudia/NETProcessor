@@ -3,3 +3,7 @@
 ################################################################################
 
 /.vs/NETProcessor/DesignTimeBuild/.dtbcache.v2
+/NET.Processor.API/bin
+/NET.Processor.API/obj
+/NET.Processor.Services/bin
+/NET.Processor.Services/obj
