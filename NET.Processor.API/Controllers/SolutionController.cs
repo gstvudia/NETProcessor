@@ -40,18 +40,18 @@ namespace NET.Processor.API.Controllers
             return Ok();
         }
 
-        [HttpGet("GetSolutionItens")]
-        public async Task<IActionResult> GetSolutionItens()
+        [HttpGet("GetSolutionItems")]
+        public async Task<IActionResult> GetSolutionItems()
         {
 
-            //string path = Directory.GetParent(Directory.GetCurrentDirectory()).FullName + @"\NET.Processor.Services\Solutions\CleanArchitecture-master/CleanArchitecture.sln";
-            //var solution = _solutionService.LoadSolution(path);
+            string path = Directory.GetParent(Directory.GetCurrentDirectory()).FullName + @"\NET.Processor.Services\Solutions\CleanArchitecture-master\CleanArchitecture.sln";
+            var solution = _solutionService.LoadSolution(path);
             //var solutionItens = await
             //_solutionService.GetSolutionItens(solution);
-            //var itens = await _solutionService.GetSolutionItens(solution);
+          
             //var itensToReturn = _mapper.Map<IEnumerable<UserForListDTO>>(itens);
 
-            return Ok("Benny this fucking actually works man");
+            return Ok(_solutionService.GetSolutionItems(solution));
         }
     }
 }

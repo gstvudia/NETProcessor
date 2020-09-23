@@ -8,6 +8,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
 COPY ["NET.Processor.API/NET.Processor.API.csproj", "NET.Processor.API/"]
+COPY ["NET.Processor.Services/NET.Processor.Core.csproj", "NET.Processor.Services/"]
 RUN dotnet restore "NET.Processor.API/NET.Processor.API.csproj"
 COPY . .
 WORKDIR "/src/NET.Processor.API"
@@ -19,4 +20,8 @@ RUN dotnet publish "NET.Processor.API.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+RUN useradd -m myappuser
+USER myappuser
+
 ENTRYPOINT ["dotnet", "NET.Processor.API.dll"]

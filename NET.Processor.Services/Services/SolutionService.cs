@@ -139,7 +139,7 @@ namespace NET.Processor.Core.Services
         //}
 
         //IObservable<List<Item>>
-        public void GetSolutionItens(Solution solution)
+        public List<Item> GetSolutionItems(Solution solution)
         {
             SyntaxNode root = null;
             var list = new List<Item>();
@@ -270,7 +270,7 @@ namespace NET.Processor.Core.Services
 
             }
 
-            var a = RelationsGraph.BuildTree(list).Where(item => item.Type == ItemType.Method).ToList();
+            return RelationsGraph.BuildTree(list).Where(item => item.Type == ItemType.Method).ToList();
         }
     }
 }
