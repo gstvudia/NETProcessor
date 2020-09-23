@@ -22,7 +22,7 @@ namespace NET.Processor.Core.Interfaces
         /// <returns>FilePaths</returns>
         //IEnumerable<FileInfo> LoadFilePaths(string SolutionPath);
 
-        void GetSolutionItens(Solution solution);
+        List<Item> GetSolutionItems(Solution solution);
 
         Task<bool> GetSolutionFromRepo(WebHook webHook);
     }
