@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "NETWebTest": {
+    "NET.Processor.API": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

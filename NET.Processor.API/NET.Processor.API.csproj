@@ -4,6 +4,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>b78eb5ec-8229-4f32-90f7-a54afac740b3</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileFile>..\Dockerfile</DockerfileFile>
+    <DockerfileRunArguments>-p 5000:5000</DockerfileRunArguments>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,6 +14,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\NET.Processor.Services\NET.Processor.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="..\.dockerignore" />
   </ItemGroup>
 
 </Project>

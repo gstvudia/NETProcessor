@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Gustavo Melo\\Source\\Repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {}
+    "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Gustavo Melo\\Source\\Repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
+    "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Gustavo Melo\\Source\\Repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+        "projectUniqueName": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
         "projectName": "NET.Processor.Core",
-        "projectPath": "C:\\Users\\Gustavo Melo\\Source\\Repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+        "projectPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
         "packagesPath": "C:\\Users\\Gustavo Melo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Gustavo Melo\\Source\\Repos\\NETProcessor\\NET.Processor.Services\\obj\\",
+        "outputPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Gustavo Melo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -38,9 +38,33 @@
       "frameworks": {
         "netcoreapp3.1": {
           "dependencies": {
+            "CloudinaryDotNet": {
+              "target": "Package",
+              "version": "[1.13.1, )"
+            },
             "DynamicData": {
               "target": "Package",
               "version": "[6.16.9, )"
+            },
+            "LibGit2Sharp": {
+              "target": "Package",
+              "version": "[0.26.2, )"
+            },
+            "LibGit2Sharp-SSH": {
+              "target": "Package",
+              "version": "[1.0.22, )"
+            },
+            "LibGit2Sharp-SSH-updated-libssh2": {
+              "target": "Package",
+              "version": "[1.0.25, )"
+            },
+            "LibGit2Sharp-SSH.NativeBinaries": {
+              "target": "Package",
+              "version": "[1.0.14, )"
+            },
+            "LibGit2Sharp.NativeBinaries": {
+              "target": "Package",
+              "version": "[2.0.312, )"
             },
             "Microsoft.Build": {
               "target": "Package",
@@ -73,10 +97,6 @@
             "Octokit": {
               "target": "Package",
               "version": "[0.48.0, )"
-            },
-            "PresentationFramework": {
-              "target": "Package",
-              "version": "[4.6.0, )"
             },
             "ReactiveUI": {
               "target": "Package",

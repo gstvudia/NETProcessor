@@ -18,6 +18,9 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
+using LibGit2Sharp;
 
 namespace NET.Processor.Core.Services
 {
@@ -31,6 +34,9 @@ namespace NET.Processor.Core.Services
             {
                 try
                 {
+                    var co = new CloneOptions();
+                    //co.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = "Username", Password = "Password" };
+                    Repository.Clone("https://github.com/ardalis/CleanArchitecture.git", Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/Clones");
                     solution = msWorkspace.OpenSolutionAsync(SolutionPath).Result;
                 }
                 catch (Exception ex)

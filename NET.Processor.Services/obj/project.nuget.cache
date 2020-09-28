@@ -1,11 +1,18 @@
 {
   "version": 2,
-  "dgSpecHash": "pZNwtMDPJ8IlOsOwkffdmnQnnARkU6LL5+RPnUiRfjjhbeTGFki38r24KLrcO0G9RrlWXoEzhnL8mr5O+AaV4A==",
+  "dgSpecHash": "jjjACyuGPJRzm48vw89GqcxUqs8nyHQledT8n9qRCU7Cxyr7cdZVp88CwKOUGMiG1VAHp7NViOOI86IohVKSOA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Gustavo Melo\\Source\\Repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+  "projectFilePath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Gustavo Melo\\.nuget\\packages\\cloudinarydotnet\\1.13.1\\cloudinarydotnet.1.13.1.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\dynamicdata\\6.16.9\\dynamicdata.6.16.9.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\humanizer.core\\2.2.0\\humanizer.core.2.2.0.nupkg.sha512",
+    "C:\\Users\\Gustavo Melo\\.nuget\\packages\\libgit2sharp\\0.26.2\\libgit2sharp.0.26.2.nupkg.sha512",
+    "C:\\Users\\Gustavo Melo\\.nuget\\packages\\libgit2sharp-ssh\\1.0.22\\libgit2sharp-ssh.1.0.22.nupkg.sha512",
+    "C:\\Users\\Gustavo Melo\\.nuget\\packages\\libgit2sharp-ssh-updated-libssh2\\1.0.25\\libgit2sharp-ssh-updated-libssh2.1.0.25.nupkg.sha512",
+    "C:\\Users\\Gustavo Melo\\.nuget\\packages\\libgit2sharp-ssh.nativebinaries\\1.0.14\\libgit2sharp-ssh.nativebinaries.1.0.14.nupkg.sha512",
+    "C:\\Users\\Gustavo Melo\\.nuget\\packages\\libgit2sharp-ssh.nativebinaries-libssh2-1.8.1.0\\1.0.15\\libgit2sharp-ssh.nativebinaries-libssh2-1.8.1.0.1.0.15.nupkg.sha512",
+    "C:\\Users\\Gustavo Melo\\.nuget\\packages\\libgit2sharp.nativebinaries\\2.0.312\\libgit2sharp.nativebinaries.2.0.312.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.0\\microsoft.bcl.asyncinterfaces.1.1.0.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\microsoft.build\\16.6.0\\microsoft.build.16.6.0.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\microsoft.build.framework\\16.6.0\\microsoft.build.framework.16.6.0.nupkg.sha512",
@@ -28,7 +35,6 @@
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\octokit\\0.48.0\\octokit.0.48.0.nupkg.sha512",
-    "C:\\Users\\Gustavo Melo\\.nuget\\packages\\presentationframework\\4.6.0\\presentationframework.4.6.0.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\reactiveui\\11.5.35\\reactiveui.11.5.35.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
     "C:\\Users\\Gustavo Melo\\.nuget\\packages\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl\\4.3.0\\runtime.fedora.23-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
@@ -124,11 +130,31 @@
   ],
   "logs": [
     {
+      "code": "NU1608",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Detected package version outside of dependency constraint: LibGit2Sharp 0.26.2 requires LibGit2Sharp.NativeBinaries (= 2.0.306) but version LibGit2Sharp.NativeBinaries 2.0.312 was resolved.",
+      "libraryId": "LibGit2Sharp.NativeBinaries",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    },
+    {
       "code": "NU1701",
       "level": "Warning",
       "warningLevel": 1,
-      "message": "Package 'PresentationFramework 4.6.0' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v3.1'. This package may not be fully compatible with your project.",
-      "libraryId": "PresentationFramework",
+      "message": "Package 'LibGit2Sharp-SSH 1.0.22' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v3.1'. This package may not be fully compatible with your project.",
+      "libraryId": "LibGit2Sharp-SSH",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.1"
+      ]
+    },
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Package 'LibGit2Sharp-SSH-updated-libssh2 1.0.25' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v3.1'. This package may not be fully compatible with your project.",
+      "libraryId": "LibGit2Sharp-SSH-updated-libssh2",
       "targetGraphs": [
         ".NETCoreApp,Version=v3.1"
       ]
