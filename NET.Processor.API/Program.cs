@@ -22,7 +22,7 @@ namespace NETWebTest
                 {
                     webBuilder.UseStartup<Startup>();
                     //webBuilder.UseUrls("http://*:" + Environment.GetEnvironmentVariable("PORT"));
-                    //webBuilder.UseUrls("http://*:5000/");
+                    webBuilder.UseUrls("http://*:5000/");
                 });
     }
 }

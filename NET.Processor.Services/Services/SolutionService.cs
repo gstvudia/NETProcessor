@@ -26,7 +26,7 @@ namespace NET.Processor.Core.Services
 {
     public class SolutionService : ISolutionService
     {
-        public Solution LoadSolution(string SolutionPath)
+        public Solution LoadSolution(string solutionPath)
         {
             Solution solution = null;
 
@@ -36,8 +36,16 @@ namespace NET.Processor.Core.Services
                 {
                     var co = new CloneOptions();
                     //co.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = "Username", Password = "Password" };
-                    Repository.Clone("https://github.com/ardalis/CleanArchitecture.git", Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/Clones");
-                    solution = msWorkspace.OpenSolutionAsync(SolutionPath).Result;
+                    //Repository.Clone("https://github.com/ardalis/CleanArchitecture.git", Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/Clones");
+                    solutionPath = Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "\\Clones\\CleanArchitecture.sln";
+                    solution = msWorkspace.OpenSolutionAsync(solutionPath).Result;
+
+                    //We can log diagnosis later
+                    ImmutableList<WorkspaceDiagnostic> diagnostics = msWorkspace.Diagnostics;
+                    foreach (var diagnostic in diagnostics)
+                    {
+                        //Console.WriteLine(diagnostic.Message);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -59,55 +67,28 @@ namespace NET.Processor.Core.Services
             return a;
         }
 
-        public async Task<bool> GetSolutionFromRepo(WebHook webHook)
+        public List<string> GetSolutionFromRepo(WebHook webHook)
         {
-            Solution solution = null;
-            var fileName = "";
-            var downloadUrl = "";
-
-            var httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("CleanArchitecture","1"));
-            var repo = "ardalis/CleanArchitecture";
-            var contentsUrl = $"https://api.github.com/repos/{repo}/contents";
-
+            List<string> DirectoryFiles = new List<string>();
             try
             {
-                var contentsJson = await GetContentsFromRepo(contentsUrl, httpClient);
-                //var contents = (JArray)JsonConvert.DeserializeObject(contentsJson.ToString());
-                //foreach (var file in contents)
-                //{
-                //    fileName = (string)file["name"];
-                //    if (fileName.EndsWith(".sln"))
-                //    {
-                //        downloadUrl = (string)file["download_url"];
-                //    }
-                //}
-                //
-                //using (WebClient webClient = new WebClient())
-                //{
-                //    var solutionInBytes = webClient.DownloadData(downloadUrl);
-                //    Type t = null;
-                //    StreamReader sr = new StreamReader(new MemoryStream(solutionInBytes));
-                //    var b = JsonConvert.DeserializeObject(sr.ReadToEnd(), typeof(Solution));
-                //
-                //    using (var ms = new MemoryStream(solutionInBytes))
-                //    {
-                //        //File  = solution.Workspace.byt
-                //    }
-                //
-                //}
+                //CHECK IF FOLDER EXISTS ADN REMOVE FIRST
+                Repository.Clone("https://github.com/ardalis/CleanArchitecture.git", Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/Clones");
+
+                //get file names or something like that and add on the list
+                //DirectoryFiles.Add();
             }
             catch (Exception ex)
             {
                 Console.WriteLine();
             }
             
-            //var githubClient = new GitHubClient(new ProductHeaderValue("CleanArchitecture"), new Uri("https://github.com/ardalis/CleanArchitecture")) { };
-            //
-            //var a = await githubClient.GitHubApps.GetCurrent();
 
-            return true;
+            return DirectoryFiles;
         }
+
+
+
         //public IEnumerable<FileInfo> LoadFilePaths(string solutionFilePath)
         //{
         //    List<FileInfo> cSharpCompileFileList = new List<FileInfo>();

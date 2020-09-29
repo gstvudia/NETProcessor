@@ -24,6 +24,6 @@ namespace NET.Processor.Core.Interfaces
 
         List<Item> GetSolutionItems(Solution solution);
 
-        Task<bool> GetSolutionFromRepo(WebHook webHook);
+        List<string> GetSolutionFromRepo(WebHook webHook);
     }
 }

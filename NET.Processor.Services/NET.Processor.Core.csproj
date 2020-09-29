@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Solutions\**" />
+    <EmbeddedResource Remove="Solutions\**" />
+    <None Remove="Solutions\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="CloudinaryDotNet" Version="1.13.1" />
     <PackageReference Include="DynamicData" Version="6.16.9" />
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
@@ -31,12 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Solutions\**\*" />
-  </ItemGroup>
-
-  
-
-  <ItemGroup>
     <Content Include="bin\Debug\netcoreapp3.1\NET.Processor.Core.deps.json" />
     <Content Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\.vscode\settings.json" />
     <Content Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\appsettings.json" />
@@ -47,138 +47,10 @@
     <Content Include="bin\Debug\netcoreapp3.1\System.Reactive.xml" />
     <Content Include="bin\Release\netcoreapp3.1\NET.Processor.Core.deps.json" />
     <Content Include="bin\Release\netcoreapp3.1\System.Reactive.xml" />
-    <Content Include="Solutions\CleanArchitecture-master\.vscode\settings.json" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="bin\Debug\netcoreapp3.1\NET.Processor.Core.dll" />
-    <None Include="bin\Debug\netcoreapp3.1\NET.Processor.Core.pdb" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\.github\CONTRIBUTING.md" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\.github\FUNDING.yml" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\.github\workflows\dotnetcore.yml" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\.gitignore" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\CleanArchitecture.sln" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\LICENSE" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\nuget.config" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\README.md" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\CleanArchitecture.Core.csproj" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Infrastructure\CleanArchitecture.Infrastructure.csproj" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.SharedKernel\CleanArchitecture.SharedKernel.csproj" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\CleanArchitecture.Web.csproj" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Pages\ToDoRazorPage\Incomplete.cshtml" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Pages\ToDoRazorPage\Index.cshtml" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Pages\ToDoRazorPage\Populate.cshtml" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Pages\_ViewImports.cshtml" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Pages\_ViewStart.cshtml" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Views\Home\Index.cshtml" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Views\Shared\Error.cshtml" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Views\Shared\_Layout.cshtml" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Views\ToDo\Index.cshtml" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Views\_ViewImports.cshtml" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Views\_ViewStart.cshtml" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\web.config" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\tests\CleanArchitecture.FunctionalTests\CleanArchitecture.FunctionalTests.csproj" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\tests\CleanArchitecture.IntegrationTests\CleanArchitecture.IntegrationTests.csproj" />
-    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\tests\CleanArchitecture.UnitTests\CleanArchitecture.UnitTests.csproj" />
-    <None Include="bin\Debug\netcoreapp3.1\System.Reactive.dll" />
-    <None Include="bin\Release\netcoreapp3.1\NET.Processor.Core.dll" />
-    <None Include="bin\Release\netcoreapp3.1\NET.Processor.Core.pdb" />
-    <None Include="bin\Release\netcoreapp3.1\System.Reactive.dll" />
-    <None Include="Solutions\CleanArchitecture-master\.github\CONTRIBUTING.md" />
-    <None Include="Solutions\CleanArchitecture-master\.github\FUNDING.yml" />
-    <None Include="Solutions\CleanArchitecture-master\.github\workflows\dotnetcore.yml" />
-    <None Include="Solutions\CleanArchitecture-master\.vs\CleanArchitecture\DesignTimeBuild\.dtbcache.v2" />
-    <None Include="Solutions\CleanArchitecture-master\CleanArchitecture.sln" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\CleanArchitecture.Core.csproj" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Infrastructure\CleanArchitecture.Infrastructure.csproj" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.SharedKernel\CleanArchitecture.SharedKernel.csproj" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\CleanArchitecture.Web.csproj" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.FunctionalTests\CleanArchitecture.FunctionalTests.csproj" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.IntegrationTests\CleanArchitecture.IntegrationTests.csproj" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.UnitTests\CleanArchitecture.UnitTests.csproj" />
-
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\DatabasePopulator.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\Entities\ToDoItem.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\Events\ToDoItemCompletedEvent.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\Handlers\ItemCompletedEmailNotificationHandler.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\Interfaces\IEmailSender.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\Interfaces\IToDoItemSearchService.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\obj\Debug\netstandard2.1\.NETStandard,Version=v2.1.AssemblyAttributes.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\obj\Debug\netstandard2.1\CleanArchitecture.Core.AssemblyInfo.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\Services\ToDoItemSearchService.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\Specifications\IncompleteItemsSpecification.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Infrastructure\Data\AppDbContext.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Infrastructure\Data\Config\ToDoConfiguration.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Infrastructure\Data\EfRepository.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Infrastructure\DefaultInfrastructureModule.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Infrastructure\EmailSender.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Infrastructure\obj\Debug\netcoreapp3.1\.NETCoreApp,Version=v3.1.AssemblyAttributes.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Infrastructure\obj\Debug\netcoreapp3.1\CleanArchitecture.Infrastructure.AssemblyInfo.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Infrastructure\StartupSetup.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.SharedKernel\BaseDomainEvent.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.SharedKernel\BaseEntity.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.SharedKernel\IgnoreMemberAttribute.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.SharedKernel\Interfaces\IAggregateRoot.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.SharedKernel\Interfaces\IRepository.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.SharedKernel\obj\Debug\netstandard2.0\.NETStandard,Version=v2.0.AssemblyAttributes.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.SharedKernel\obj\Debug\netstandard2.0\CleanArchitecture.SharedKernel.AssemblyInfo.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.SharedKernel\ValueObject.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\ApiModels\ToDoItemDTO.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Api\BaseApiController.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Api\MetaController.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Api\ToDoItemsController.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Controllers\HomeController.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Controllers\ToDoController.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Endpoints\ToDoItems\Create.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Endpoints\ToDoItems\Create.NewToDoItemRequest.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Endpoints\ToDoItems\Delete.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Endpoints\ToDoItems\GetById.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Endpoints\ToDoItems\GetById.ToDoItemResponse.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Endpoints\ToDoItems\List.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Endpoints\ToDoItems\Update.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Endpoints\ToDoItems\Update.UpdateToDoItemRequest.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Filters\ValidateModelAttribute.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\obj\Debug\netcoreapp3.1\.NETCoreApp,Version=v3.1.AssemblyAttributes.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\obj\Debug\netcoreapp3.1\CleanArchitecture.Web.AssemblyInfo.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\obj\Debug\netcoreapp3.1\CleanArchitecture.Web.RazorAssemblyInfo.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Pages\ToDoRazorPage\Incomplete.cshtml.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Pages\ToDoRazorPage\Index.cshtml.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Pages\ToDoRazorPage\Populate.cshtml.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Program.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\SeedData.cs" />
-    <None Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Startup.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.FunctionalTests\Api\ApiToDoItemsControllerList.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.FunctionalTests\Api\MetaControllerInfo.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.FunctionalTests\CustomWebApplicationFactory.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.FunctionalTests\HomeControllerIndex.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.FunctionalTests\obj\Debug\netcoreapp3.1\.NETCoreApp,Version=v3.1.AssemblyAttributes.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.FunctionalTests\obj\Debug\netcoreapp3.1\CleanArchitecture.FunctionalTests.AssemblyInfo.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.IntegrationTests\Data\BaseEfRepoTestFixture.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.IntegrationTests\Data\EfRepositoryAdd.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.IntegrationTests\Data\EfRepositoryDelete.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.IntegrationTests\Data\EfRepositoryUpdate.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.IntegrationTests\obj\Debug\netcoreapp3.1\.NETCoreApp,Version=v3.1.AssemblyAttributes.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.IntegrationTests\obj\Debug\netcoreapp3.1\CleanArchitecture.IntegrationTests.AssemblyInfo.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.UnitTests\Core\Entities\ToDoItemMarkComplete.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.UnitTests\Core\Handlers\ItemCompletedEmailNotificationHandlerHandle.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.UnitTests\Core\Services\ToDoItemSearchService_GetAllIncompleteItems.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.UnitTests\Core\Services\ToDoItemSearchService_GetNextIncompleteItem.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.UnitTests\Core\Specifications\IncompleteItemSpecificationsConstructor.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.UnitTests\NoOpMediator.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.UnitTests\obj\Debug\netcoreapp3.1\.NETCoreApp,Version=v3.1.AssemblyAttributes.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.UnitTests\obj\Debug\netcoreapp3.1\CleanArchitecture.UnitTests.AssemblyInfo.cs" />
-    <None Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.UnitTests\ToDoItemBuilder.cs" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Clones\" />
-    <Folder Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\bin\Debug\netstandard2.1\" />
-    <Folder Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Infrastructure\bin\Debug\netcoreapp3.1\" />
-    <Folder Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.SharedKernel\bin\Debug\netstandard2.0\" />
-    <Folder Include="Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\bin\Debug\netcoreapp3.1\" />
-    <Folder Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.FunctionalTests\bin\Debug\netcoreapp3.1\" />
-    <Folder Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.IntegrationTests\bin\Debug\netcoreapp3.1\" />
-    <Folder Include="Solutions\CleanArchitecture-master\tests\CleanArchitecture.UnitTests\bin\Debug\netcoreapp3.1\" />
   </ItemGroup>
 
 </Project>
