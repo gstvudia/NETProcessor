@@ -13,7 +13,14 @@ namespace NET.Processor.Core.Interfaces
         /// </summary>
         /// <param name="SolutionPath">Path of the .sln file</param>
         /// <returns>Projects</returns>
-        Solution LoadSolution(string SolutionPath);
+        Task<Solution> GetSolutionFromRepo(WebHook webHook);
+
+        /// <summary>
+        /// Loads solution from path
+        /// </summary>
+        /// <param name="SolutionPath">Path of the .sln file</param>
+        /// <returns>Projects</returns>
+        Solution LoadSolution(string path);
 
         /// <summary>
         /// Loads files from solution path
@@ -23,7 +30,5 @@ namespace NET.Processor.Core.Interfaces
         //IEnumerable<FileInfo> LoadFilePaths(string SolutionPath);
 
         List<Item> GetSolutionItems(Solution solution);
-
-        List<string> GetSolutionFromRepo(WebHook webHook);
     }
 }

@@ -3,7 +3,7 @@
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /src
 COPY ["NET.Processor.API/NET.Processor.API.csproj", "NET.Processor.API/"]
 COPY ["NET.Processor.Services/NET.Processor.Core.csproj", "NET.Processor.Services/"]

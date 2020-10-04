@@ -26,6 +26,40 @@ namespace NET.Processor.Core.Services
 {
     public class SolutionService : ISolutionService
     {
+        public async Task<Solution> GetSolutionFromRepo(WebHook webhook)
+        {
+            Solution solution = null;
+            string solutionPath = Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/Clones";
+
+            using (var msWorkspace = MSBuildWorkspace.Create())
+            {
+                try
+                {
+                    var co = new CloneOptions();
+                    //co.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = "Username", Password = "Password" };
+                    Repository.Clone(webhook.RepositoryURL, solutionPath);
+                    solution = msWorkspace.OpenSolutionAsync(solutionPath).Result;
+                }
+                catch (Exception ex)
+                {
+                    //We can log diagnosis later
+                    ImmutableList<WorkspaceDiagnostic> diagnostics = msWorkspace.Diagnostics;
+                    foreach (var diagnostic in diagnostics)
+                    {
+                        Console.WriteLine(diagnostic.Message);
+                    }
+                }
+            
+                return solution;
+            }
+
+        }
+        public async Task<Stream> GetContentsFromRepo(string contentsUrl, HttpClient httpClient)
+        { 
+            var a = await httpClient.GetStreamAsync(contentsUrl);
+            return a;
+        }
+
         public Solution LoadSolution(string solutionPath)
         {
             Solution solution = null;
@@ -56,38 +90,10 @@ namespace NET.Processor.Core.Services
                         //Console.WriteLine(diagnostic.Message);
                     }
                 }
-            
+
                 return solution;
             }
-
         }
-        public async Task<Stream> GetContentsFromRepo(string contentsUrl, HttpClient httpClient)
-        { 
-            var a = await httpClient.GetStreamAsync(contentsUrl);
-            return a;
-        }
-
-        public List<string> GetSolutionFromRepo(WebHook webHook)
-        {
-            List<string> DirectoryFiles = new List<string>();
-            try
-            {
-                //CHECK IF FOLDER EXISTS ADN REMOVE FIRST
-                Repository.Clone("https://github.com/ardalis/CleanArchitecture.git", Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/Clones");
-
-                //get file names or something like that and add on the list
-                //DirectoryFiles.Add();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine();
-            }
-            
-
-            return DirectoryFiles;
-        }
-
-
 
         //public IEnumerable<FileInfo> LoadFilePaths(string solutionFilePath)
         //{

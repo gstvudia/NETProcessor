@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,10 +19,8 @@
     <PackageReference Include="CloudinaryDotNet" Version="1.13.1" />
     <PackageReference Include="DynamicData" Version="6.16.9" />
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
-    <PackageReference Include="LibGit2Sharp-SSH" Version="1.0.22" />
-    <PackageReference Include="LibGit2Sharp-SSH-updated-libssh2" Version="1.0.25" />
     <PackageReference Include="LibGit2Sharp-SSH.NativeBinaries" Version="1.0.14" />
-    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.312" />
+    <PackageReference Include="LibGit2Sharp.NativeBinaries" Version="2.0.306" />
     <PackageReference Include="Microsoft.Build" Version="16.6.0" />
     <PackageReference Include="Microsoft.Build.Framework" Version="16.6.0" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.6.0" />
@@ -36,6 +39,8 @@
     </Reference>
   </ItemGroup>
 
+  
+
   <ItemGroup>
     <Content Include="bin\Debug\netcoreapp3.1\NET.Processor.Core.deps.json" />
     <Content Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\.vscode\settings.json" />
@@ -47,6 +52,42 @@
     <Content Include="bin\Debug\netcoreapp3.1\System.Reactive.xml" />
     <Content Include="bin\Release\netcoreapp3.1\NET.Processor.Core.deps.json" />
     <Content Include="bin\Release\netcoreapp3.1\System.Reactive.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="bin\Debug\netcoreapp3.1\NET.Processor.Core.dll" />
+    <None Include="bin\Debug\netcoreapp3.1\NET.Processor.Core.pdb" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\.github\CONTRIBUTING.md" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\.github\FUNDING.yml" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\.github\workflows\dotnetcore.yml" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\.gitignore" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\CleanArchitecture.sln" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\LICENSE" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\nuget.config" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\README.md" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Core\CleanArchitecture.Core.csproj" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Infrastructure\CleanArchitecture.Infrastructure.csproj" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.SharedKernel\CleanArchitecture.SharedKernel.csproj" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\CleanArchitecture.Web.csproj" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Pages\ToDoRazorPage\Incomplete.cshtml" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Pages\ToDoRazorPage\Index.cshtml" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Pages\ToDoRazorPage\Populate.cshtml" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Pages\_ViewImports.cshtml" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Pages\_ViewStart.cshtml" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Views\Home\Index.cshtml" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Views\Shared\Error.cshtml" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Views\Shared\_Layout.cshtml" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Views\ToDo\Index.cshtml" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Views\_ViewImports.cshtml" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\Views\_ViewStart.cshtml" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\src\CleanArchitecture.Web\web.config" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\tests\CleanArchitecture.FunctionalTests\CleanArchitecture.FunctionalTests.csproj" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\tests\CleanArchitecture.IntegrationTests\CleanArchitecture.IntegrationTests.csproj" />
+    <None Include="bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\tests\CleanArchitecture.UnitTests\CleanArchitecture.UnitTests.csproj" />
+    <None Include="bin\Debug\netcoreapp3.1\System.Reactive.dll" />
+    <None Include="bin\Release\netcoreapp3.1\NET.Processor.Core.dll" />
+    <None Include="bin\Release\netcoreapp3.1\NET.Processor.Core.pdb" />
+    <None Include="bin\Release\netcoreapp3.1\System.Reactive.dll" />
   </ItemGroup>
 
   <ItemGroup>

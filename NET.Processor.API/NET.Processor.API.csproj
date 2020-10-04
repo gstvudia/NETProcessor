@@ -6,6 +6,8 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileFile>..\Dockerfile</DockerfileFile>
     <DockerfileRunArguments>-p 5000:5000</DockerfileRunArguments>
+    <StartupObject>NETWebTest.Program</StartupObject>
+    <OutputType>Exe</OutputType>
   </PropertyGroup>
 
   <ItemGroup>

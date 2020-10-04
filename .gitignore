@@ -2,7 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/NETProcessor/DesignTimeBuild/.dtbcache.v2
+/.vs/*
 /NET.Processor.API/bin
 /NET.Processor.API/obj
 /NET.Processor.Services/bin

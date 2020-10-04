@@ -42,8 +42,8 @@ namespace NET.Processor.API.Controllers
         public async Task<IActionResult> GetSolutionItems()
         {
 
-             //string path = Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "NET.Processor.Services/Solutions/CleanArchitecture-master/CleanArchitecture.sln";
-            string path = @"C:\Users\Gustavo Melo\Documents\BGDoc\EXAMPLS\CleanArchitecture-master\CleanArchitecture.sln";
+            string path = Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "NET.Processor.Services/bin/Debug\netcoreapp3.1/Solutions/CleanArchitecture-master/CleanArchitecture.sln";
+            //string path = @"C:\Users\Gustavo Melo\source\repos\NETProcessor\NET.Processor.Services\bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\CleanArchitecture.sln";
             var solution = _solutionService.LoadSolution(path);
             //var solutionItens = await
             //_solutionService.GetSolutionItens(solution);
