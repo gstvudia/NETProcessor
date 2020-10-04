@@ -33,9 +33,10 @@ namespace NET.Processor.API.Controllers
         [HttpPost("ProcessSolution")]
         public List<string> ProcessSolution([FromBody] WebHook webHook)
         {
+            List<string> list = null;
             var directoryFiles = _solutionService.GetSolutionFromRepo(webHook);
-            
-            return directoryFiles;
+            return list;
+            // return directoryFiles;
         }
 
         [HttpGet("GetSolutionItems")]

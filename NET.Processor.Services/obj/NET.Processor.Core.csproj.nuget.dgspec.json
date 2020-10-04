@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {}
+    "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
+    "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+        "projectUniqueName": "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
         "projectName": "NET.Processor.Core",
-        "projectPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
-        "packagesPath": "C:\\Users\\Gustavo Melo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\obj\\",
+        "projectPath": "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+        "packagesPath": "C:\\Users\\Benny\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NET.Processor.Services\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Gustavo Melo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Benny\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -50,21 +50,13 @@
               "target": "Package",
               "version": "[0.26.2, )"
             },
-            "LibGit2Sharp-SSH": {
-              "target": "Package",
-              "version": "[1.0.22, )"
-            },
-            "LibGit2Sharp-SSH-updated-libssh2": {
-              "target": "Package",
-              "version": "[1.0.25, )"
-            },
             "LibGit2Sharp-SSH.NativeBinaries": {
               "target": "Package",
               "version": "[1.0.14, )"
             },
             "LibGit2Sharp.NativeBinaries": {
               "target": "Package",
-              "version": "[2.0.312, )"
+              "version": "[2.0.306, )"
             },
             "Microsoft.Build": {
               "target": "Package",
@@ -122,7 +114,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
         }
       }
     }

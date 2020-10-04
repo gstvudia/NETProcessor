@@ -47,30 +47,6 @@
           "lib/netstandard2.0/LibGit2Sharp.dll": {}
         }
       },
-      "LibGit2Sharp-SSH/1.0.22": {
-        "type": "package",
-        "dependencies": {
-          "LibGit2Sharp-SSH.NativeBinaries": "[1.0.14]"
-        },
-        "compile": {
-          "lib/net40/LibGit2Sharp.dll": {}
-        },
-        "runtime": {
-          "lib/net40/LibGit2Sharp.dll": {}
-        }
-      },
-      "LibGit2Sharp-SSH-updated-libssh2/1.0.25": {
-        "type": "package",
-        "dependencies": {
-          "LibGit2Sharp-SSH.NativeBinaries-libssh2-1.8.1.0": "[1.0.15]"
-        },
-        "compile": {
-          "lib/net40/LibGit2Sharp.dll": {}
-        },
-        "runtime": {
-          "lib/net40/LibGit2Sharp.dll": {}
-        }
-      },
       "LibGit2Sharp-SSH.NativeBinaries/1.0.14": {
         "type": "package",
         "build": {
@@ -143,68 +119,7 @@
           }
         }
       },
-      "LibGit2Sharp-SSH.NativeBinaries-libssh2-1.8.1.0/1.0.15": {
-        "type": "package",
-        "runtimeTargets": {
-          "runtimes/win-x64/native/addbinaries.here": {
-            "assetType": "native",
-            "rid": "win-x64"
-          },
-          "runtimes/win-x86/native/addbinaries.here": {
-            "assetType": "native",
-            "rid": "win-x86"
-          },
-          "runtimes/win7-x64/native/git2-ssh-baa87df.dll": {
-            "assetType": "native",
-            "rid": "win7-x64"
-          },
-          "runtimes/win7-x64/native/git2-ssh-baa87df.pdb": {
-            "assetType": "native",
-            "rid": "win7-x64"
-          },
-          "runtimes/win7-x64/native/libssh2.dll": {
-            "assetType": "native",
-            "rid": "win7-x64"
-          },
-          "runtimes/win7-x64/native/libssh2.pdb": {
-            "assetType": "native",
-            "rid": "win7-x64"
-          },
-          "runtimes/win7-x64/native/zlib.dll": {
-            "assetType": "native",
-            "rid": "win7-x64"
-          },
-          "runtimes/win7-x64/native/zlib.pdb": {
-            "assetType": "native",
-            "rid": "win7-x64"
-          },
-          "runtimes/win7-x86/native/git2-ssh-baa87df.dll": {
-            "assetType": "native",
-            "rid": "win7-x86"
-          },
-          "runtimes/win7-x86/native/git2-ssh-baa87df.pdb": {
-            "assetType": "native",
-            "rid": "win7-x86"
-          },
-          "runtimes/win7-x86/native/libssh2.dll": {
-            "assetType": "native",
-            "rid": "win7-x86"
-          },
-          "runtimes/win7-x86/native/libssh2.pdb": {
-            "assetType": "native",
-            "rid": "win7-x86"
-          },
-          "runtimes/win7-x86/native/zlib.dll": {
-            "assetType": "native",
-            "rid": "win7-x86"
-          },
-          "runtimes/win7-x86/native/zlib.pdb": {
-            "assetType": "native",
-            "rid": "win7-x86"
-          }
-        }
-      },
-      "LibGit2Sharp.NativeBinaries/2.0.312": {
+      "LibGit2Sharp.NativeBinaries/2.0.306": {
         "type": "package",
         "build": {
           "build/LibGit2Sharp.NativeBinaries.props": {}
@@ -213,39 +128,59 @@
           "buildMultiTargeting/LibGit2Sharp.NativeBinaries.props": {}
         },
         "runtimeTargets": {
-          "runtimes/linux-arm/native/libgit2-6777db8.so": {
+          "runtimes/alpine-x64/native/libgit2-106a5f2.so": {
             "assetType": "native",
-            "rid": "linux-arm"
+            "rid": "alpine-x64"
           },
-          "runtimes/linux-arm64/native/libgit2-6777db8.so": {
+          "runtimes/alpine.3.9-x64/native/libgit2-106a5f2.so": {
             "assetType": "native",
-            "rid": "linux-arm64"
+            "rid": "alpine.3.9-x64"
           },
-          "runtimes/linux-musl-x64/native/libgit2-6777db8.so": {
+          "runtimes/debian-arm64/native/libgit2-106a5f2.so": {
             "assetType": "native",
-            "rid": "linux-musl-x64"
+            "rid": "debian-arm64"
           },
-          "runtimes/linux-x64/native/libgit2-6777db8.so": {
+          "runtimes/debian.9-x64/native/libgit2-106a5f2.so": {
+            "assetType": "native",
+            "rid": "debian.9-x64"
+          },
+          "runtimes/fedora-x64/native/libgit2-106a5f2.so": {
+            "assetType": "native",
+            "rid": "fedora-x64"
+          },
+          "runtimes/linux-x64/native/libgit2-106a5f2.so": {
             "assetType": "native",
             "rid": "linux-x64"
           },
-          "runtimes/osx/native/libgit2-6777db8.dylib": {
+          "runtimes/osx/native/libgit2-106a5f2.dylib": {
             "assetType": "native",
             "rid": "osx"
           },
-          "runtimes/win-x64/native/git2-6777db8.dll": {
+          "runtimes/rhel-x64/native/libgit2-106a5f2.so": {
+            "assetType": "native",
+            "rid": "rhel-x64"
+          },
+          "runtimes/ubuntu.16.04-arm64/native/libgit2-106a5f2.so": {
+            "assetType": "native",
+            "rid": "ubuntu.16.04-arm64"
+          },
+          "runtimes/ubuntu.18.04-x64/native/libgit2-106a5f2.so": {
+            "assetType": "native",
+            "rid": "ubuntu.18.04-x64"
+          },
+          "runtimes/win-x64/native/git2-106a5f2.dll": {
             "assetType": "native",
             "rid": "win-x64"
           },
-          "runtimes/win-x64/native/git2-6777db8.pdb": {
+          "runtimes/win-x64/native/git2-106a5f2.pdb": {
             "assetType": "native",
             "rid": "win-x64"
           },
-          "runtimes/win-x86/native/git2-6777db8.dll": {
+          "runtimes/win-x86/native/git2-106a5f2.dll": {
             "assetType": "native",
             "rid": "win-x86"
           },
-          "runtimes/win-x86/native/git2-6777db8.pdb": {
+          "runtimes/win-x86/native/git2-106a5f2.pdb": {
             "assetType": "native",
             "rid": "win-x86"
           }
@@ -2378,41 +2313,6 @@
         "libgit2sharp.nuspec"
       ]
     },
-    "LibGit2Sharp-SSH/1.0.22": {
-      "sha512": "8xzm84r5JWZwyvF4dhZgoRGwMH1mWXUouxztSIMo7KYT6/CORXnc9fCHv4atxuc5/DtlfZblRW9ZyJhhx+H/Zw==",
-      "type": "package",
-      "path": "libgit2sharp-ssh/1.0.22",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "App_Readme/LibGit2Sharp.CHANGES.md",
-        "App_Readme/LibGit2Sharp.LICENSE.md",
-        "App_Readme/LibGit2Sharp.README.md",
-        "lib/net40/LibGit2Sharp.dll",
-        "lib/net40/LibGit2Sharp.pdb",
-        "lib/net40/LibGit2Sharp.xml",
-        "libgit2sharp-ssh.1.0.22.nupkg.sha512",
-        "libgit2sharp-ssh.nuspec"
-      ]
-    },
-    "LibGit2Sharp-SSH-updated-libssh2/1.0.25": {
-      "sha512": "JCZXPJUZHQa6NLsLHNboSxmIIHoFdlDR1GtAk0cTMkfH0bZeLwBA5HaL9OBggtSovWh71XsJmU8soBPGRY8www==",
-      "type": "package",
-      "path": "libgit2sharp-ssh-updated-libssh2/1.0.25",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "App_Readme/LibGit2Sharp.CHANGES.md",
-        "App_Readme/LibGit2Sharp.LICENSE.md",
-        "App_Readme/LibGit2Sharp.README.md",
-        "Content/_._",
-        "lib/net40/LibGit2Sharp.dll",
-        "lib/net40/LibGit2Sharp.pdb",
-        "lib/net40/LibGit2Sharp.xml",
-        "libgit2sharp-ssh-updated-libssh2.1.0.25.nupkg.sha512",
-        "libgit2sharp-ssh-updated-libssh2.nuspec"
-      ]
-    },
     "LibGit2Sharp-SSH.NativeBinaries/1.0.14": {
       "sha512": "wPR1XKJOCky/sNuC6QUSJRTTnfVWSgECd66YojniGRPp16nRshkvB1XbKdD0l0WK3auGaqE7AWr/7Ek/A4L78Q==",
       "type": "package",
@@ -2450,47 +2350,10 @@
         "runtimes/win7-x86/native/zlib.pdb"
       ]
     },
-    "LibGit2Sharp-SSH.NativeBinaries-libssh2-1.8.1.0/1.0.15": {
-      "sha512": "zJ2O6CT0XIQqgnMdkEUiRIFMhkpKJ7k5MwZR4ebo2E3n81TR6xDGAd86SVlpuq+PBtuyDFNKSW5UDg8Ba+61XA==",
+    "LibGit2Sharp.NativeBinaries/2.0.306": {
+      "sha512": "LY9nyPE2X/eLl69ttuDPFFlKR8b5KXlqYej1YR1YmqmhF8Izo+vPX90q5ouOO5YGCf5d4lDUOC0x2yMWw00P7Q==",
       "type": "package",
-      "path": "libgit2sharp-ssh.nativebinaries-libssh2-1.8.1.0/1.0.15",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "Content/fixbuild.txt",
-        "build/LibGit2Sharp-SSH.NativeBinaries.props",
-        "build/fixbuild.txt",
-        "libgit2/LibGit2Sharp.dll.config",
-        "libgit2/libgit2.license.txt",
-        "libgit2/libgit2_filename.txt",
-        "libgit2/libgit2_hash.txt",
-        "libgit2/libssh2.license.txt",
-        "libgit2/libssh2_filename.txt",
-        "libgit2/libssh2_hash.txt",
-        "libgit2/zlib_filename.txt",
-        "libgit2/zlib_hash.txt",
-        "libgit2sharp-ssh.nativebinaries-libssh2-1.8.1.0.1.0.15.nupkg.sha512",
-        "libgit2sharp-ssh.nativebinaries-libssh2-1.8.1.0.nuspec",
-        "runtimes/win-x64/native/addbinaries.here",
-        "runtimes/win-x86/native/addbinaries.here",
-        "runtimes/win7-x64/native/git2-ssh-baa87df.dll",
-        "runtimes/win7-x64/native/git2-ssh-baa87df.pdb",
-        "runtimes/win7-x64/native/libssh2.dll",
-        "runtimes/win7-x64/native/libssh2.pdb",
-        "runtimes/win7-x64/native/zlib.dll",
-        "runtimes/win7-x64/native/zlib.pdb",
-        "runtimes/win7-x86/native/git2-ssh-baa87df.dll",
-        "runtimes/win7-x86/native/git2-ssh-baa87df.pdb",
-        "runtimes/win7-x86/native/libssh2.dll",
-        "runtimes/win7-x86/native/libssh2.pdb",
-        "runtimes/win7-x86/native/zlib.dll",
-        "runtimes/win7-x86/native/zlib.pdb"
-      ]
-    },
-    "LibGit2Sharp.NativeBinaries/2.0.312": {
-      "sha512": "sL4OLOblkrLgDW+zE0OL4h9DYVCyZTlA4CppUCgqU8Ud/+Ah+Wxc3EtGpGjmH6xjDMRRpmHUFgAgzj+hzZTHZA==",
-      "type": "package",
-      "path": "libgit2sharp.nativebinaries/2.0.312",
+      "path": "libgit2sharp.nativebinaries/2.0.306",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2500,17 +2363,22 @@
         "libgit2/LibGit2Sharp.dll.config",
         "libgit2/libgit2.license.txt",
         "libgit2/libgit2_hash.txt",
-        "libgit2sharp.nativebinaries.2.0.312.nupkg.sha512",
+        "libgit2sharp.nativebinaries.2.0.306.nupkg.sha512",
         "libgit2sharp.nativebinaries.nuspec",
-        "runtimes/linux-arm/native/libgit2-6777db8.so",
-        "runtimes/linux-arm64/native/libgit2-6777db8.so",
-        "runtimes/linux-musl-x64/native/libgit2-6777db8.so",
-        "runtimes/linux-x64/native/libgit2-6777db8.so",
-        "runtimes/osx/native/libgit2-6777db8.dylib",
-        "runtimes/win-x64/native/git2-6777db8.dll",
-        "runtimes/win-x64/native/git2-6777db8.pdb",
-        "runtimes/win-x86/native/git2-6777db8.dll",
-        "runtimes/win-x86/native/git2-6777db8.pdb"
+        "runtimes/alpine-x64/native/libgit2-106a5f2.so",
+        "runtimes/alpine.3.9-x64/native/libgit2-106a5f2.so",
+        "runtimes/debian-arm64/native/libgit2-106a5f2.so",
+        "runtimes/debian.9-x64/native/libgit2-106a5f2.so",
+        "runtimes/fedora-x64/native/libgit2-106a5f2.so",
+        "runtimes/linux-x64/native/libgit2-106a5f2.so",
+        "runtimes/osx/native/libgit2-106a5f2.dylib",
+        "runtimes/rhel-x64/native/libgit2-106a5f2.so",
+        "runtimes/ubuntu.16.04-arm64/native/libgit2-106a5f2.so",
+        "runtimes/ubuntu.18.04-x64/native/libgit2-106a5f2.so",
+        "runtimes/win-x64/native/git2-106a5f2.dll",
+        "runtimes/win-x64/native/git2-106a5f2.pdb",
+        "runtimes/win-x86/native/git2-106a5f2.dll",
+        "runtimes/win-x86/native/git2-106a5f2.pdb"
       ]
     },
     "Microsoft.Bcl.AsyncInterfaces/1.1.0": {
@@ -7060,10 +6928,8 @@
       "CloudinaryDotNet >= 1.13.1",
       "DynamicData >= 6.16.9",
       "LibGit2Sharp >= 0.26.2",
-      "LibGit2Sharp-SSH >= 1.0.22",
-      "LibGit2Sharp-SSH-updated-libssh2 >= 1.0.25",
       "LibGit2Sharp-SSH.NativeBinaries >= 1.0.14",
-      "LibGit2Sharp.NativeBinaries >= 2.0.312",
+      "LibGit2Sharp.NativeBinaries >= 2.0.306",
       "Microsoft.Build >= 16.6.0",
       "Microsoft.Build.Framework >= 16.6.0",
       "Microsoft.Build.Tasks.Core >= 16.6.0",
@@ -7077,19 +6943,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Gustavo Melo\\.nuget\\packages\\": {}
+    "C:\\Users\\Benny\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+      "projectUniqueName": "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
       "projectName": "NET.Processor.Core",
-      "projectPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
-      "packagesPath": "C:\\Users\\Gustavo Melo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\obj\\",
+      "projectPath": "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+      "packagesPath": "C:\\Users\\Benny\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NET.Processor.Services\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Gustavo Melo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Benny\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -7125,21 +6991,13 @@
             "target": "Package",
             "version": "[0.26.2, )"
           },
-          "LibGit2Sharp-SSH": {
-            "target": "Package",
-            "version": "[1.0.22, )"
-          },
-          "LibGit2Sharp-SSH-updated-libssh2": {
-            "target": "Package",
-            "version": "[1.0.25, )"
-          },
           "LibGit2Sharp-SSH.NativeBinaries": {
             "target": "Package",
             "version": "[1.0.14, )"
           },
           "LibGit2Sharp.NativeBinaries": {
             "target": "Package",
-            "version": "[2.0.312, )"
+            "version": "[2.0.306, )"
           },
           "Microsoft.Build": {
             "target": "Package",
@@ -7197,40 +7055,8 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
       }
     }
-  },
-  "logs": [
-    {
-      "code": "NU1608",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Detected package version outside of dependency constraint: LibGit2Sharp 0.26.2 requires LibGit2Sharp.NativeBinaries (= 2.0.306) but version LibGit2Sharp.NativeBinaries 2.0.312 was resolved.",
-      "libraryId": "LibGit2Sharp.NativeBinaries",
-      "targetGraphs": [
-        ".NETCoreApp,Version=v3.1"
-      ]
-    },
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'LibGit2Sharp-SSH 1.0.22' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v3.1'. This package may not be fully compatible with your project.",
-      "libraryId": "LibGit2Sharp-SSH",
-      "targetGraphs": [
-        ".NETCoreApp,Version=v3.1"
-      ]
-    },
-    {
-      "code": "NU1701",
-      "level": "Warning",
-      "warningLevel": 1,
-      "message": "Package 'LibGit2Sharp-SSH-updated-libssh2 1.0.25' was restored using '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' instead of the project target framework '.NETCoreApp,Version=v3.1'. This package may not be fully compatible with your project.",
-      "libraryId": "LibGit2Sharp-SSH-updated-libssh2",
-      "targetGraphs": [
-        ".NETCoreApp,Version=v3.1"
-      ]
-    }
-  ]
+  }
 }
