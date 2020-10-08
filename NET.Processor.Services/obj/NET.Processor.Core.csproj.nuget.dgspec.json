@@ -46,20 +46,30 @@
               "version": "[6.16.9, )"
             },
             "Microsoft.Build": {
-              "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "target": "Package",
-              "version": "[15.9.20, )"
+              "version": "[16.7.0, )"
             },
             "Microsoft.Build.Framework": {
-              "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "target": "Package",
-              "version": "[15.9.20, )"
+              "version": "[16.7.0, )"
             },
-            "Microsoft.Build.Locator": {
+            "Microsoft.Build.Runtime": {
               "target": "Package",
-              "version": "[1.2.6, )"
+              "version": "[16.7.0, )"
+            },
+            "Microsoft.Build.Tasks.Core": {
+              "target": "Package",
+              "version": "[16.7.0, )"
+            },
+            "Microsoft.Build.Utilities.Core": {
+              "target": "Package",
+              "version": "[16.7.0, )"
             },
             "Microsoft.CodeAnalysis": {
+              "target": "Package",
+              "version": "[3.7.0, )"
+            },
+            "Microsoft.CodeAnalysis.CSharp": {
               "target": "Package",
               "version": "[3.7.0, )"
             },

@@ -8,19 +8,13 @@ namespace NET.Processor.Core.Interfaces
 {
     public interface ISolutionService
     {
-        /// <summary>
-        /// Loads solution from path
-        /// </summary>
-        /// <param name="SolutionPath">Path of the .sln file</param>
-        /// <returns>Projects</returns>
-        Task<Solution> GetSolutionFromRepo(WebHook webHook);
 
         /// <summary>
         /// Loads solution from path
         /// </summary>
         /// <param name="SolutionPath">Path of the .sln file</param>
         /// <returns>Projects</returns>
-        Solution LoadSolution(string path);
+        Task<Solution> LoadSolution(string path);
 
         /// <summary>
         /// Loads files from solution path

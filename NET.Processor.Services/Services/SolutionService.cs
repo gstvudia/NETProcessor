@@ -18,25 +18,25 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
-using Microsoft.Build.Locator;
 
 namespace NET.Processor.Core.Services
 {
     public class SolutionService : ISolutionService
     {
-        public Solution LoadSolution(string solutionPath)
+        public async Task<Solution> LoadSolution(string solutionPath)
         {
+
             Solution solution = null;
             
             using (var msWorkspace = MSBuildWorkspace.Create())
             {
                 try
                 {                    
-                    solution = msWorkspace.OpenSolutionAsync(solutionPath).Result;
-
+                    solution = await msWorkspace.OpenSolutionAsync(solutionPath);
+            
                     //We can log diagnosis later
                     ImmutableList<WorkspaceDiagnostic> diagnostics = msWorkspace.Diagnostics;
-
+            
                 }
                 catch (Exception)
                 {}

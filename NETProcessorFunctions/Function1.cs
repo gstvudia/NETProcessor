@@ -24,7 +24,7 @@ namespace NETProcessorFunctions
             SolutionService service = new SolutionService();
             string path = @"C:\Users\Gustavo Melo\Documents\BGDoc\EXAMPLS\CleanArchitecture-master\CleanArchitecture.sln";
             //string path = "/src/Solutions/CleanArchitecture-master/CleanArchitecture.sln";
-            var solution = service.LoadSolution(path);
+            var solution = await service.LoadSolution(path);
             service.GetSolutionItems(solution);
 
             return new OkObjectResult(responseMessage);

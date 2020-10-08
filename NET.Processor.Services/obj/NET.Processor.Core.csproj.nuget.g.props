@@ -15,9 +15,276 @@
   <PropertyGroup>
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
+  <ItemGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Current\Microsoft.Common.props" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Current\Microsoft.Common.props')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Current\Microsoft.Common.props</TargetPath>
+      <DestinationSubDirectory>Current\</DestinationSubDirectory>
+      <Private>True</Private>
+      <Link>Current\Microsoft.Common.props</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\MSBuild.dll" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\MSBuild.dll')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>MSBuild.dll</TargetPath>
+      <Private>True</Private>
+      <Link>MSBuild.dll</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\MSBuild.runtimeconfig.json" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\MSBuild.runtimeconfig.json')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>MSBuild.runtimeconfig.json</TargetPath>
+      <Private>True</Private>
+      <Link>MSBuild.runtimeconfig.json</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.CSharp.CrossTargeting.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.CSharp.CrossTargeting.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.CSharp.CrossTargeting.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.CSharp.CrossTargeting.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.CSharp.CurrentVersion.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.CSharp.CurrentVersion.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.CSharp.CurrentVersion.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.CSharp.CurrentVersion.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.CSharp.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.CSharp.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.CSharp.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.CSharp.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Common.CrossTargeting.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Common.CrossTargeting.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.Common.CrossTargeting.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.Common.CrossTargeting.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Common.CurrentVersion.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Common.CurrentVersion.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.Common.CurrentVersion.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.Common.CurrentVersion.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Common.overridetasks" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Common.overridetasks')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.Common.overridetasks</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.Common.overridetasks</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Common.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Common.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.Common.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.Common.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Common.tasks" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Common.tasks')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.Common.tasks</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.Common.tasks</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Managed.After.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Managed.After.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.Managed.After.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.Managed.After.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Managed.Before.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Managed.Before.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.Managed.Before.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.Managed.Before.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Managed.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.Managed.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.Managed.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.Managed.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.NET.props" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.NET.props')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.NET.props</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.NET.props</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.NETFramework.CurrentVersion.props" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.NETFramework.CurrentVersion.props')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.NETFramework.CurrentVersion.props</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.NETFramework.CurrentVersion.props</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.NETFramework.CurrentVersion.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.NETFramework.CurrentVersion.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.NETFramework.CurrentVersion.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.NETFramework.CurrentVersion.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.NETFramework.props" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.NETFramework.props')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.NETFramework.props</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.NETFramework.props</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.NETFramework.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.NETFramework.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.NETFramework.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.NETFramework.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.VisualBasic.CrossTargeting.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.VisualBasic.CrossTargeting.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.VisualBasic.CrossTargeting.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.VisualBasic.CrossTargeting.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.VisualBasic.CurrentVersion.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.VisualBasic.CurrentVersion.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.VisualBasic.CurrentVersion.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.VisualBasic.CurrentVersion.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.VisualBasic.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.VisualBasic.targets')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.VisualBasic.targets</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.VisualBasic.targets</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.VisualStudioVersion.v11.Common.props" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.VisualStudioVersion.v11.Common.props')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.VisualStudioVersion.v11.Common.props</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.VisualStudioVersion.v11.Common.props</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.VisualStudioVersion.v12.Common.props" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.VisualStudioVersion.v12.Common.props')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.VisualStudioVersion.v12.Common.props</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.VisualStudioVersion.v12.Common.props</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.VisualStudioVersion.v14.Common.props" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\Microsoft.VisualStudioVersion.v14.Common.props')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>Microsoft.VisualStudioVersion.v14.Common.props</TargetPath>
+      <Private>True</Private>
+      <Link>Microsoft.VisualStudioVersion.v14.Common.props</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\SdkResolvers\Microsoft.Build.NuGetSdkResolver\Microsoft.Build.NuGetSdkResolver.xml" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\SdkResolvers\Microsoft.Build.NuGetSdkResolver\Microsoft.Build.NuGetSdkResolver.xml')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>SdkResolvers\Microsoft.Build.NuGetSdkResolver\Microsoft.Build.NuGetSdkResolver.xml</TargetPath>
+      <DestinationSubDirectory>SdkResolvers\Microsoft.Build.NuGetSdkResolver\</DestinationSubDirectory>
+      <Private>True</Private>
+      <Link>SdkResolvers\Microsoft.Build.NuGetSdkResolver\Microsoft.Build.NuGetSdkResolver.xml</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\ref\MSBuild.dll" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\ref\MSBuild.dll')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>ref\MSBuild.dll</TargetPath>
+      <DestinationSubDirectory>ref\</DestinationSubDirectory>
+      <Private>True</Private>
+      <Link>ref\MSBuild.dll</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\ref\mscorlib.dll" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\ref\mscorlib.dll')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>ref\mscorlib.dll</TargetPath>
+      <DestinationSubDirectory>ref\</DestinationSubDirectory>
+      <Private>True</Private>
+      <Link>ref\mscorlib.dll</Link>
+    </Content>
+    <Content Include="$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\ref\netstandard.dll" Condition="Exists('$(NuGetPackageRoot)microsoft.build.runtime\16.7.0\contentFiles\any\netcoreapp2.1\ref\netstandard.dll')">
+      <NuGetPackageId>Microsoft.Build.Runtime</NuGetPackageId>
+      <NuGetPackageVersion>16.7.0</NuGetPackageVersion>
+      <NuGetItemType>Content</NuGetItemType>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>ref\netstandard.dll</TargetPath>
+      <DestinationSubDirectory>ref\</DestinationSubDirectory>
+      <Private>True</Private>
+      <Link>ref\netstandard.dll</Link>
+    </Content>
+  </ItemGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <Import Project="$(NuGetPackageRoot)microsoft.net.compilers\3.7.0\build\Microsoft.Net.Compilers.props" Condition="Exists('$(NuGetPackageRoot)microsoft.net.compilers\3.7.0\build\Microsoft.Net.Compilers.props')" />
-    <Import Project="$(NuGetPackageRoot)microsoft.build.locator\1.2.6\build\Microsoft.Build.Locator.props" Condition="Exists('$(NuGetPackageRoot)microsoft.build.locator\1.2.6\build\Microsoft.Build.Locator.props')" />
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgMicrosoft_Net_Compilers Condition=" '$(PkgMicrosoft_Net_Compilers)' == '' ">C:\Users\Gustavo Melo\.nuget\packages\microsoft.net.compilers\3.7.0</PkgMicrosoft_Net_Compilers>
