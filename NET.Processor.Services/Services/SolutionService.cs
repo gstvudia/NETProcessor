@@ -18,9 +18,7 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using LibGit2Sharp;
+using Microsoft.Build.Locator;
 
 namespace NET.Processor.Core.Services
 {
@@ -29,33 +27,19 @@ namespace NET.Processor.Core.Services
         public Solution LoadSolution(string solutionPath)
         {
             Solution solution = null;
-
+            
             using (var msWorkspace = MSBuildWorkspace.Create())
             {
                 try
-                {
-                    var co = new CloneOptions();
-                    //co.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = "Username", Password = "Password" };
-                    //Repository.Clone("https://github.com/ardalis/CleanArchitecture.git", Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/Clones");
-                    solutionPath = Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "\\Clones\\CleanArchitecture.sln";
+                {                    
                     solution = msWorkspace.OpenSolutionAsync(solutionPath).Result;
 
                     //We can log diagnosis later
                     ImmutableList<WorkspaceDiagnostic> diagnostics = msWorkspace.Diagnostics;
-                    foreach (var diagnostic in diagnostics)
-                    {
-                        //Console.WriteLine(diagnostic.Message);
-                    }
+
                 }
-                catch (Exception ex)
-                {
-                    //We can log diagnosis later
-                    ImmutableList<WorkspaceDiagnostic> diagnostics = msWorkspace.Diagnostics;
-                    foreach (var diagnostic in diagnostics)
-                    {
-                        //Console.WriteLine(diagnostic.Message);
-                    }
-                }
+                catch (Exception)
+                {}
             
                 return solution;
             }
@@ -73,7 +57,7 @@ namespace NET.Processor.Core.Services
             try
             {
                 //CHECK IF FOLDER EXISTS ADN REMOVE FIRST
-                Repository.Clone("https://github.com/ardalis/CleanArchitecture.git", Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/Clones");
+                //Repository.Clone("https://github.com/ardalis/CleanArchitecture.git", Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/Clones");
 
                 //get file names or something like that and add on the list
                 //DirectoryFiles.Add();
