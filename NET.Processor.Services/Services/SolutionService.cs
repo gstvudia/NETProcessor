@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Evaluation;
+using System.Threading.Tasks;
 
 namespace NET.Processor.Core.Services
 {

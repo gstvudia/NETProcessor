@@ -97,16 +97,17 @@
           "lib/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.dll": {}
         }
       },
-      "Microsoft.Build/16.6.0": {
+      "Microsoft.Build/16.7.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Build.Framework": "16.6.0",
+          "Microsoft.Build.Framework": "16.7.0",
           "Microsoft.Win32.Registry": "4.3.0",
           "System.Collections.Immutable": "1.5.0",
           "System.Memory": "4.5.3",
           "System.Reflection.Metadata": "1.6.0",
           "System.Security.Principal.Windows": "4.7.0",
           "System.Text.Encoding.CodePages": "4.0.1",
+          "System.Text.Json": "4.7.0",
           "System.Threading.Tasks.Dataflow": "4.9.0"
         },
         "compile": {
@@ -116,7 +117,7 @@
           "lib/netcoreapp2.1/_._": {}
         }
       },
-      "Microsoft.Build.Framework/16.6.0": {
+      "Microsoft.Build.Framework/16.7.0": {
         "type": "package",
         "dependencies": {
           "System.Security.Permissions": "4.7.0"
@@ -125,7 +126,7 @@
           "lib/netstandard2.0/Microsoft.Build.Framework.dll": {}
         },
         "runtime": {
-          "lib/netstandard2.0/_._": {}
+          "lib/netstandard2.0/Microsoft.Build.Framework.dll": {}
         }
       },
       "Microsoft.Build.Locator/1.2.6": {
@@ -2641,6 +2642,15 @@
           "lib/netstandard2.0/System.Text.Encodings.Web.dll": {}
         }
       },
+      "System.Text.Json/4.7.0": {
+        "type": "package",
+        "compile": {
+          "lib/netcoreapp3.0/System.Text.Json.dll": {}
+        },
+        "runtime": {
+          "lib/netcoreapp3.0/System.Text.Json.dll": {}
+        }
+      },
       "System.Text.RegularExpressions/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -2811,6 +2821,7 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v3.1",
         "dependencies": {
+          "Microsoft.Build": "16.7.0",
           "Microsoft.Build.Locator": "1.2.6",
           "Microsoft.CodeAnalysis": "3.7.0",
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "3.7.0",
@@ -2933,10 +2944,10 @@
         "version.txt"
       ]
     },
-    "Microsoft.Build/16.6.0": {
-      "sha512": "Rpi2ZU/Og1MVa9gsJshujAzPZk7JwivbCJPS9pvPg5h/QZ7RnhJcGPhRixjFQhfAUHzQMEJEgsEdIiWkj5qfMg==",
+    "Microsoft.Build/16.7.0": {
+      "sha512": "FVXiam33J+jhkAuRabqvyxrYFInqvUBUJPAxz3HDw5OuQ9WXFvjsQ5Et01DtJqI0DLRLyGJKlTCJULPXw1JGSQ==",
       "type": "package",
-      "path": "microsoft.build/16.6.0",
+      "path": "microsoft.build/16.7.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2947,15 +2958,15 @@
         "lib/netcoreapp2.1/Microsoft.Build.dll",
         "lib/netcoreapp2.1/Microsoft.Build.pdb",
         "lib/netcoreapp2.1/Microsoft.Build.xml",
-        "microsoft.build.16.6.0.nupkg.sha512",
+        "microsoft.build.16.7.0.nupkg.sha512",
         "microsoft.build.nuspec",
         "notices/THIRDPARTYNOTICES.txt"
       ]
     },
-    "Microsoft.Build.Framework/16.6.0": {
-      "sha512": "3tuTjESQmPyH8qcg2HEWEKinY0rflmCoDmnpaBHTM146j/ilQN08q8hAPHJNS6vDTtKDR/JWnbv16XtSL6F4qw==",
+    "Microsoft.Build.Framework/16.7.0": {
+      "sha512": "avlq0aLZC32SJjsNzP1FSA+NonsQ+0wx2tuTGTNbOHSzM+CkNbjJaFsA1dUYcPUPeDSRMj4fQ97RL+mX9Q3vZw==",
       "type": "package",
-      "path": "microsoft.build.framework/16.6.0",
+      "path": "microsoft.build.framework/16.7.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2966,7 +2977,7 @@
         "lib/netstandard2.0/Microsoft.Build.Framework.dll",
         "lib/netstandard2.0/Microsoft.Build.Framework.pdb",
         "lib/netstandard2.0/Microsoft.Build.Framework.xml",
-        "microsoft.build.framework.16.6.0.nupkg.sha512",
+        "microsoft.build.framework.16.7.0.nupkg.sha512",
         "microsoft.build.framework.nuspec",
         "notices/THIRDPARTYNOTICES.txt"
       ]
@@ -7922,6 +7933,27 @@
         "version.txt"
       ]
     },
+    "System.Text.Json/4.7.0": {
+      "sha512": "IPq/x/d5nAcnD3vIyM3AbPOaTgcqrh0AqPSx7U53UFu3M6k1TH1u/eXc9/h4jm/3mpP1WRUpevlPY4PACd7AWw==",
+      "type": "package",
+      "path": "system.text.json/4.7.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.Text.Json.dll",
+        "lib/net461/System.Text.Json.xml",
+        "lib/netcoreapp3.0/System.Text.Json.dll",
+        "lib/netcoreapp3.0/System.Text.Json.xml",
+        "lib/netstandard2.0/System.Text.Json.dll",
+        "lib/netstandard2.0/System.Text.Json.xml",
+        "system.text.json.4.7.0.nupkg.sha512",
+        "system.text.json.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
     "System.Text.RegularExpressions/4.3.0": {
       "sha512": "RpT2DA+L660cBt1FssIE9CAGpLFdFPuheB7pLpKpn6ZXNby7jDERe8Ua/Ne2xGiwLVG2JOqziiaVCGDon5sKFA==",
       "type": "package",
@@ -8536,8 +8568,7 @@
       "AutoMapper >= 9.0.0",
       "Buildalyzer >= 3.0.1",
       "Microsoft.AspNetCore.Http.Abstractions >= 2.2.0",
-      "Microsoft.Build >= 16.6.0",
-      "Microsoft.Build.Framework >= 16.6.0",
+      "Microsoft.Build >= 16.7.0",
       "Microsoft.Build.Locator >= 1.2.6",
       "Microsoft.CodeAnalysis >= 3.7.0",
       "Microsoft.CodeAnalysis.CSharp >= 3.7.0",
@@ -8560,19 +8591,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Gustavo Melo\\.nuget\\packages\\": {}
+    "C:\\Users\\Benny\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
+      "projectUniqueName": "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
       "projectName": "NETProcessor.Main",
-      "projectPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
-      "packagesPath": "C:\\Users\\Gustavo Melo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NETProcessor.Main\\obj\\",
+      "projectPath": "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NETProcessor.Main\\NETProcessor.Main.csproj",
+      "packagesPath": "C:\\Users\\Benny\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NETProcessor.Main\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Gustavo Melo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Benny\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -8585,8 +8616,8 @@
       "frameworks": {
         "netcoreapp3.1": {
           "projectReferences": {
-            "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
-              "projectPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj"
+            "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj": {
+              "projectPath": "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj"
             }
           }
         }
@@ -8615,12 +8646,7 @@
           "Microsoft.Build": {
             "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "target": "Package",
-            "version": "[16.6.0, )"
-          },
-          "Microsoft.Build.Framework": {
-            "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-            "target": "Package",
-            "version": "[16.6.0, )"
+            "version": "[16.7.0, )"
           },
           "Microsoft.Build.Locator": {
             "target": "Package",
@@ -8710,7 +8736,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
       }
     }
   }

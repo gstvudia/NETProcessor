@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v3.1": {
       "NET.Processor.Core/1.0.0": {
         "dependencies": {
-          "Microsoft.Build": "16.6.0",
+          "Microsoft.Build": "16.7.0",
           "Microsoft.Build.Locator": "1.2.6",
           "Microsoft.CodeAnalysis": "3.7.0",
           "Microsoft.CodeAnalysis.CSharp.Workspaces": "3.7.0",
@@ -37,33 +37,22 @@
           }
         }
       },
-      "Microsoft.Build/16.6.0": {
+      "Microsoft.Build/16.7.0": {
         "dependencies": {
-          "Microsoft.Build.Framework": "16.6.0",
+          "Microsoft.Build.Framework": "16.7.0",
           "Microsoft.Win32.Registry": "4.3.0",
           "System.Collections.Immutable": "1.5.0",
           "System.Memory": "4.5.4",
           "System.Reflection.Metadata": "1.6.0",
           "System.Security.Principal.Windows": "4.7.0",
           "System.Text.Encoding.CodePages": "4.5.1",
+          "System.Text.Json": "4.7.0",
           "System.Threading.Tasks.Dataflow": "4.9.0"
-        },
-        "runtime": {
-          "lib/netcoreapp2.1/Microsoft.Build.dll": {
-            "assemblyVersion": "15.1.0.0",
-            "fileVersion": "16.6.0.22303"
-          }
         }
       },
-      "Microsoft.Build.Framework/16.6.0": {
+      "Microsoft.Build.Framework/16.7.0": {
         "dependencies": {
           "System.Security.Permissions": "4.7.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Microsoft.Build.Framework.dll": {
-            "assemblyVersion": "15.1.0.0",
-            "fileVersion": "16.6.0.22303"
-          }
         }
       },
       "Microsoft.Build.Locator/1.2.6": {
@@ -408,7 +397,7 @@
       },
       "Microsoft.CodeAnalysis.Workspaces.MSBuild/3.7.0": {
         "dependencies": {
-          "Microsoft.Build.Framework": "16.6.0",
+          "Microsoft.Build.Framework": "16.7.0",
           "Microsoft.CodeAnalysis.Common": "3.7.0",
           "Microsoft.CodeAnalysis.Workspaces.Common": "3.7.0"
         },
@@ -484,20 +473,6 @@
       "Microsoft.Win32.SystemEvents/4.7.0": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "3.1.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/Microsoft.Win32.SystemEvents.dll": {
-            "assemblyVersion": "4.0.2.0",
-            "fileVersion": "4.700.19.56404"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/win/lib/netcoreapp3.0/Microsoft.Win32.SystemEvents.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "4.0.2.0",
-            "fileVersion": "4.700.19.56404"
-          }
         }
       },
       "NETStandard.Library/1.6.1": {
@@ -783,26 +758,6 @@
         "dependencies": {
           "Microsoft.NETCore.Platforms": "3.1.0",
           "Microsoft.Win32.SystemEvents": "4.7.0"
-        },
-        "runtime": {
-          "lib/netstandard2.0/System.Drawing.Common.dll": {
-            "assemblyVersion": "4.0.0.1",
-            "fileVersion": "4.6.26919.2"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/unix/lib/netcoreapp3.0/System.Drawing.Common.dll": {
-            "rid": "unix",
-            "assetType": "runtime",
-            "assemblyVersion": "4.0.2.0",
-            "fileVersion": "4.700.19.56404"
-          },
-          "runtimes/win/lib/netcoreapp3.0/System.Drawing.Common.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "4.0.2.0",
-            "fileVersion": "4.700.19.56404"
-          }
         }
       },
       "System.Globalization/4.3.0": {
@@ -1223,12 +1178,6 @@
         "dependencies": {
           "System.Security.AccessControl": "4.7.0",
           "System.Windows.Extensions": "4.7.0"
-        },
-        "runtime": {
-          "lib/netcoreapp3.0/System.Security.Permissions.dll": {
-            "assemblyVersion": "4.0.3.0",
-            "fileVersion": "4.700.19.56404"
-          }
         }
       },
       "System.Security.Principal.Windows/4.7.0": {},
@@ -1253,6 +1202,7 @@
           "System.Text.Encoding": "4.3.0"
         }
       },
+      "System.Text.Json/4.7.0": {},
       "System.Text.RegularExpressions/4.3.0": {
         "dependencies": {
           "System.Runtime": "4.3.0"
@@ -1283,20 +1233,6 @@
       "System.Windows.Extensions/4.7.0": {
         "dependencies": {
           "System.Drawing.Common": "4.7.0"
-        },
-        "runtime": {
-          "lib/netcoreapp3.0/System.Windows.Extensions.dll": {
-            "assemblyVersion": "4.0.1.0",
-            "fileVersion": "4.700.19.56404"
-          }
-        },
-        "runtimeTargets": {
-          "runtimes/win/lib/netcoreapp3.0/System.Windows.Extensions.dll": {
-            "rid": "win",
-            "assetType": "runtime",
-            "assemblyVersion": "4.0.1.0",
-            "fileVersion": "4.700.19.56404"
-          }
         }
       },
       "System.Xml.ReaderWriter/4.3.0": {
@@ -1356,19 +1292,19 @@
       "path": "microsoft.bcl.asyncinterfaces/1.1.0",
       "hashPath": "microsoft.bcl.asyncinterfaces.1.1.0.nupkg.sha512"
     },
-    "Microsoft.Build/16.6.0": {
+    "Microsoft.Build/16.7.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-Rpi2ZU/Og1MVa9gsJshujAzPZk7JwivbCJPS9pvPg5h/QZ7RnhJcGPhRixjFQhfAUHzQMEJEgsEdIiWkj5qfMg==",
-      "path": "microsoft.build/16.6.0",
-      "hashPath": "microsoft.build.16.6.0.nupkg.sha512"
+      "sha512": "sha512-FVXiam33J+jhkAuRabqvyxrYFInqvUBUJPAxz3HDw5OuQ9WXFvjsQ5Et01DtJqI0DLRLyGJKlTCJULPXw1JGSQ==",
+      "path": "microsoft.build/16.7.0",
+      "hashPath": "microsoft.build.16.7.0.nupkg.sha512"
     },
-    "Microsoft.Build.Framework/16.6.0": {
+    "Microsoft.Build.Framework/16.7.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-3tuTjESQmPyH8qcg2HEWEKinY0rflmCoDmnpaBHTM146j/ilQN08q8hAPHJNS6vDTtKDR/JWnbv16XtSL6F4qw==",
-      "path": "microsoft.build.framework/16.6.0",
-      "hashPath": "microsoft.build.framework.16.6.0.nupkg.sha512"
+      "sha512": "sha512-avlq0aLZC32SJjsNzP1FSA+NonsQ+0wx2tuTGTNbOHSzM+CkNbjJaFsA1dUYcPUPeDSRMj4fQ97RL+mX9Q3vZw==",
+      "path": "microsoft.build.framework/16.7.0",
+      "hashPath": "microsoft.build.framework.16.7.0.nupkg.sha512"
     },
     "Microsoft.Build.Locator/1.2.6": {
       "type": "package",
@@ -2020,6 +1956,13 @@
       "sha512": "sha512-YVMK0Bt/A43RmwizJoZ22ei2nmrhobgeiYwFzC4YAN+nue8RF6djXDMog0UCn+brerQoYVyaS+ghy9P/MUVcmw==",
       "path": "system.text.encoding.extensions/4.3.0",
       "hashPath": "system.text.encoding.extensions.4.3.0.nupkg.sha512"
+    },
+    "System.Text.Json/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-IPq/x/d5nAcnD3vIyM3AbPOaTgcqrh0AqPSx7U53UFu3M6k1TH1u/eXc9/h4jm/3mpP1WRUpevlPY4PACd7AWw==",
+      "path": "system.text.json/4.7.0",
+      "hashPath": "system.text.json.4.7.0.nupkg.sha512"
     },
     "System.Text.RegularExpressions/4.3.0": {
       "type": "package",

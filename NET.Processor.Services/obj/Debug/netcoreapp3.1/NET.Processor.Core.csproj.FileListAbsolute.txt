@@ -1,0 +1,8 @@
+C:\Users\Benny\source\repos\NETProcessor\NET.Processor.Services\bin\Debug\netcoreapp3.1\NET.Processor.Core.deps.json
+C:\Users\Benny\source\repos\NETProcessor\NET.Processor.Services\bin\Debug\netcoreapp3.1\NET.Processor.Core.dll
+C:\Users\Benny\source\repos\NETProcessor\NET.Processor.Services\bin\Debug\netcoreapp3.1\NET.Processor.Core.pdb
+C:\Users\Benny\source\repos\NETProcessor\NET.Processor.Services\obj\Debug\netcoreapp3.1\NET.Processor.Core.AssemblyInfoInputs.cache
+C:\Users\Benny\source\repos\NETProcessor\NET.Processor.Services\obj\Debug\netcoreapp3.1\NET.Processor.Core.AssemblyInfo.cs
+C:\Users\Benny\source\repos\NETProcessor\NET.Processor.Services\obj\Debug\netcoreapp3.1\NET.Processor.Core.csproj.CoreCompileInputs.cache
+C:\Users\Benny\source\repos\NETProcessor\NET.Processor.Services\obj\Debug\netcoreapp3.1\NET.Processor.Core.dll
+C:\Users\Benny\source\repos\NETProcessor\NET.Processor.Services\obj\Debug\netcoreapp3.1\NET.Processor.Core.pdb

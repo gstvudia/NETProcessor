@@ -39,7 +39,7 @@ namespace NETProcessor.Main
             //string pathSolution = rootPath + projectPath; 
 
             //** REPO : https://github.com/ardalis/CleanArchitecture   ** //
-            string pathSolution = @"C:\Users\Gustavo Melo\Documents\BGDoc\EXAMPLS\CleanArchitecture-master\CleanArchitecture.sln";
+            string pathSolution = @"C:\Users\Benny\source\repos\CleanArchitecture\CleanArchitecture.sln";
             // Load solution information
             var solution = _solutionService.LoadSolution(pathSolution);
             // Load files of solution
@@ -64,7 +64,7 @@ namespace NETProcessor.Main
 
             //********COMENTS*****//
             // Get all comments
-            var comments = _commentService.GetCommentReferences(csharpCompileFileList);
+            // var comments = _commentService.GetCommentReferences(csharpCompileFileList);
             
         }
 
