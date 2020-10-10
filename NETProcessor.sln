@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NET.Processor.Core", "NET.P
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NET.Processor.API", "NET.Processor.API\NET.Processor.API.csproj", "{DD5E4AED-D2D0-4A41-9297-6412B8389E73}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NETProcessorFunctions", "NETProcessorFunctions\NETProcessorFunctions.csproj", "{285BA602-0728-49B6-A038-31BD7D9EF990}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,10 +21,6 @@ Global
 		{DD5E4AED-D2D0-4A41-9297-6412B8389E73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD5E4AED-D2D0-4A41-9297-6412B8389E73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD5E4AED-D2D0-4A41-9297-6412B8389E73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{285BA602-0728-49B6-A038-31BD7D9EF990}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{285BA602-0728-49B6-A038-31BD7D9EF990}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{285BA602-0728-49B6-A038-31BD7D9EF990}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{285BA602-0728-49B6-A038-31BD7D9EF990}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -18,13 +18,14 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
-using Microsoft.Build.Locator;
+
 
 namespace NET.Processor.Core.Services
 {
     public class SolutionService : ISolutionService
     {
-        public Solution LoadSolution(string solutionPath)
+
+        public async Task<Solution> LoadSolution(string solutionPath)
         {
             Solution solution = null;
             
@@ -32,14 +33,13 @@ namespace NET.Processor.Core.Services
             {
                 try
                 {                    
-                    solution = msWorkspace.OpenSolutionAsync(solutionPath).Result;
+                    solution = await msWorkspace.OpenSolutionAsync(solutionPath);
 
-                    //We can log diagnosis later
+                    //TODO: We can log diagnosis later
                     ImmutableList<WorkspaceDiagnostic> diagnostics = msWorkspace.Diagnostics;
 
                 }
-                catch (Exception)
-                {}
+                catch (Exception){}
             
                 return solution;
             }
@@ -71,20 +71,6 @@ namespace NET.Processor.Core.Services
             return DirectoryFiles;
         }
 
-
-
-        //public IEnumerable<FileInfo> LoadFilePaths(string solutionFilePath)
-        //{
-        //    List<FileInfo> cSharpCompileFileList = new List<FileInfo>();
-        //
-        //    foreach (var csharpCompileFile in GetProjectFilesForSolution(new FileInfo(solutionFilePath)).SelectMany(projectFile => GetCSharpCompileItemFilesForProject(projectFile)))
-        //    {
-        //        cSharpCompileFileList.Add(csharpCompileFile);
-        //    }
-        //
-        //    return cSharpCompileFileList;
-        //}
-
         private static IEnumerable<FileInfo> GetProjectFilesForSolution(FileInfo solutionFile)
         {
             if (solutionFile == null)
@@ -97,20 +83,7 @@ namespace NET.Processor.Core.Services
                 yield return new FileInfo(Path.Combine(solutionFile.Directory.FullName, match.Groups["projectFile"].Value));
         }
 
-        //private static IEnumerable<FileInfo> GetCSharpCompileItemFilesForProject(FileInfo projectFile)
-        //{
-        //    if (projectFile == null)
-        //        throw new ArgumentNullException("projectFile");
-        //
-        //    return (new ProjectCollection()).LoadProject(projectFile.FullName).AllEvaluatedItems
-        //        .Where(item => item.ItemType == "Compile")
-        //        .Select(item => item.EvaluatedInclude)
-        //        .Where(include => include.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
-        //        .Select(include => new FileInfo(Path.Combine(projectFile.Directory.FullName, include)));
-        //}
-
-        //IObservable<List<Item>>
-        public List<Item> GetSolutionItems(Solution solution)
+        public IEnumerable<Item> GetSolutionItems(Solution solution)
         {
             SyntaxNode root = null;
             var list = new List<Item>();
@@ -241,7 +214,7 @@ namespace NET.Processor.Core.Services
 
             }
 
-            return RelationsGraph.BuildTree(list).Where(item => item.Type == ItemType.Method).ToList();
+            return RelationsGraph.BuildTree(list).Where(item => item.Type == ItemType.Method);
         }
     }
 }

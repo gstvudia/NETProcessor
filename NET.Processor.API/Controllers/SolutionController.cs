@@ -31,12 +31,16 @@ namespace NET.Processor.API.Controllers
         }
 
         [HttpPost("ProcessSolution")]
-        public List<string> ProcessSolution([FromBody] WebHook webHook)
+        public async Task<IActionResult> ProcessSolution([FromBody] WebHook webHook)
         {
             List<string> list = null;
-            var directoryFiles = _solutionService.GetSolutionFromRepo(webHook);
-            return list;
-            // return directoryFiles;
+            string path = @"C:\Users\Gustavo Melo\source\repos\Solutions\CleanArchitecture-master\CleanArchitecture.sln";
+            var solution = await _solutionService.LoadSolution(path);
+            var test =  _solutionService.GetSolutionItems(solution);
+
+            //var itensToReturn = _mapper.Map<IEnumerable<UserForListDTO>>(itens);
+
+            return Ok(list);
         }
 
         [HttpGet("GetSolutionItems")]
@@ -51,7 +55,7 @@ namespace NET.Processor.API.Controllers
           
             //var itensToReturn = _mapper.Map<IEnumerable<UserForListDTO>>(itens);
 
-            return Ok(_solutionService.GetSolutionItems(solution));
+            return Ok();
         }
     }
 }
