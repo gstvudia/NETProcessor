@@ -7,6 +7,7 @@ namespace NET.Processor.Core.Models
 {
     public class Item : IDisposable
     {
+        public int Id { get; set; }
         public string Name { get; }
 
         public ItemType Type { get; }
@@ -19,6 +20,14 @@ namespace NET.Processor.Core.Models
 
         public Item(string name, ItemType type, TextSpan span)
         {
+            Name = name;
+            Type = type;
+            Span = span;
+        }
+
+        public Item(int id, string name, ItemType type, TextSpan span)
+        {
+            Id = id;
             Name = name;
             Type = type;
             Span = span;

@@ -18,17 +18,24 @@ using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net;
-
+using Microsoft.Build.Locator;
+using DynamicData;
 
 namespace NET.Processor.Core.Services
 {
     public class SolutionService : ISolutionService
     {
+        public SolutionService()
+        {
+            if (!MSBuildLocator.IsRegistered)
+            {
+                MSBuildLocator.RegisterDefaults();
+            }
+        }
 
         public async Task<Solution> LoadSolution(string solutionPath)
         {
             Solution solution = null;
-            
             using (var msWorkspace = MSBuildWorkspace.Create())
             {
                 try
@@ -90,6 +97,7 @@ namespace NET.Processor.Core.Services
             List<RegionDirectiveTriviaSyntax> regionDirectives = null;
             List<EndRegionDirectiveTriviaSyntax> endRegionDirectives = null;
             EndRegionDirectiveTriviaSyntax endNode = null;
+            int lastId = 0;
 
             foreach (var project in solution.Projects)
             {
@@ -113,7 +121,7 @@ namespace NET.Processor.Core.Services
 
                         var namespaces = root.DescendantNodes()
                                      .OfType<NamespaceDeclarationSyntax>()
-                                     .Select(x => new Item(x.Name.ToString(), ItemType.Namespace, x.Span))
+                                     .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Name.ToString(), ItemType.Namespace, x.Span))
                                      .ToList();
 
                         if (namespaces.Count > 1)
@@ -121,49 +129,49 @@ namespace NET.Processor.Core.Services
 
                         var classes = root.DescendantNodes()
                                           .OfType<ClassDeclarationSyntax>()
-                                          .Select(x => new Item(x.Identifier.ValueText, ItemType.Class, x.Span))
+                                          .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Class, x.Span))
                                           .ToList();
 
                         list.AddRange(classes);
 
                         var interfaces = root.DescendantNodes()
                                              .OfType<InterfaceDeclarationSyntax>()
-                                             .Select(x => new Item(x.Identifier.ValueText, ItemType.Interface, x.Span))
+                                             .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Interface, x.Span))
                                              .ToList();
 
                         list.AddRange(interfaces);
 
                         var enums = root.DescendantNodes()
                                              .OfType<EnumDeclarationSyntax>()
-                                             .Select(x => new Item(x.Identifier.ValueText, ItemType.Enum, x.Span))
+                                             .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Enum, x.Span))
                                              .ToList();
 
                         list.AddRange(enums);
 
                         var enumMembers = root.DescendantNodes()
                                              .OfType<EnumMemberDeclarationSyntax>()
-                                             .Select(x => new Item(x.Identifier.ValueText, ItemType.EnumMember, x.Span))
+                                             .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.EnumMember, x.Span))
                                              .ToList();
 
                         list.AddRange(enumMembers);
 
                         var structs = root.DescendantNodes()
                                              .OfType<StructDeclarationSyntax>()
-                                             .Select(x => new Item(x.Identifier.ValueText, ItemType.Struct, x.Span))
+                                             .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Struct, x.Span))
                                              .ToList();
 
                         list.AddRange(structs);
 
                         var constructors = root.DescendantNodes()
                                                .OfType<ConstructorDeclarationSyntax>()
-                                               .Select(x => new Item(x.Identifier.ValueText, ItemType.Constructor, x.Span))
+                                               .Select(x => new Item(root.DescendantNodes().IndexOf(x),x.Identifier.ValueText, ItemType.Constructor, x.Span))
                                                .ToList();
 
                         list.AddRange(constructors);
 
                         var methods = root.DescendantNodes()
                                           .OfType<MethodDeclarationSyntax>()
-                                          .Select(x => new Item(x.Identifier.ValueText, ItemType.Method, x.Span))
+                                          .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Method, x.Span))
                                           .ToList();
 
                         list.AddRange(methods);
@@ -171,36 +179,36 @@ namespace NET.Processor.Core.Services
                         var fields = root.DescendantNodes()
                                          .OfType<FieldDeclarationSyntax>()
                                          .SelectMany(x => x.Declaration.Variables,
-                                                     (f, v) => f.Modifiers.Any(SyntaxKind.ConstKeyword) ? new Item(v.Identifier.ValueText, ItemType.Const, v.Span)
-                                                                                                        : new Item(v.Identifier.ValueText, ItemType.Field, v.Span))
+                                                     (f, v) => f.Modifiers.Any(SyntaxKind.ConstKeyword) ? new Item(root.DescendantNodes().IndexOf(v),v.Identifier.ValueText, ItemType.Const, v.Span)
+                                                                                                        : new Item(root.DescendantNodes().IndexOf(v), v.Identifier.ValueText, ItemType.Field, v.Span))
                                          .ToList();
 
                         list.AddRange(fields);
 
                         var properties = root.DescendantNodes()
                                              .OfType<PropertyDeclarationSyntax>()
-                                             .Select(x => new Item(x.Identifier.ValueText, ItemType.Property, x.Span))
+                                             .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Property, x.Span))
                                              .ToList();
 
                         list.AddRange(properties);
 
                         var eventFields = root.DescendantNodes()
                                               .OfType<EventFieldDeclarationSyntax>()
-                                              .SelectMany(x => x.Declaration.Variables, (f, v) => new Item(v.Identifier.ValueText, ItemType.Event, v.Span))
+                                              .SelectMany(x => x.Declaration.Variables, (f, v) => new Item(root.DescendantNodes().IndexOf(v),v.Identifier.ValueText, ItemType.Event, v.Span))
                                               .ToList();
 
                         list.AddRange(eventFields);
 
                         var eventProperties = root.DescendantNodes()
                                                   .OfType<EventDeclarationSyntax>()
-                                                  .Select(x => new Item(x.Identifier.ValueText, ItemType.Event, x.Span))
+                                                  .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Event, x.Span))
                                                   .ToList();
 
                         list.AddRange(eventProperties);
 
                         var delegates = root.DescendantNodes()
                                              .OfType<DelegateDeclarationSyntax>()
-                                             .Select(x => new Item(x.Identifier.ValueText, ItemType.Delegate, x.Span))
+                                             .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Delegate, x.Span))
                                              .ToList();
 
                         list.AddRange(delegates);

@@ -40,7 +40,7 @@ namespace NET.Processor.API.Controllers
 
             //var itensToReturn = _mapper.Map<IEnumerable<UserForListDTO>>(itens);
 
-            return Ok(list);
+            return Ok(test);
         }
 
         [HttpGet("GetSolutionItems")]
