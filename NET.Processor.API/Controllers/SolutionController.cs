@@ -34,7 +34,9 @@ namespace NET.Processor.API.Controllers
         public async Task<IActionResult> ProcessSolution([FromBody] WebHook webHook)
         {
             List<string> list = null;
-            string path = @"C:\Users\Gustavo Melo\source\repos\Solutions\CleanArchitecture-master\CleanArchitecture.sln";
+            var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
+            var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
+            string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
             var solution = await _solutionService.LoadSolution(path);
             var test =  _solutionService.GetSolutionItems(solution);
 
