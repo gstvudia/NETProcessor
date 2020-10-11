@@ -1,4 +1,5 @@
-﻿using NET.Processor.Core.Services;
+﻿using Microsoft.CodeAnalysis;
+using NET.Processor.Core.Services;
 using System.Collections.Generic;
 using System.IO;
 
@@ -12,5 +13,6 @@ namespace NET.Processor.Core.Interfaces
         /// <param name="projects"></param>
         /// <returns>Comments</returns>
         IEnumerable<Comment> GetCommentReferences(IEnumerable<FileInfo> csharpCompileFileList);
+        IEnumerable<Comment> GetCommentReferences(SyntaxNode rootNode);
     }
 }

@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NET.Processor.Core.Models;
+using NET.Processor.Core.Services;
 
 namespace NET.Processor.Core.Interfaces
 {
@@ -20,7 +21,7 @@ namespace NET.Processor.Core.Interfaces
         /// </summary>
         /// <param name="SolutionPath">Path of the .sln file</param>
         /// <returns>Projects</returns>
-        Task<Solution> LoadSolution(string path);
+        Task<Solution> LoadSolution(string path, ICommentService commentService);
 
         /// <summary>
         /// Loads files from solution path

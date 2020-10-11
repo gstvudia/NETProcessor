@@ -8,7 +8,7 @@ using NET.Processor.Core.Models;
 using Microsoft.CodeAnalysis;
 using NET.Processor.Core.Interfaces;
 using System.IO;
-
+using NET.Processor.Core.Services;
 
 namespace NET.Processor.API.Controllers
 {
@@ -18,10 +18,12 @@ namespace NET.Processor.API.Controllers
     {
         //MOVE THE REPOSITORY TO THE CORE PROJECT
         private readonly ISolutionService _solutionService;
+        private readonly ICommentService _commentService;
 
-        public SolutionController(ISolutionService solutionService)
+        public SolutionController(ISolutionService solutionService, ICommentService commentService)
         {
             _solutionService = solutionService;
+            _commentService = commentService;
         }
 
         [HttpGet("test")]
@@ -36,8 +38,9 @@ namespace NET.Processor.API.Controllers
             List<string> list = null;
             var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
             var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
-            string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
-            var solution = await _solutionService.LoadSolution(path);
+            // string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
+            string path = @"" + homeDrive + homePath + "\\source\\repos\\TestProject\\TestProject\\TestProject.sln";
+            var solution = await _solutionService.LoadSolution(path, _commentService);
             var test =  _solutionService.GetSolutionItems(solution);
 
             //var itensToReturn = _mapper.Map<IEnumerable<UserForListDTO>>(itens);
@@ -51,7 +54,7 @@ namespace NET.Processor.API.Controllers
 
             string path = Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "NET.Processor.Services/bin/Debug\netcoreapp3.1/Solutions/CleanArchitecture-master/CleanArchitecture.sln";
             //string path = @"C:\Users\Gustavo Melo\source\repos\NETProcessor\NET.Processor.Services\bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\CleanArchitecture.sln";
-            var solution = _solutionService.LoadSolution(path);
+            var solution = _solutionService.LoadSolution(path, _commentService);
             //var solutionItens = await
             //_solutionService.GetSolutionItens(solution);
           

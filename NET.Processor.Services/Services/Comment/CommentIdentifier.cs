@@ -37,6 +37,20 @@ namespace NET.Processor.Core.Services
 			}
 		}
 
+		public IEnumerable<Comment> GetComments(SyntaxNode root)
+        {
+			var comments = new List<Comment>();
+			var commentLocatingVisitor = new CommentLocatingVisitor(
+				comment =>
+				{
+					if (_commentMatcher(comment.Content)) { }
+						comments.Add(comment);
+				}
+			);
+			commentLocatingVisitor.Visit(root);
+			return comments;
+		}
+
 		public IEnumerable<Comment> GetComments(string content)
 		{
 			if (content == null)

@@ -25,6 +25,8 @@ namespace NET.Processor.Core.Services
 {
     public class SolutionService : ISolutionService
     {
+        private ICommentService commentService = null;
+
         public SolutionService()
         {
             if (!MSBuildLocator.IsRegistered)
@@ -33,8 +35,10 @@ namespace NET.Processor.Core.Services
             }
         }
 
-        public async Task<Solution> LoadSolution(string solutionPath)
+        public async Task<Solution> LoadSolution(string solutionPath, ICommentService commentService)
         {
+            this.commentService = commentService;
+
             Solution solution = null;
             using (var msWorkspace = MSBuildWorkspace.Create())
             {
@@ -118,6 +122,8 @@ namespace NET.Processor.Core.Services
                             list.Add(new Item(startNode.ToString(), ItemType.Region, new TextSpan(startNode.Span.Start, endNode.Span.End - startNode.Span.Start)));
                         }
 
+                        var comments = commentService.GetCommentReferences(root);
+                        list.AddRange(comments);
 
                         var namespaces = root.DescendantNodes()
                                      .OfType<NamespaceDeclarationSyntax>()

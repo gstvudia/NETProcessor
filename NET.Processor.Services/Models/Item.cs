@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis.Text;
+using NET.Processor.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +16,8 @@ namespace NET.Processor.Core.Models
         public TextSpan Span { get; }
 
         public Item Parent { get; set; }
+
+        public List<Comment> Comments { get; set; }
 
         public List<Item> ChildList { get; } = new List<Item>();
 
