@@ -38,8 +38,7 @@ namespace NET.Processor.API.Controllers
             List<string> list = null;
             var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
             var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
-            // string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
-            string path = @"" + homeDrive + homePath + "\\source\\repos\\TestProject\\TestProject\\TestProject.sln";
+            string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
             var solution = await _solutionService.LoadSolution(path, _commentService);
             var test =  _solutionService.GetSolutionItems(solution);
 
