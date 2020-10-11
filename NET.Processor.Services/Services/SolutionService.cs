@@ -25,19 +25,21 @@ namespace NET.Processor.Core.Services
 {
     public class SolutionService : ISolutionService
     {
-        private ICommentService commentService = null;
+        private readonly ICommentService _commentService;
 
-        public SolutionService()
+        public SolutionService(ICommentService commentService)
         {
+            _commentService = commentService;
+
             if (!MSBuildLocator.IsRegistered)
             {
                 MSBuildLocator.RegisterDefaults();
-            }
+            }            
         }
 
-        public async Task<Solution> LoadSolution(string solutionPath, ICommentService commentService)
+        public async Task<Solution> LoadSolution(string solutionPath)
         {
-            this.commentService = commentService;
+
 
             Solution solution = null;
             using (var msWorkspace = MSBuildWorkspace.Create())
@@ -122,7 +124,7 @@ namespace NET.Processor.Core.Services
                             list.Add(new Item(startNode.ToString(), ItemType.Region, new TextSpan(startNode.Span.Start, endNode.Span.End - startNode.Span.Start)));
                         }
 
-                        var commentReferences = commentService.GetCommentReferences(root);
+                        var commentReferences = _commentService.GetCommentReferences(root);
                         var comments = commentReferences.Select(x => new Item(x.LineNumber, x.Content, ItemType.Comment, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
                                 .ToList();
                         list.AddRange(comments);
@@ -180,10 +182,12 @@ namespace NET.Processor.Core.Services
                         var methods = root.DescendantNodes()
                                           .OfType<MethodDeclarationSyntax>()
                                           .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Method, x.Span))
+                                          .Where(x => !list.Any(l => l.Name == x.Name))
                                           .ToList();
 
                         list.AddRange(methods);
 
+                        
                         var fields = root.DescendantNodes()
                                          .OfType<FieldDeclarationSyntax>()
                                          .SelectMany(x => x.Declaration.Variables,
@@ -230,7 +234,9 @@ namespace NET.Processor.Core.Services
 
             }
 
-            return RelationsGraph.BuildTree(list).Where(item => item.Type == ItemType.Method);
+            var methodsList = list.Where(item => item.Type == ItemType.Method).Distinct().ToList();
+
+            return RelationsGraph.BuildTree(methodsList).Where(item => item.Type == ItemType.Method);
         }
     }
 }

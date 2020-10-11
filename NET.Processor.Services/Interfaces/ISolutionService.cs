@@ -21,7 +21,7 @@ namespace NET.Processor.Core.Interfaces
         /// </summary>
         /// <param name="SolutionPath">Path of the .sln file</param>
         /// <returns>Projects</returns>
-        Task<Solution> LoadSolution(string path, ICommentService commentService);
+        Task<Solution> LoadSolution(string path);
 
         /// <summary>
         /// Loads files from solution path
