@@ -122,12 +122,14 @@ namespace NET.Processor.Core.Services
                             list.Add(new Item(startNode.ToString(), ItemType.Region, new TextSpan(startNode.Span.Start, endNode.Span.End - startNode.Span.Start)));
                         }
 
-                        var comments = commentService.GetCommentReferences(root);
+                        var commentReferences = commentService.GetCommentReferences(root);
+                        var comments = commentReferences.Select(x => new Item(x.LineNumber, x.Content, ItemType.Comment, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
+                                .ToList();
                         list.AddRange(comments);
 
                         var namespaces = root.DescendantNodes()
                                      .OfType<NamespaceDeclarationSyntax>()
-                                     .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Name.ToString(), ItemType.Namespace, x.Span))
+                                     .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Name.ToString(), ItemType.Comment, x.Span))
                                      .ToList();
 
                         if (namespaces.Count > 1)

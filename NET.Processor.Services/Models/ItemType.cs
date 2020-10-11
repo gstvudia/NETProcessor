@@ -19,6 +19,7 @@ namespace NET.Processor.Core.Models
         Struct,
         EnumMember,
         Event,
-        Delegate
+        Delegate,
+        Comment
     }
 }

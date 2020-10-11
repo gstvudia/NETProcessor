@@ -53,11 +53,6 @@ namespace NET.Processor.Core.Services
 				// Adding comment to comment list
 				comments.Add(comment);
 			}
-			
-
-			Console.WriteLine("Success! Press [Enter] to continue..");
-			Console.ReadLine();
-
 			return comments;
 		}
 

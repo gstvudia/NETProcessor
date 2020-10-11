@@ -1,7 +1,9 @@
-﻿using Microsoft.CodeAnalysis.Text;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 using NET.Processor.Core.Services;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace NET.Processor.Core.Models
@@ -17,9 +19,42 @@ namespace NET.Processor.Core.Models
 
         public Item Parent { get; set; }
 
-        public List<Comment> Comments { get; set; }
-
         public List<Item> ChildList { get; } = new List<Item>();
+
+        /// <summary>
+        /// This will never be null or blank
+        /// </summary>
+        public string Content { get; private set; }
+
+        /// <summary>
+        /// This will always be a positive integer
+        /// </summary>
+        public int LineNumber { get; private set; }
+
+        /// <summary>
+        /// This may be null since the comment may not exist within a method or property
+        /// </summary>
+        public MemberDeclarationSyntax MethodOrPropertyIfAny { get; private set; }
+
+        /// <summary>
+        /// This may be null since the comment may not exist within an class, interface or struct
+        /// </summary>
+        public TypeDeclarationSyntax TypeIfAny { get; private set; }
+
+        /// <summary>
+        /// This may be null since the comment may not exist within a method or property
+        /// </summary>
+        public NamespaceDeclarationSyntax NamespaceIfAny { get; private set; }
+
+        public Item(int lineNumber, string content, ItemType type, MemberDeclarationSyntax methodOrPropertyIfAny, TypeDeclarationSyntax typeIfAny, NamespaceDeclarationSyntax namespaceIfAny)
+        {
+            LineNumber = lineNumber;
+            Content = content;
+            Type = type;
+            MethodOrPropertyIfAny = methodOrPropertyIfAny;
+            TypeIfAny = typeIfAny;
+            NamespaceIfAny = namespaceIfAny;
+        }
 
         public Item(string name, ItemType type, TextSpan span)
         {
