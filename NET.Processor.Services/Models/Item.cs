@@ -48,6 +48,11 @@ namespace NET.Processor.Core.Models
 
         public Item(int lineNumber, string content, ItemType type, MemberDeclarationSyntax methodOrPropertyIfAny, TypeDeclarationSyntax typeIfAny, NamespaceDeclarationSyntax namespaceIfAny)
         {
+            if (string.IsNullOrEmpty(content))
+                throw new ArgumentException("Null/blank content specified");
+            if (lineNumber < 1)
+                throw new ArgumentOutOfRangeException("lineNumber");
+
             LineNumber = lineNumber;
             Content = content;
             Type = type;
