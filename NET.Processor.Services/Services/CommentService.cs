@@ -97,9 +97,6 @@ namespace NET.Processor.Core.Services
 				}
 			}
 
-			Console.WriteLine("Success! Press [Enter] to continue..");
-			Console.ReadLine();
-
 			return comments;
 		}
 	}
