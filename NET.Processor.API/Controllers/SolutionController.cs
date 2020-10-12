@@ -9,6 +9,10 @@ using Microsoft.CodeAnalysis;
 using NET.Processor.Core.Interfaces;
 using System.IO;
 using NET.Processor.Core.Services;
+using AutoMapper;
+using System.Linq;
+using NET.Processor.API.Models.DTO;
+using NET.Processor.API.Helpers.Mappers;
 
 namespace NET.Processor.API.Controllers
 {
@@ -16,12 +20,14 @@ namespace NET.Processor.API.Controllers
     [ApiController]
     public class SolutionController : ControllerBase
     {
-        //MOVE THE REPOSITORY TO THE CORE PROJECT
         private readonly ISolutionService _solutionService;
+        private readonly IMapper _mapper;
 
-        public SolutionController(ISolutionService solutionService)
+        public SolutionController(ISolutionService solutionService, IMapper mapper)
         {
             _solutionService = solutionService;
+            _mapper = mapper;
+
         }
 
         [HttpGet("test")]
@@ -36,12 +42,21 @@ namespace NET.Processor.API.Controllers
             var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
             var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
             string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
+
             var solution = await _solutionService.LoadSolution(path);
-            var result =  _solutionService.GetSolutionItems(solution);
+            var listItems =  _solutionService.GetSolutionItems(solution).ToList();
 
-            //var itensToReturn = _mapper.Map<IEnumerable<UserForListDTO>>(itens);
-
-            return Ok(result);
+            //THE MAPPING PROBLEM IS NOT RELATED TO CONFIGURATION, THER EIS SOMETHING IM DOING WRONG ON THE C
+            Root relationGraph = new Root();
+           //List<Node> graphNodes= new List<Node>();
+           //foreach (var item in listItems)
+           //{
+           //    graphNodes.Add( new Node (
+           //                        _mapper.Map<Data>(item)
+           //                     ));
+           //}
+           //relationGraph.nodes.Add(graphNodes);
+            return Ok(relationGraph);
         }
 
         [HttpGet("GetSolutionItems")]

@@ -29,7 +29,6 @@ namespace NET.Processor.Core.Services
     {
         private readonly ICommentService _commentService;
         private readonly IConfiguration _configuration;
-        public MapperConfiguration _automapperConfig { get; set; }
 
         public SolutionService(ICommentService commentService, IConfiguration configuration)
         {
@@ -42,9 +41,9 @@ namespace NET.Processor.Core.Services
             }
 
             // Automapper configuration
-            _automapperConfig = new MapperConfiguration(cfg => cfg.CreateMap<Item, ItemDTO>()
-                .ForMember(dest => dest.ParentId, act => act.MapFrom(src => src.Parent.Id))
-            );
+            //_automapperConfig = new MapperConfiguration(cfg => cfg.CreateMap<Item, ItemDTO>()
+            //    .ForMember(dest => dest.ParentId, act => act.MapFrom(src => src.Parent.Id))
+            //);
         }
 
         public async Task<Solution> LoadSolution(string solutionPath)
@@ -106,7 +105,7 @@ namespace NET.Processor.Core.Services
                 yield return new FileInfo(Path.Combine(solutionFile.Directory.FullName, match.Groups["projectFile"].Value));
         }
 
-        public IEnumerable<ItemDTO> GetSolutionItems(Solution solution)
+        public IEnumerable<Item> GetSolutionItems(Solution solution)
         {
             SyntaxNode root = null;
             var list = new List<Item>();
@@ -240,13 +239,8 @@ namespace NET.Processor.Core.Services
                 }
             }
 
-            // Using Automapper
-            var mapper = new Mapper(_automapperConfig);
             var nodeTree = RelationsGraph.BuildTree(list).Where(item => item.Type == ItemType.Method);
-            var nodeTreeDTO = list.Where(item => item.Type == ItemType.Method).Distinct()
-                      .Select(x => mapper.Map<ItemDTO>(x))
-                      .ToList();
-            return nodeTreeDTO;
+            return nodeTree;
         }
     }
 }
