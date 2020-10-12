@@ -20,16 +20,19 @@ using Newtonsoft.Json.Linq;
 using System.Net;
 using Microsoft.Build.Locator;
 using DynamicData;
+using Microsoft.Extensions.Configuration;
 
 namespace NET.Processor.Core.Services
 {
     public class SolutionService : ISolutionService
     {
         private readonly ICommentService _commentService;
+        private readonly IConfiguration _configuration;
 
-        public SolutionService(ICommentService commentService)
+        public SolutionService(ICommentService commentService, IConfiguration configuration)
         {
             _commentService = commentService;
+            _configuration = configuration;
 
             if (!MSBuildLocator.IsRegistered)
             {
@@ -75,9 +78,9 @@ namespace NET.Processor.Core.Services
                 //get file names or something like that and add on the list
                 //DirectoryFiles.Add();
             }
-            catch (Exception ex)
+            catch (Exception exception)
             {
-                Console.WriteLine();
+                Console.WriteLine(exception.Message);
             }
             
 
@@ -106,7 +109,7 @@ namespace NET.Processor.Core.Services
 
             foreach (var project in solution.Projects)
             {
-                if (project.Language == "C#")
+                if (project.Language == _configuration["Framework:Language"])
                 {
                     foreach (var documentClass in project.Documents)
                     {
@@ -227,15 +230,12 @@ namespace NET.Processor.Core.Services
                         
                         //End of document/class
                     }
-
-                    
                 }
 
             }
 
-            var methodsList = list.Where(item => item.Type == ItemType.Method).Distinct().ToList();
-
-            return RelationsGraph.BuildTree(methodsList).Where(item => item.Type == ItemType.Method);
+            var commentsList = list.Where(item => item.Type == ItemType.Comment).Distinct().ToList();
+            return RelationsGraph.BuildTree(commentsList).Where(item => item.Type == ItemType.Comment);
         }
     }
 }

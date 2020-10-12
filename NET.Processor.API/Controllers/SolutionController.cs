@@ -25,7 +25,7 @@ namespace NET.Processor.API.Controllers
         }
 
         [HttpGet("test")]
-        public async Task<bool> Get()
+        public bool Get()
         {
             return true;
         }
@@ -33,16 +33,15 @@ namespace NET.Processor.API.Controllers
         [HttpPost("ProcessSolution")]
         public async Task<IActionResult> ProcessSolution([FromBody] WebHook webHook)
         {
-            List<string> list = null;
             var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
             var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
             string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
             var solution = await _solutionService.LoadSolution(path);
-            var test =  _solutionService.GetSolutionItems(solution);
+            var result =  _solutionService.GetSolutionItems(solution);
 
             //var itensToReturn = _mapper.Map<IEnumerable<UserForListDTO>>(itens);
 
-            return Ok(test);
+            return Ok(result);
         }
 
         [HttpGet("GetSolutionItems")]
@@ -51,7 +50,7 @@ namespace NET.Processor.API.Controllers
 
             string path = Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "NET.Processor.Services/bin/Debug\netcoreapp3.1/Solutions/CleanArchitecture-master/CleanArchitecture.sln";
             //string path = @"C:\Users\Gustavo Melo\source\repos\NETProcessor\NET.Processor.Services\bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\CleanArchitecture.sln";
-            var solution = _solutionService.LoadSolution(path);
+            var solution = await _solutionService.LoadSolution(path);
             //var solutionItens = await
             //_solutionService.GetSolutionItens(solution);
           
