@@ -21,6 +21,7 @@ using System.Net;
 using Microsoft.Build.Locator;
 using DynamicData;
 using Microsoft.Extensions.Configuration;
+using AutoMapper;
 
 namespace NET.Processor.Core.Services
 {
@@ -28,6 +29,7 @@ namespace NET.Processor.Core.Services
     {
         private readonly ICommentService _commentService;
         private readonly IConfiguration _configuration;
+        public MapperConfiguration _automapperConfig { get; set; }
 
         public SolutionService(ICommentService commentService, IConfiguration configuration)
         {
@@ -37,7 +39,12 @@ namespace NET.Processor.Core.Services
             if (!MSBuildLocator.IsRegistered)
             {
                 MSBuildLocator.RegisterDefaults();
-            }            
+            }
+
+            // Automapper configuration
+            _automapperConfig = new MapperConfiguration(cfg => cfg.CreateMap<Item, ItemDTO>()
+                .ForMember(dest => dest.ParentId, act => act.MapFrom(src => src.Parent.Id))
+            );
         }
 
         public async Task<Solution> LoadSolution(string solutionPath)
@@ -99,7 +106,7 @@ namespace NET.Processor.Core.Services
                 yield return new FileInfo(Path.Combine(solutionFile.Directory.FullName, match.Groups["projectFile"].Value));
         }
 
-        public IEnumerable<Item> GetSolutionItems(Solution solution)
+        public IEnumerable<ItemDTO> GetSolutionItems(Solution solution)
         {
             SyntaxNode root = null;
             var list = new List<Item>();
@@ -133,7 +140,7 @@ namespace NET.Processor.Core.Services
 
                         var namespaces = root.DescendantNodes()
                                      .OfType<NamespaceDeclarationSyntax>()
-                                     .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Name.ToString(), ItemType.Comment, x.Span))
+                                     .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Name.ToString(), ItemType.Namespace, x.Span))
                                      .ToList();
 
                         if (namespaces.Count > 1)
@@ -231,11 +238,15 @@ namespace NET.Processor.Core.Services
                         //End of document/class
                     }
                 }
-
             }
 
-            var commentsList = list.Where(item => item.Type == ItemType.Comment).Distinct().ToList();
-            return RelationsGraph.BuildTree(commentsList).Where(item => item.Type == ItemType.Comment);
+            // Using Automapper
+            var mapper = new Mapper(_automapperConfig);
+            var nodeTree = RelationsGraph.BuildTree(list).Where(item => item.Type == ItemType.Method);
+            var nodeTreeDTO = list.Where(item => item.Type == ItemType.Method).Distinct()
+                      .Select(x => mapper.Map<ItemDTO>(x))
+                      .ToList();
+            return nodeTreeDTO;
         }
     }
 }
