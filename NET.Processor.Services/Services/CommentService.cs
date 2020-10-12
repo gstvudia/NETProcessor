@@ -9,16 +9,15 @@ namespace NET.Processor.Core.Services
 {
     public class CommentService : ICommentService
     {
-
+		CommentIdentifier commentIdentifier = null;
         public CommentService()
         {
-
-        }
+			commentIdentifier = new CommentIdentifier();
+		}
 
         public IEnumerable<Comment> GetCommentReferences(SyntaxNode rootNode)
         {
 			List<Comment> comments = new List<Comment>();
-			var commentIdentifier = new CommentIdentifier();
 
 			foreach (var comment in commentIdentifier.GetComments(rootNode.SyntaxTree.GetRoot()))
 			{

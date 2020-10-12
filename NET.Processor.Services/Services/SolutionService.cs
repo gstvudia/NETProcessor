@@ -103,7 +103,6 @@ namespace NET.Processor.Core.Services
             List<RegionDirectiveTriviaSyntax> regionDirectives = null;
             List<EndRegionDirectiveTriviaSyntax> endRegionDirectives = null;
             EndRegionDirectiveTriviaSyntax endNode = null;
-            int lastId = 0;
 
             foreach (var project in solution.Projects)
             {
