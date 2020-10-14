@@ -9,7 +9,7 @@ namespace NET.Processor.API.Helpers.Mappers
     {
         public AutoMapperProfiles()
         {
-            CreateMap<Item, Data>()
+            CreateMap<Item, NodeData>()
                 .ForMember(property => property.id, options => options.MapFrom(
                     source => source.Id))
                 .ForMember(property => property.name, options => options.MapFrom(

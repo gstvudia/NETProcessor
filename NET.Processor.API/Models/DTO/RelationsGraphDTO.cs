@@ -11,7 +11,7 @@ namespace NET.Processor.API.Models.DTO
     }
 
 
-    public struct Data
+    public struct NodeData
     {
         public string id { get; set; }
         public string name { get; set; }
@@ -19,10 +19,10 @@ namespace NET.Processor.API.Models.DTO
 
     public struct Node
     {
-        public Data data { get; set; }
+        public NodeData data { get; set; }
     }
 
-    public struct Data2
+    public struct EdgeData
     {
         public string source { get; set; }
         public string target { get; set; }
@@ -30,7 +30,7 @@ namespace NET.Processor.API.Models.DTO
 
     public struct Edge
     {
-        public Data2 data { get; set; }
+        public EdgeData data { get; set; }
     }
 
     public struct Root
