@@ -132,11 +132,6 @@ namespace NET.Processor.Core.Services
                             list.Add(new Item(startNode.ToString(), ItemType.Region, new TextSpan(startNode.Span.Start, endNode.Span.End - startNode.Span.Start)));
                         }
 
-                        var commentReferences = _commentService.GetCommentReferences(root);
-                        var comments = commentReferences.Select(x => new Item(x.LineNumber, x.Content, ItemType.Comment, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
-                                .ToList();
-                        list.AddRange(comments);
-
                         var namespaces = root.DescendantNodes()
                                      .OfType<NamespaceDeclarationSyntax>()
                                      .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Name.ToString(), ItemType.Namespace, x.Span))
@@ -152,6 +147,20 @@ namespace NET.Processor.Core.Services
 
                         list.AddRange(classes);
 
+                        var methods = root.DescendantNodes()
+                                          .OfType<MethodDeclarationSyntax>()
+                                          .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Method, x.Span))
+                                          .Where(x => !list.Any(l => l.Name == x.Name))
+                                          .ToList();
+
+                        list.AddRange(methods);
+
+                        var commentReferences = _commentService.GetCommentReferences(root);
+                        var comments = commentReferences.Select(x => new Item(x.LineNumber, x.Content, ItemType.Comment, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
+                                .ToList();
+                        list.AddRange(comments);
+
+                        /*
                         var interfaces = root.DescendantNodes()
                                              .OfType<InterfaceDeclarationSyntax>()
                                              .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Interface, x.Span))
@@ -186,16 +195,8 @@ namespace NET.Processor.Core.Services
                                                .ToList();
 
                         list.AddRange(constructors);
-
-                        var methods = root.DescendantNodes()
-                                          .OfType<MethodDeclarationSyntax>()
-                                          .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Method, x.Span))
-                                          .Where(x => !list.Any(l => l.Name == x.Name))
-                                          .ToList();
-
-                        list.AddRange(methods);
-
                         
+
                         var fields = root.DescendantNodes()
                                          .OfType<FieldDeclarationSyntax>()
                                          .SelectMany(x => x.Declaration.Variables,
@@ -232,8 +233,8 @@ namespace NET.Processor.Core.Services
                                              .ToList();
 
                         list.AddRange(delegates);
+                        */
 
-                        
                         //End of document/class
                     }
                 }
