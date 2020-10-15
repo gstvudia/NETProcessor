@@ -15,6 +15,9 @@ namespace NET.Processor.API.Models.DTO
     {
         public string id { get; set; }
         public string name { get; set; }
+        public int weight { get; set; }
+        public string colorCode { get; set; }
+        public string shapeType { get; set; }
     }
 
     public struct Node
@@ -26,6 +29,8 @@ namespace NET.Processor.API.Models.DTO
     {
         public string source { get; set; }
         public string target { get; set; }
+        public string colorCode { get; set; }
+        public int strength { get; set; }
     }
 
     public struct Edge

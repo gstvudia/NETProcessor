@@ -238,8 +238,8 @@ namespace NET.Processor.Core.Services
                     }
                 }
             }
-
-            var nodeTree = RelationsGraph.BuildTree(list).Where(item => item.Type == ItemType.Method);
+            
+            var nodeTree = RelationsGraph.BuildTree(list.Where(item => item.Type == ItemType.Method).ToList());
             return nodeTree;
         }
     }

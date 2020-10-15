@@ -13,6 +13,8 @@ using AutoMapper;
 using System.Linq;
 using NET.Processor.API.Models.DTO;
 using NET.Processor.API.Helpers.Mappers;
+using DynamicData;
+using NET.Processor.API.Helpers.Interfaces;
 
 namespace NET.Processor.API.Controllers
 {
@@ -22,12 +24,14 @@ namespace NET.Processor.API.Controllers
     {
         private readonly ISolutionService _solutionService;
         private readonly IMapper _mapper;
+        private readonly IRelationsGraphMapper _relationsGraphMapper;
 
-        public SolutionController(ISolutionService solutionService, IMapper mapper)
+        public SolutionController(ISolutionService solutionService, IMapper mapper,
+                                  IRelationsGraphMapper relationsGraphMapper)
         {
             _solutionService = solutionService;
             _mapper = mapper;
-
+            _relationsGraphMapper = relationsGraphMapper;
         }
 
         [HttpGet("test")]
@@ -46,17 +50,30 @@ namespace NET.Processor.API.Controllers
             var solution = await _solutionService.LoadSolution(path);
             var listItems =  _solutionService.GetSolutionItems(solution).ToList();
 
-            //THE MAPPING PROBLEM IS NOT RELATED TO CONFIGURATION, THER EIS SOMETHING IM DOING WRONG ON THE C
-            Root relationGraph = new Root();
-           //List<Node> graphNodes= new List<Node>();
-           //foreach (var item in listItems)
-           //{
-           //    graphNodes.Add( new Node (
-           //                        _mapper.Map<Data>(item)
-           //                     ));
-           //}
-           //relationGraph.nodes.Add(graphNodes);
-            return Ok(relationGraph);
+           List<Node> graphNodes= new List<Node>();
+           List<Edge> graphEdges= new List<Edge>();
+           NodeData nodeData = new NodeData();
+           foreach (var item in listItems)
+           {
+                nodeData = _mapper.Map<NodeData>(item);
+                nodeData.colorCode = "orange";
+                nodeData.weight = 100;
+                nodeData.shapeType = "roundrectangle";
+                graphNodes.Add(new Node
+                {
+                    data = nodeData
+                });
+           }
+
+           graphEdges = _relationsGraphMapper.MapItemsToEdges(listItems);
+
+           var relationGraph = new Root
+           {
+                nodes = graphNodes,
+                edges = graphEdges
+           };
+
+           return Ok(relationGraph);
         }
 
         [HttpGet("GetSolutionItems")]
