@@ -114,19 +114,13 @@ namespace NET.Processor.Core.Services
             EndRegionDirectiveTriviaSyntax endNode = null;
 
             // Selecting Projects based on Project Filter
-            IEnumerable<Project> projects = from existingProjects in solution.Projects
-                    join selectedProjects in filter.Projects on existingProjects.Name equals selectedProjects
-                    select (existingProjects);
-
+            IEnumerable<Project> projects = RelationsGraphFilter.FilterSolutions(solution, filter);
             foreach (var project in projects)
             {
                 if (project.Language == _configuration["Framework:Language"])
                 {
                     // Selecting Documents based on Document Filter
-                    IEnumerable<Document> documents = from existingDocuments in project.Documents
-                                                    join selectedDocuments in filter.Documents on existingDocuments.Name.Split(".")[0] equals selectedDocuments
-                                                    select (existingDocuments);
-
+                    IEnumerable<Document> documents = RelationsGraphFilter.FilterDocuments(project, filter);
                     foreach (var document in documents)
                     {
                         root = document.GetSyntaxRootAsync().Result;
@@ -162,10 +156,9 @@ namespace NET.Processor.Core.Services
                                           .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Method, x.Span))
                                           .Where(x => !list.Any(l => l.Name == x.Name))
                                           .ToList();
+
                         // Select found methods based on Methods filter
-                        IEnumerable<Item> filteredMethods = from existingMethods in methods
-                                                          join selectedMethods in filter.Methods on existingMethods.Name equals selectedMethods
-                                                          select (existingMethods);
+                        IEnumerable<Item> filteredMethods = RelationsGraphFilter.FilterMethods(methods, filter);
                         list.AddRange(filteredMethods);
 
                         var commentReferences = _commentService.GetCommentReferences(root);
