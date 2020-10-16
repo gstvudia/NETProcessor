@@ -47,15 +47,15 @@ namespace NET.Processor.API.Controllers
             var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
             var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
             // string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
-            string path = @"" + homeDrive + homePath + "\\source\\repos\\TestProject\\TestProject\\TestProject.sln";
+            string path = @"" + homeDrive + homePath + "\\source\\repos\\NETWebhookTest\\TestProject.sln";
             
             // TODO: This Filter should later be served from Filter functionality on the Frontend
             var filter = new Filter();
-            filter.Projects.Add("TestProject");
-            filter.Documents.Add("Program1");
-            filter.Documents.Add("Program2");
-            filter.Methods.Add("Main");
-            filter.Methods.Add("Program1TestFunction1");
+            //filter.Projects.Add("TestProject");
+            //filter.Documents.Add("Program1");
+            //filter.Documents.Add("Program2");
+            //filter.Methods.Add("Main");
+            //filter.Methods.Add("Program1TestFunction1");
 
             var solution = await _solutionService.LoadSolution(path);
             var listItems =  _solutionService.GetSolutionItems(solution, filter).ToList();
@@ -86,18 +86,43 @@ namespace NET.Processor.API.Controllers
            return Ok(relationGraph);
         }
 
-        [HttpGet("GetSolutionItems")]
-        public async Task<IActionResult> GetSolutionItems()
+        [HttpGet("GetSolution")]
+        public async Task<IActionResult> GetSolutionItems([FromQuery] string solutionName)
         {
-            string path = Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "NET.Processor.Services/bin/Debug\netcoreapp3.1/Solutions/CleanArchitecture-master/CleanArchitecture.sln";
-            //string path = @"C:\Users\Gustavo Melo\source\repos\NETProcessor\NET.Processor.Services\bin\Debug\netcoreapp3.1\Solutions\CleanArchitecture-master\CleanArchitecture.sln";
-            var solution = await _solutionService.LoadSolution(path);
-            //var solutionItens = await
-            //_solutionService.GetSolutionItens(solution);
-          
-            //var itensToReturn = _mapper.Map<IEnumerable<UserForListDTO>>(itens);
+            var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
+            var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
+            string path = string.Empty;
 
-            return Ok();
+            switch (solutionName)
+            {
+                case "CleanArchitecture":
+                    path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
+                    break;
+                case "TestProject":
+                    path = @"" + homeDrive + homePath + "\\source\\repos\\NETWebhookTest\\TestProject.sln";
+                    break;
+            }            
+            
+            var solution = await _solutionService.LoadSolution(path);
+
+            var ret = new solutionInfo()
+            {
+                projects = solution.Projects.Select(p => p.Name)
+            };
+
+            var classes = solution.Projects.Select(p => p.Documents);
+
+            ret.classes = classes.Select(c => c.Select(c => c.Name)).FirstOrDefault();
+            ret.methods = _solutionService.GetSolutionItems(solution, new Filter()).Select(m => m.Name);
+
+            return Ok(ret);
+        }
+
+        public struct solutionInfo
+        {
+            public IEnumerable<string> projects { get; set; }
+            public IEnumerable<string> classes { get; set; }
+            public IEnumerable<string> methods { get; set; }
         }
     }
 }
