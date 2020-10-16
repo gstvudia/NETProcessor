@@ -69,8 +69,8 @@ namespace NET.Processor.Core.Services
         }
         public async Task<Stream> GetContentsFromRepo(string contentsUrl, HttpClient httpClient)
         { 
-            var a = await httpClient.GetStreamAsync(contentsUrl);
-            return a;
+            var repository = await httpClient.GetStreamAsync(contentsUrl);
+            return repository;
         }
 
         public List<string> GetSolutionFromRepo(WebHook webHook)
@@ -105,7 +105,7 @@ namespace NET.Processor.Core.Services
                 yield return new FileInfo(Path.Combine(solutionFile.Directory.FullName, match.Groups["projectFile"].Value));
         }
 
-        public IEnumerable<Item> GetSolutionItems(Solution solution)
+        public IEnumerable<Item> GetSolutionItems(Solution solution, Filter filter)
         {
             SyntaxNode root = null;
             var list = new List<Item>();
@@ -113,13 +113,23 @@ namespace NET.Processor.Core.Services
             List<EndRegionDirectiveTriviaSyntax> endRegionDirectives = null;
             EndRegionDirectiveTriviaSyntax endNode = null;
 
-            foreach (var project in solution.Projects)
+            // Selecting Projects based on Project Filter
+            IEnumerable<Project> projects = from existingProjects in solution.Projects
+                    join selectedProjects in filter.Projects on existingProjects.Name equals selectedProjects
+                    select (existingProjects);
+
+            foreach (var project in projects)
             {
                 if (project.Language == _configuration["Framework:Language"])
                 {
-                    foreach (var documentClass in project.Documents)
+                    // Selecting Documents based on Document Filter
+                    IEnumerable<Document> documents = from existingDocuments in project.Documents
+                                                    join selectedDocuments in filter.Documents on existingDocuments.Name.Split(".")[0] equals selectedDocuments
+                                                    select (existingDocuments);
+
+                    foreach (var document in documents)
                     {
-                        root = documentClass.GetSyntaxRootAsync().Result;
+                        root = document.GetSyntaxRootAsync().Result;
 
                         regionDirectives = root.DescendantNodes(null, true).OfType<RegionDirectiveTriviaSyntax>().Reverse().ToList();
                         endRegionDirectives = root.DescendantNodes(null, true).OfType<EndRegionDirectiveTriviaSyntax>().ToList();
@@ -152,8 +162,11 @@ namespace NET.Processor.Core.Services
                                           .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Method, x.Span))
                                           .Where(x => !list.Any(l => l.Name == x.Name))
                                           .ToList();
-
-                        list.AddRange(methods);
+                        // Select found methods based on Methods filter
+                        IEnumerable<Item> filteredMethods = from existingMethods in methods
+                                                          join selectedMethods in filter.Methods on existingMethods.Name equals selectedMethods
+                                                          select (existingMethods);
+                        list.AddRange(filteredMethods);
 
                         var commentReferences = _commentService.GetCommentReferences(root);
                         var comments = commentReferences.Select(x => new Item(x.LineNumber, x.Content, ItemType.Comment, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
