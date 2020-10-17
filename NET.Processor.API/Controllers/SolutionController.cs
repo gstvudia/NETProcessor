@@ -51,11 +51,11 @@ namespace NET.Processor.API.Controllers
             
             // TODO: This Filter should later be served from Filter functionality on the Frontend
             var filter = new Filter();
-            //filter.Projects.Add("TestProject");
-            //filter.Documents.Add("Program1");
-            //filter.Documents.Add("Program2");
-            //filter.Methods.Add("Main");
-            //filter.Methods.Add("Program1TestFunction1");
+            /*filter.Projects.Add("TestProject");
+            filter.Documents.Add("Program1");
+            filter.Documents.Add("Program2");
+            filter.Methods.Add("Main");
+            filter.Methods.Add("Program1TestFunction1");*/
 
             var solution = await _solutionService.LoadSolution(path);
             var listItems =  _solutionService.GetSolutionItems(solution, filter).ToList();
@@ -93,19 +93,10 @@ namespace NET.Processor.API.Controllers
         }
 
         [HttpGet("GetSolution")]
-        public async Task<IActionResult> GetSolutionItems()
+        public async Task<IActionResult> GetSolutionItems([FromQuery] string solutionName)
         {
             // Load complete solution and all assets
-            string solutionName = "TestProject";
             var solution = await _solutionService.LoadSolution(solutionName);
-
-            // TODO: This Filter should later be served from Filter functionality on the Frontend
-            var filter = new Filter();
-            //filter.Projects.Add("TestProject");
-            //filter.Documents.Add("Program1");
-            //filter.Documents.Add("Program2");
-            //filter.Methods.Add("Main");
-            //filter.Methods.Add("Program1TestFunction1");
 
             // Walk through solution nodes and select nodes / assets (project, document) based on filter
             var selectedItems = _solutionService.GetSolutionItems(solution, new Filter()).ToList();
@@ -115,8 +106,16 @@ namespace NET.Processor.API.Controllers
 
             var solutionAssets = new solutionInfo
             {
-               // Projects = selectedItems.Where(item => item.GetType().Name == ItemType.Project.ToString()),
-               // Documents = selectedItems.Where(item => item.GetType().Name == ItemType.Document.ToString())
+                Projects = selectedItems
+                           .Where(p => p.GetType().Name == ItemType.NodeProject.ToString())
+                           .Select(p => p.Name)
+                           .Distinct()
+                           .ToList(),
+                Documents = selectedItems
+                        .Where(d => d.GetType().Name == ItemType.NodeDocument.ToString())
+                        .Select(d => d.Name)
+                        .Distinct()
+                        .ToList()
             };
  
             return Ok(solutionAssets);
