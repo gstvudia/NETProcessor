@@ -13,6 +13,7 @@ using DynamicData;
 using DynamicData.Binding;
 using System.ComponentModel;
 using ReactiveUI;
+using NET.Processor.Core.Models.RelationsGraph.Item;
 
 namespace NET.Processor.Core.Helpers
 {

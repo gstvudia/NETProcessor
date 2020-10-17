@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NET.Processor.Core.Models;
 using NET.Processor.Core.Services;
+using NET.Processor.Core.Models.RelationsGraph.Item;
 
 namespace NET.Processor.Core.Interfaces
 {

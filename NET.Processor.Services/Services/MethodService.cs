@@ -26,6 +26,7 @@ namespace NET.Processor.Core.Services
             _configuration = configuration;
         }
 
+        /*
         public IEnumerable<Method> GetAllMethods(Solution solution)
         {
             List<Method> Methods = new List<Method>();
@@ -68,6 +69,7 @@ namespace NET.Processor.Core.Services
             
             return Methods;
         }
+        */
 
         
         public IEnumerable<MethodReference> GetMethodReferencesByName(string methodName,Solution solution)

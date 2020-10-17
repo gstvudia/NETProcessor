@@ -5,8 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Clones\**" />
     <Compile Remove="Solutions\**" />
+    <EmbeddedResource Remove="Clones\**" />
     <EmbeddedResource Remove="Solutions\**" />
+    <None Remove="Clones\**" />
     <None Remove="Solutions\**" />
   </ItemGroup>
 
@@ -42,10 +45,6 @@
     <Content Include="bin\Debug\netcoreapp3.1\System.Reactive.xml" />
     <Content Include="bin\Release\netcoreapp3.1\NET.Processor.Core.deps.json" />
     <Content Include="bin\Release\netcoreapp3.1\System.Reactive.xml" />
-  </ItemGroup>
-    
-  <ItemGroup>
-    <Folder Include="Clones\" />
   </ItemGroup>
 
 </Project>

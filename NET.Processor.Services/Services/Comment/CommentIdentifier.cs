@@ -5,6 +5,7 @@ using System.IO;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NET.Processor.Core.Models.RelationsGraph.Item;
 
 namespace NET.Processor.Core.Services
 {
@@ -56,7 +57,7 @@ namespace NET.Processor.Core.Services
 			var commentLocatingVisitor = new CommentLocatingVisitor(
 				comment =>
 				{
-					if (_commentMatcher(comment.Content))
+					if (_commentMatcher(comment.Name))
 						comments.Add(comment);
 				}
 			);
@@ -73,7 +74,7 @@ namespace NET.Processor.Core.Services
 			var commentLocatingVisitor = new CommentLocatingVisitor(
 				comment =>
 				{
-					if (_commentMatcher(comment.Content))
+					if (_commentMatcher(comment.Name))
 						comments.Add(comment);
 				}
 			);
@@ -139,8 +140,8 @@ namespace NET.Processor.Core.Services
 						var containingTypeIfAny = TryToGetContainingNode<TypeDeclarationSyntax>(containingNode);
 						var containingNameSpaceIfAny = TryToGetContainingNode<NamespaceDeclarationSyntax>(containingNode);
 						_commentLocated(new Comment(
-							triviaContent,
 							trivia.SyntaxTree.GetLineSpan(trivia.Span).StartLinePosition.Line,
+							triviaContent,
 							containingMethodOrPropertyIfAny,
 							containingTypeIfAny,
 							containingNameSpaceIfAny

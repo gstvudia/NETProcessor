@@ -28,7 +28,7 @@ namespace NET.Processor.Core.Helpers
                    select (existingDocuments);
         }
 
-        public static IEnumerable<Item> FilterMethods(List<Item> methods, Filter filter)
+        public static IEnumerable<Method> FilterMethods(List<Method> methods, Filter filter)
         {
             if(filter.Methods.Count == 0) return methods;
 

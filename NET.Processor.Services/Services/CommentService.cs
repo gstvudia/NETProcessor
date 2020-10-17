@@ -3,6 +3,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using NET.Processor.Core.Interfaces;
+using NET.Processor.Core.Models.RelationsGraph.Item;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -59,7 +60,7 @@ namespace NET.Processor.Core.Services
 
 		void PrintComment(Comment comment)
         {
-			Console.WriteLine(comment.Content);
+			Console.WriteLine(comment.Name);
 			Console.WriteLine();
 			if (comment.NamespaceIfAny == null)
 				Console.WriteLine("Not in any namespace");

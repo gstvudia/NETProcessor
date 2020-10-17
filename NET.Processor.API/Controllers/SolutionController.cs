@@ -16,6 +16,8 @@ using NET.Processor.API.Helpers.Mappers;
 using DynamicData;
 using NET.Processor.API.Helpers.Interfaces;
 using System.Collections;
+using NET.Processor.Core.Helpers;
+using NET.Processor.Core.Models.RelationsGraph.Item;
 
 namespace NET.Processor.API.Controllers
 {
@@ -44,10 +46,8 @@ namespace NET.Processor.API.Controllers
         [HttpPost("ProcessSolution")]
         public async Task<IActionResult> ProcessSolution([FromBody] WebHook webHook)
         {
-            var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
-            var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
-            // string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
-            string path = @"" + homeDrive + homePath + "\\source\\repos\\NETWebhookTest\\TestProject.sln";
+            // string path = "CleanArchitecture";
+            string path = "TestProject";
             
             // TODO: This Filter should later be served from Filter functionality on the Frontend
             var filter = new Filter();
@@ -60,22 +60,28 @@ namespace NET.Processor.API.Controllers
             var solution = await _solutionService.LoadSolution(path);
             var listItems =  _solutionService.GetSolutionItems(solution, filter).ToList();
 
+            var methodListItems = RelationsGraph.BuildTree(listItems)
+                .Where(item => item.GetType().Name == ItemType.Class.ToString() || 
+                       item.GetType().Name == ItemType.Method.ToString())
+                .ToList();
+
            List<Node> graphNodes= new List<Node>();
            List<Edge> graphEdges= new List<Edge>();
            NodeData nodeData = new NodeData();
-           foreach (var item in listItems)
+           foreach (var item in methodListItems)
            {
                 nodeData = _mapper.Map<NodeData>(item);
                 nodeData.colorCode = "orange";
                 nodeData.weight = 100;
                 nodeData.shapeType = "roundrectangle";
+                nodeData.nodeType = item.GetType().ToString();
                 graphNodes.Add(new Node
                 {
                     data = nodeData
                 });
            }
 
-           graphEdges = _relationsGraphMapper.MapItemsToEdges(listItems);
+           graphEdges = _relationsGraphMapper.MapItemsToEdges(methodListItems);
 
            var relationGraph = new Root
            {
@@ -87,42 +93,41 @@ namespace NET.Processor.API.Controllers
         }
 
         [HttpGet("GetSolution")]
-        public async Task<IActionResult> GetSolutionItems([FromQuery] string solutionName)
+        public async Task<IActionResult> GetSolutionItems()
         {
-            var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
-            var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
-            string path = string.Empty;
+            // Load complete solution and all assets
+            string solutionName = "TestProject";
+            var solution = await _solutionService.LoadSolution(solutionName);
 
-            switch (solutionName)
-            {
-                case "CleanArchitecture":
-                    path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
-                    break;
-                case "TestProject":
-                    path = @"" + homeDrive + homePath + "\\source\\repos\\NETWebhookTest\\TestProject.sln";
-                    break;
-            }            
-            
-            var solution = await _solutionService.LoadSolution(path);
+            // TODO: This Filter should later be served from Filter functionality on the Frontend
+            var filter = new Filter();
+            //filter.Projects.Add("TestProject");
+            //filter.Documents.Add("Program1");
+            //filter.Documents.Add("Program2");
+            //filter.Methods.Add("Main");
+            //filter.Methods.Add("Program1TestFunction1");
 
-            var ret = new solutionInfo()
+            // Walk through solution nodes and select nodes / assets (project, document) based on filter
+            var selectedItems = _solutionService.GetSolutionItems(solution, new Filter()).ToList();
+            // Build relationship graph for methods based on filtered / selected nodes
+            // var methodsTree = RelationsGraph.BuildTree(selectedItems.Where(item => item.GetType().Name == ItemType.Method.ToString()).ToList());
+            // Select specific assets that should be sent back to frontend
+
+            /*
+            var solutionAssets = new solutionInfo
             {
-                projects = solution.Projects.Select(p => p.Name)
+                Projects = selectedItems.Where(item => item.GetType().Name == ItemType.Project.ToString()),
+                Documents = selectedItems.Where(item => item.GetType().Name == ItemType.Document.ToString())
             };
+            */
 
-            var classes = solution.Projects.Select(p => p.Documents);
-
-            ret.classes = classes.Select(c => c.Select(c => c.Name)).FirstOrDefault();
-            ret.methods = _solutionService.GetSolutionItems(solution, new Filter()).Select(m => m.Name);
-
-            return Ok(ret);
+            return Ok(solutionAssets);
         }
 
         public struct solutionInfo
         {
-            public IEnumerable<string> projects { get; set; }
-            public IEnumerable<string> classes { get; set; }
-            public IEnumerable<string> methods { get; set; }
+            public IEnumerable<string> Projects { get; set; }
+            public IEnumerable<string> Documents { get; set; }
         }
     }
 }

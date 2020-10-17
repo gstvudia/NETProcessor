@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using NET.Processor.API.Models.DTO;
 using NET.Processor.Core.Models;
+using NET.Processor.Core.Models.RelationsGraph.Item;
 using System.Linq;
 
 namespace NET.Processor.API.Helpers.Mappers

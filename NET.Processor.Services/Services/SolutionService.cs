@@ -22,6 +22,7 @@ using Microsoft.Build.Locator;
 using DynamicData;
 using Microsoft.Extensions.Configuration;
 using AutoMapper;
+using NET.Processor.Core.Models.RelationsGraph.Item;
 
 namespace NET.Processor.Core.Services
 {
@@ -48,14 +49,26 @@ namespace NET.Processor.Core.Services
 
         public async Task<Solution> LoadSolution(string solutionPath)
         {
+            var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
+            var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
+            string path = string.Empty;
 
+            switch (solutionPath)
+            {
+                case "CleanArchitecture":
+                    path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
+                    break;
+                case "TestProject":
+                    path = @"" + homeDrive + homePath + "\\source\\repos\\NETWebhookTest\\TestProject.sln";
+                    break;
+            }
 
             Solution solution = null;
             using (var msWorkspace = MSBuildWorkspace.Create())
             {
                 try
                 {                    
-                    solution = await msWorkspace.OpenSolutionAsync(solutionPath);
+                    solution = await msWorkspace.OpenSolutionAsync(path);
 
                     //TODO: We can log diagnosis later
                     ImmutableList<WorkspaceDiagnostic> diagnostics = msWorkspace.Diagnostics;
@@ -67,43 +80,6 @@ namespace NET.Processor.Core.Services
             }
 
         }
-        public async Task<Stream> GetContentsFromRepo(string contentsUrl, HttpClient httpClient)
-        { 
-            var repository = await httpClient.GetStreamAsync(contentsUrl);
-            return repository;
-        }
-
-        public List<string> GetSolutionFromRepo(WebHook webHook)
-        {
-            List<string> DirectoryFiles = new List<string>();
-            try
-            {
-                //CHECK IF FOLDER EXISTS ADN REMOVE FIRST
-                //Repository.Clone("https://github.com/ardalis/CleanArchitecture.git", Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/Clones");
-
-                //get file names or something like that and add on the list
-                //DirectoryFiles.Add();
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception.Message);
-            }
-            
-
-            return DirectoryFiles;
-        }
-
-        private static IEnumerable<FileInfo> GetProjectFilesForSolution(FileInfo solutionFile)
-        {
-            if (solutionFile == null)
-                throw new ArgumentNullException("solutionFile");
-
-            var projectFileMatcher = new Regex(
-                @"Project\(""\{\w{8}-\w{4}-\w{4}-\w{4}-\w{12}\}""\) = ""(.*?)"", ""(?<projectFile>(.*?\.csproj))"", ""\{\w{8}-\w{4}-\w{4}-\w{4}-\w{12}\}"""
-            );
-            foreach (Match match in projectFileMatcher.Matches(solutionFile.OpenText().ReadToEnd()))
-                yield return new FileInfo(Path.Combine(solutionFile.Directory.FullName, match.Groups["projectFile"].Value));
-        }
 
         public IEnumerable<Item> GetSolutionItems(Solution solution, Filter filter)
         {
@@ -114,14 +90,14 @@ namespace NET.Processor.Core.Services
             EndRegionDirectiveTriviaSyntax endNode = null;
 
             // Selecting Projects based on Project Filter
-            IEnumerable<Project> projects = RelationsGraphFilter.FilterSolutions(solution, filter);
-            foreach (var project in projects)
+            IEnumerable<Project> selectedProjects = RelationsGraphFilter.FilterSolutions(solution, filter);
+            foreach (var project in selectedProjects)
             {
                 if (project.Language == _configuration["Framework:Language"])
                 {
                     // Selecting Documents based on Document Filter
-                    IEnumerable<Document> documents = RelationsGraphFilter.FilterDocuments(project, filter);
-                    foreach (var document in documents)
+                    IEnumerable<Document> selectedDocuments = RelationsGraphFilter.FilterDocuments(project, filter);
+                    foreach (var document in selectedDocuments)
                     {
                         root = document.GetSyntaxRootAsync().Result;
 
@@ -133,12 +109,21 @@ namespace NET.Processor.Core.Services
                             endNode = endRegionDirectives.First(r => r.SpanStart > startNode.SpanStart);
                             endRegionDirectives.Remove(endNode);
 
-                            list.Add(new Item(startNode.ToString(), ItemType.Region, new TextSpan(startNode.Span.Start, endNode.Span.End - startNode.Span.Start)));
+                            list.Add(new Region(startNode.ToString(), new TextSpan(startNode.Span.Start, endNode.Span.End - startNode.Span.Start)));
                         }
+
+                        // TODO: There must be a proper ID assigned to each project
+                        var projects = selectedProjects.Select(x => new NodeProject(x.Id.Id, x.Name.ToString()))
+                                     .ToList();
+                        list.AddRange(projects);
+
+                        var documents = selectedDocuments.Select(x => new NodeDocument(x.Id.Id, x.Name.Split('.')[0].ToString()))
+                                     .ToList();
+                        list.AddRange(documents);
 
                         var namespaces = root.DescendantNodes()
                                      .OfType<NamespaceDeclarationSyntax>()
-                                     .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Name.ToString(), ItemType.Namespace, x.Span))
+                                     .Select(x => new Namespace(root.DescendantNodes().IndexOf(x), x.Name.ToString(), x.Span))
                                      .ToList();
 
                         if (namespaces.Count > 1)
@@ -146,14 +131,14 @@ namespace NET.Processor.Core.Services
 
                         var classes = root.DescendantNodes()
                                           .OfType<ClassDeclarationSyntax>()
-                                          .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Class, x.Span))
+                                          .Select(x => new Class(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, x.Span))
                                           .ToList();
 
                         list.AddRange(classes);
 
                         var methods = root.DescendantNodes()
                                           .OfType<MethodDeclarationSyntax>()
-                                          .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Method, x.Span))
+                                          .Select(x => new Method(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, x.Span))
                                           .Where(x => !list.Any(l => l.Name == x.Name))
                                           .ToList();
 
@@ -162,7 +147,7 @@ namespace NET.Processor.Core.Services
                         list.AddRange(filteredMethods);
 
                         var commentReferences = _commentService.GetCommentReferences(root);
-                        var comments = commentReferences.Select(x => new Item(x.LineNumber, x.Content, ItemType.Comment, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
+                        var comments = commentReferences.Select(x => new Comment(x.LineNumber, x.Name, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
                                 .ToList();
                         list.AddRange(comments);
 
@@ -245,9 +230,45 @@ namespace NET.Processor.Core.Services
                     }
                 }
             }
-            
-            var nodeTree = RelationsGraph.BuildTree(list.Where(item => item.Type == ItemType.Method).ToList());
-            return nodeTree;
+
+            return list;
+        }
+
+
+
+
+
+
+
+
+
+
+        // TODO: Decide if this is still needed, otherwise delete
+        public async Task<Stream> GetContentsFromRepo(string contentsUrl, HttpClient httpClient)
+        {
+            var repository = await httpClient.GetStreamAsync(contentsUrl);
+            return repository;
+        }
+
+        // TODO: Implement loading from Repo instead of locally
+        public List<string> GetSolutionFromRepo(WebHook webHook)
+        {
+            List<string> DirectoryFiles = new List<string>();
+            try
+            {
+                //CHECK IF FOLDER EXISTS ADN REMOVE FIRST
+                //Repository.Clone("https://github.com/ardalis/CleanArchitecture.git", Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/Clones");
+
+                //get file names or something like that and add on the list
+                //DirectoryFiles.Add();
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception.Message);
+            }
+
+
+            return DirectoryFiles;
         }
     }
 }

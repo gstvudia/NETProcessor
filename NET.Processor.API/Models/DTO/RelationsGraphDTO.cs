@@ -15,6 +15,7 @@ namespace NET.Processor.API.Models.DTO
     {
         public string id { get; set; }
         public string name { get; set; }
+        public string nodeType { get; set; }
         public int weight { get; set; }
         public string colorCode { get; set; }
         public string shapeType { get; set; }

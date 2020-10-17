@@ -1,6 +1,7 @@
 ﻿using NET.Processor.API.Helpers.Interfaces;
 using NET.Processor.API.Models.DTO;
 using NET.Processor.Core.Models;
+using NET.Processor.Core.Models.RelationsGraph.Item;
 using System;
 using System.Collections.Generic;
 using System.Linq;
