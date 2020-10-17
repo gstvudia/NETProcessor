@@ -60,7 +60,7 @@ namespace NET.Processor.API.Controllers
             var solution = await _solutionService.LoadSolution(path);
             var listItems =  _solutionService.GetSolutionItems(solution, filter).ToList();
 
-            var methodListItems = RelationsGraph.BuildTree(listItems)
+            var methodAndClassesListItems = RelationsGraph.BuildTree(listItems)
                 .Where(item => item.GetType().Name == ItemType.Class.ToString() || 
                        item.GetType().Name == ItemType.Method.ToString())
                 .ToList();
@@ -68,7 +68,7 @@ namespace NET.Processor.API.Controllers
            List<Node> graphNodes= new List<Node>();
            List<Edge> graphEdges= new List<Edge>();
            NodeData nodeData = new NodeData();
-           foreach (var item in methodListItems)
+           foreach (var item in methodAndClassesListItems)
            {
                 nodeData = _mapper.Map<NodeData>(item);
                 nodeData.colorCode = "orange";
@@ -81,7 +81,7 @@ namespace NET.Processor.API.Controllers
                 });
            }
 
-           graphEdges = _relationsGraphMapper.MapItemsToEdges(methodListItems);
+           graphEdges = _relationsGraphMapper.MapItemsToEdges(methodAndClassesListItems);
 
            var relationGraph = new Root
            {
@@ -113,14 +113,12 @@ namespace NET.Processor.API.Controllers
             // var methodsTree = RelationsGraph.BuildTree(selectedItems.Where(item => item.GetType().Name == ItemType.Method.ToString()).ToList());
             // Select specific assets that should be sent back to frontend
 
-            /*
             var solutionAssets = new solutionInfo
             {
-                Projects = selectedItems.Where(item => item.GetType().Name == ItemType.Project.ToString()),
-                Documents = selectedItems.Where(item => item.GetType().Name == ItemType.Document.ToString())
+               // Projects = selectedItems.Where(item => item.GetType().Name == ItemType.Project.ToString()),
+               // Documents = selectedItems.Where(item => item.GetType().Name == ItemType.Document.ToString())
             };
-            */
-
+ 
             return Ok(solutionAssets);
         }
 
