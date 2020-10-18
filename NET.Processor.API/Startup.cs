@@ -32,12 +32,13 @@ namespace NETWebTest
 
             services.AddCors();
             services.AddAutoMapper(typeof(RelationsGraphDTO));
+
             #region Services
-            services.AddScoped<ISolutionService, SolutionService>();
-            services.AddScoped<ICommentService, CommentService>();
+                services.AddSingleton<ISolutionService, SolutionService>();
+                services.AddSingleton<ICommentService, CommentService>();
             #endregion
             #region Mappers
-            services.AddScoped<IRelationsGraphMapper, RelationsGraphMapper>();
+            services.AddSingleton<IRelationsGraphMapper, RelationsGraphMapper>();
             #endregion
         }
 

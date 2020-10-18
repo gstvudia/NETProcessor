@@ -30,6 +30,8 @@ namespace NET.Processor.Core.Services
     {
         private readonly ICommentService _commentService;
         private readonly IConfiguration _configuration;
+        private Solution solution = null;
+        private string currentSolutionPath = "";
 
         public SolutionService(ICommentService commentService, IConfiguration configuration)
         {
@@ -47,13 +49,20 @@ namespace NET.Processor.Core.Services
             //);
         }
 
-        public async Task<Solution> LoadSolution(string solutionPath)
+        public async Task<Solution> LoadSolution(string newSolutionPath)
         {
+            // Skip loading of solution, if solution has already been loaded
+            if (solution != null && newSolutionPath == currentSolutionPath)
+            {
+                return solution;
+            }
+
             var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
             var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
             string path = string.Empty;
+            currentSolutionPath = newSolutionPath;
 
-            switch (solutionPath)
+            switch (newSolutionPath)
             {
                 case "CleanArchitecture":
                     path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
@@ -63,8 +72,7 @@ namespace NET.Processor.Core.Services
                     break;
             }
 
-            Solution solution = null;
-            using (var msWorkspace = MSBuildWorkspace.Create())
+            using (var msWorkspace = CreateMSBuildWorkspace())
             {
                 try
                 {                    
@@ -78,7 +86,20 @@ namespace NET.Processor.Core.Services
             
                 return solution;
             }
+        }
 
+        private MSBuildWorkspace CreateMSBuildWorkspace()
+        {
+            MSBuildWorkspace msWorkspace = null;
+
+            try
+            {
+                msWorkspace = MSBuildWorkspace.Create();
+            } catch(Exception e) {
+                Console.WriteLine(e);
+            }
+
+            return msWorkspace;
         }
 
         public IEnumerable<Item> GetSolutionItems(Solution solution, Filter filter)

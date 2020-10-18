@@ -43,6 +43,7 @@ namespace NET.Processor.API.Controllers
             return true;
         }
 
+
         [HttpPost("ProcessSolution")]
         public async Task<IActionResult> ProcessSolution([FromBody] WebHook webHook)
         {
@@ -92,12 +93,12 @@ namespace NET.Processor.API.Controllers
            return Ok(relationGraph);
         }
 
-        [HttpGet("GetSolution")]
-        public async Task<IActionResult> GetSolutionItems([FromQuery] string solutionName)
+        [HttpGet("GetSolutionAssets")]
+        public async Task<IActionResult> GetSolutionAssets([FromQuery] string solutionName)
         {
-            // Load complete solution and all assets
+            solutionName = "TestProject";
+            // Load solution assets
             var solution = await _solutionService.LoadSolution(solutionName);
-
             // Walk through solution nodes and select nodes / assets (project, document) based on filter
             var selectedItems = _solutionService.GetSolutionItems(solution, new Filter()).ToList();
             // Build relationship graph for methods based on filtered / selected nodes
