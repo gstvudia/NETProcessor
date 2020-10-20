@@ -61,15 +61,17 @@ namespace NET.Processor.API.Controllers
             var solution = await _solutionService.LoadSolution(path);
             var listItems =  _solutionService.GetSolutionItems(solution, filter).ToList();
 
-            var methodAndClassesListItems = RelationsGraph.BuildTree(listItems)
+            var lististItems = RelationsGraph.BuildTree(listItems)
                 .Where(item => item.GetType().Name == ItemType.Class.ToString() || 
-                       item.GetType().Name == ItemType.Method.ToString())
+                       item.GetType().Name == ItemType.Method.ToString() ||
+                       item.GetType().Name == ItemType.Comment.ToString() ||
+                       item.GetType().Name == ItemType.Namespace.ToString())
                 .ToList();
 
            List<Node> graphNodes= new List<Node>();
            List<Edge> graphEdges= new List<Edge>();
            NodeData nodeData = new NodeData();
-           foreach (var item in methodAndClassesListItems)
+           foreach (var item in listItems)
            {
                 nodeData = _mapper.Map<NodeData>(item);
                 nodeData.colorCode = "orange";
@@ -82,7 +84,7 @@ namespace NET.Processor.API.Controllers
                 });
            }
 
-           graphEdges = _relationsGraphMapper.MapItemsToEdges(methodAndClassesListItems);
+           graphEdges = _relationsGraphMapper.MapItemsToEdges(listItems);
 
            var relationGraph = new Root
            {

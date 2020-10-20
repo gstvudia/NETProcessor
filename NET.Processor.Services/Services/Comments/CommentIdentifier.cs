@@ -2,16 +2,22 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using NET.Processor.Core.Helpers;
 using NET.Processor.Core.Models.RelationsGraph.Item;
+using ReactiveUI;
 
 namespace NET.Processor.Core.Services
 {
 	public class CommentIdentifier
 	{
 		private readonly Predicate<string> _commentMatcher;
+		private static IEnumerable<KeyValuePair<string, int>> ItemNames;
+
 		public CommentIdentifier(Predicate<string> commentMatcher)
 		{
 			if (commentMatcher == null)
@@ -51,9 +57,11 @@ namespace NET.Processor.Core.Services
 			}
 		}
 
-		public IEnumerable<Comment> GetComments(SyntaxNode root)
+		public IEnumerable<Comment> GetComments(SyntaxNode root, IEnumerable<KeyValuePair<string, int>> itemNames)
         {
 			var comments = new List<Comment>();
+			ItemNames = itemNames;
+
 			var commentLocatingVisitor = new CommentLocatingVisitor(
 				comment =>
 				{
@@ -62,6 +70,7 @@ namespace NET.Processor.Core.Services
 				}
 			);
 			commentLocatingVisitor.Visit(root);
+
 			return comments;
 		}
 
@@ -117,39 +126,74 @@ namespace NET.Processor.Core.Services
 
 			protected override void VisitTrivia(SyntaxTrivia trivia)
 			{
+				// Add new comment if trivia contains one of the values allowed in _commentTypes
 				if (_commentTypes.Contains(trivia.Kind()))
 				{
-					string triviaContent;
-					using (var writer = new StringWriter())
-					{
-						trivia.WriteTo(writer);
-						triviaContent = writer.ToString();
-					}
-
-					// Check if comment is not in the list of disallowed values
-					if(!OmitCommentFilter(triviaContent))
-                    {
-						// Note: When looking for the containingMethodOrPropertyIfAny, we want MemberDeclarationSyntax types such as ConstructorDeclarationSyntax, MethodDeclarationSyntax,
-						// IndexerDeclarationSyntax, PropertyDeclarationSyntax but NamespaceDeclarationSyntax and TypeDeclarationSyntax also inherit from MemberDeclarationSyntax and we
-						// don't want those
-						var containingNode = trivia.Token.Parent;
-						var containingMethodOrPropertyIfAny = TryToGetContainingNode<MemberDeclarationSyntax>(
-							containingNode,
-							n => !(n is NamespaceDeclarationSyntax) && !(n is TypeDeclarationSyntax)
-						);
-						var containingTypeIfAny = TryToGetContainingNode<TypeDeclarationSyntax>(containingNode);
-						var containingNameSpaceIfAny = TryToGetContainingNode<NamespaceDeclarationSyntax>(containingNode);
-						_commentLocated(new Comment(
-							trivia.SyntaxTree.GetLineSpan(trivia.Span).StartLinePosition.Line,
-							triviaContent,
-							containingMethodOrPropertyIfAny,
-							containingTypeIfAny,
-							containingNameSpaceIfAny
-						));
-					}
+					addComment(trivia);
 				}
 				base.VisitTrivia(trivia);
 			}
+
+			private void addComment(SyntaxTrivia trivia)
+            {
+				string triviaContent;
+				using (var writer = new StringWriter())
+				{
+					trivia.WriteTo(writer);
+					triviaContent = writer.ToString();
+				}
+
+				// Check if comment is not in the list of disallowed values
+				if (!OmitCommentFilter(triviaContent))
+				{
+					// Note: When looking for the containingMethodOrPropertyIfAny, we want MemberDeclarationSyntax types such as ConstructorDeclarationSyntax, MethodDeclarationSyntax,
+					// IndexerDeclarationSyntax, PropertyDeclarationSyntax but NamespaceDeclarationSyntax and TypeDeclarationSyntax also inherit from MemberDeclarationSyntax and we
+					// don't want those
+					var containingNode = trivia.Token.Parent;
+					KeyValuePair<string, int> assignedProperty = new KeyValuePair<string, int>();
+
+					var containingMethodOrPropertyIfAny = TryToGetContainingNode<MemberDeclarationSyntax>(
+						containingNode,
+						n => !(n is NamespaceDeclarationSyntax) && !(n is TypeDeclarationSyntax)
+					);
+					var containingTypeIfAny = TryToGetContainingNode<TypeDeclarationSyntax>(containingNode);
+					var containingNameSpaceIfAny = TryToGetContainingNode<NamespaceDeclarationSyntax>(containingNode);
+
+					if (containingMethodOrPropertyIfAny != null)
+					{
+						assignedProperty = getIdOfPropertyAssignedToComment(containingMethodOrPropertyIfAny, ItemNames);
+					}
+					else if (containingTypeIfAny != null)
+					{
+						assignedProperty = getIdOfPropertyAssignedToComment(containingTypeIfAny, ItemNames);
+					}
+					else if (containingNameSpaceIfAny != null)
+					{
+						assignedProperty = getIdOfPropertyAssignedToComment(containingNameSpaceIfAny, ItemNames);
+					}
+
+					_commentLocated(new Comment(
+						trivia.SyntaxTree.GetLineSpan(trivia.Span).StartLinePosition.Line,
+						triviaContent,
+						assignedProperty.Value,
+						assignedProperty.Key,
+						containingMethodOrPropertyIfAny,
+						containingTypeIfAny,
+						containingNameSpaceIfAny
+					));
+				}
+			}
+
+			// Currently, this linq search takes into consideration only the first match it finds! 
+			// Under certain circumstances, this might not be enough, there might have to be a more extensive search needed
+			// Right now it is assumed that linq searches for the Method / Class / Namespace header of that comment!
+			private KeyValuePair<string, int> getIdOfPropertyAssignedToComment(MemberDeclarationSyntax propertyContent, IEnumerable<KeyValuePair<string, int>> itemNames)
+            {
+				var content = propertyContent.GetText().ToString();
+				KeyValuePair<string, int> propertyKeyPair = itemNames
+						.Where(c => Regex.IsMatch(content, @"\b" + c.Key + @"\b")).First();
+				return propertyKeyPair;
+            }
 
 			private T TryToGetContainingNode<T>(SyntaxNode node, Predicate<T> optionalFilter = null) where T : SyntaxNode
 			{

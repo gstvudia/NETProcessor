@@ -9,11 +9,12 @@ namespace NET.Processor.Core.Interfaces
     public interface ICommentService
     {
         /// <summary>
-        /// Finds all references for a comment inside the solution
+        /// Finds all references for a comment inside the solution, it assigns the comment to specific property ids from KeyValuePair itemNames 
         /// </summary>
-        /// <param name="projects"></param>
-        /// <returns>Comments</returns>
-        IEnumerable<Comment> GetCommentReferences(IEnumerable<FileInfo> csharpCompileFileList);
-        IEnumerable<Comment> GetCommentReferences(SyntaxNode rootNode);
+        /// <param name="rootNode"></param>
+        /// <param name="itemNames"></param>
+        /// <returns>Comment</returns>
+        // IEnumerable<Comment> GetCommentReferences(IEnumerable<FileInfo> csharpCompileFileList);
+        IEnumerable<Comment> GetCommentReferences(SyntaxNode rootNode, IEnumerable<KeyValuePair<string, int>> itemNames);
     }
 }

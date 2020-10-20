@@ -5,6 +5,8 @@
         Method,
         NodeProject,
         NodeDocument,
-        Class
+        Class, 
+        Comment,
+        Namespace
     }
 }

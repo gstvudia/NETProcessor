@@ -4,11 +4,11 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
     public class NodeProject : Item
     {
-        public Guid Guid { get; set; }
+        public new Guid Id { get; set; }
 
         public NodeProject(Guid guid, string name)
         {
-            Guid = guid;
+            Id = guid;
             Name = name;
         }
     }

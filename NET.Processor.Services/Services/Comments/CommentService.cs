@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using NET.Processor.Core.Helpers;
 using NET.Processor.Core.Interfaces;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using System;
@@ -21,11 +22,16 @@ namespace NET.Processor.Core.Services
 			_env = env;
 		}
 
-        public IEnumerable<Comment> GetCommentReferences(SyntaxNode rootNode)
+        public IEnumerable<Comment> GetCommentReferences(SyntaxNode rootNode, IEnumerable<KeyValuePair<string, int>> itemNames)
         {
 			List<Comment> comments = new List<Comment>();
 
-			foreach (var comment in _commentIdentifier.GetComments(rootNode.SyntaxTree.GetRoot()))
+			if (itemNames.IsNullOrEmpty())
+            {
+				throw new Exception("KeyValuePair<string, int> itemNames passed to Comment Service may not be empty!");
+			}
+				
+			foreach (var comment in _commentIdentifier.GetComments(rootNode.SyntaxTree.GetRoot(), itemNames))
 			{
 				// Print additional console information in dev mode
 				if (_env.IsDevelopment())
@@ -37,6 +43,7 @@ namespace NET.Processor.Core.Services
 			return comments;
 		}
 
+		/*
         IEnumerable<Comment> ICommentService.GetCommentReferences(IEnumerable<FileInfo> csharpCompileFileList)
 		{
 			List<Comment> comments = new List<Comment>();
@@ -57,6 +64,7 @@ namespace NET.Processor.Core.Services
 
 			return comments;
 		}
+		*/
 
 		void PrintComment(Comment comment)
         {

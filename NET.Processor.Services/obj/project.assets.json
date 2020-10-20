@@ -6870,23 +6870,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Gustavo Melo\\.nuget\\packages\\": {},
-    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
+    "C:\\Users\\Benny\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+      "projectUniqueName": "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
       "projectName": "NET.Processor.Core",
-      "projectPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
-      "packagesPath": "C:\\Users\\Gustavo Melo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Gustavo Melo\\source\\repos\\NETProcessor\\NET.Processor.Services\\obj\\",
+      "projectPath": "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NET.Processor.Services\\NET.Processor.Core.csproj",
+      "packagesPath": "C:\\Users\\Benny\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Benny\\source\\repos\\NETProcessor\\NET.Processor.Services\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-      ],
       "configFilePaths": [
-        "C:\\Users\\Gustavo Melo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Benny\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

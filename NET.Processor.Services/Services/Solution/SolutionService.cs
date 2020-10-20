@@ -167,11 +167,6 @@ namespace NET.Processor.Core.Services
                         IEnumerable<Item> filteredMethods = RelationsGraphFilter.FilterMethods(methods, filter);
                         list.AddRange(filteredMethods);
 
-                        var commentReferences = _commentService.GetCommentReferences(root);
-                        var comments = commentReferences.Select(x => new Comment(x.LineNumber, x.Name, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
-                                .ToList();
-                        list.AddRange(comments);
-
                         /*
                         var interfaces = root.DescendantNodes()
                                              .OfType<InterfaceDeclarationSyntax>()
@@ -248,6 +243,16 @@ namespace NET.Processor.Core.Services
                         */
 
                         //End of document/class
+
+                        // Get all comments and assigns comment to specific property id from the item list
+                        var commentReferences = _commentService.GetCommentReferences(root, list
+                                                .Where(x => x.GetType() == typeof(Class) || 
+                                                x.GetType() == typeof(Method) || 
+                                                x.GetType() == typeof(Namespace))
+                                                .Select(x => new KeyValuePair<string, int>(x.Name, x.Id)));
+                        var comments = commentReferences.Select(x => new Comment(x.LineNumber, x.Name, x.AttachedPropertyId, x.AttachedPropertyName, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
+                                .ToList();
+                        list.AddRange(comments);
                     }
                 }
             }
