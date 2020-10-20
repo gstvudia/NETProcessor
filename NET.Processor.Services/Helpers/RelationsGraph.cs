@@ -13,14 +13,13 @@ using DynamicData;
 using DynamicData.Binding;
 using System.ComponentModel;
 using ReactiveUI;
+using NET.Processor.Core.Models.RelationsGraph.Item;
 
 namespace NET.Processor.Core.Helpers
 {
     public static class RelationsGraph
     {
-       
-
-
+      
         public static int GetLineNumber(this ConstructorDeclarationSyntax node)
         {
             return node.SyntaxTree.GetLineSpan(node.Identifier.Span).StartLinePosition.Line + 1;
@@ -158,16 +157,6 @@ namespace NET.Processor.Core.Helpers
             result.ChildList.AddRange(results);
             return result;
         }
-
-
-
-
-
-
-
-
-
-
 
     }
 }

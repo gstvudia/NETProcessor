@@ -105,9 +105,5 @@ namespace NET.Processor.Core.Models
         }
 
         protected abstract string MappingDeclarationSyntaxCore();
-
-
-
-
     }
 }

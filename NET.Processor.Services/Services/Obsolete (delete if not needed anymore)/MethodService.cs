@@ -12,18 +12,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
-
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Configuration;
 
 namespace NET.Processor.Core.Services
 {
     public class MethodService : IMethodService
     {
+        private readonly IConfiguration _configuration;
 
-        public MethodService()
+        public MethodService(IConfiguration configuration)
         {
-
+            _configuration = configuration;
         }
 
+        /*
         public IEnumerable<Method> GetAllMethods(Solution solution)
         {
             List<Method> Methods = new List<Method>();
@@ -32,7 +35,7 @@ namespace NET.Processor.Core.Services
             {
                 //TODO: THINK OF A BETTER SOLUTION FOR THIS
                 //DO A UNIFIER FOR VB AND C#, TREAT .NET AS UNIQUE
-                if(project.Language == "C#") {
+                if(project.Language == _configuration["Framework:Language"]) {
                     foreach (var documentClass in project.Documents)
                     {
                         var model = documentClass.GetSemanticModelAsync().Result;
@@ -43,7 +46,7 @@ namespace NET.Processor.Core.Services
                         if(!IsInterface.Any())
                         {
                             try
-                            { //meu
+                            {
 
                                 var members = methodInvocation.DescendantNodes().OfType<MemberDeclarationSyntax>().Distinct();
 
@@ -56,7 +59,9 @@ namespace NET.Processor.Core.Services
                                     }
                                 }
                             }
-                            catch (Exception exception){}
+                            catch (Exception exception){
+                                Console.WriteLine(exception);
+                            }
                         }
                     }
                 }                    
@@ -64,6 +69,7 @@ namespace NET.Processor.Core.Services
             
             return Methods;
         }
+        */
 
         
         public IEnumerable<MethodReference> GetMethodReferencesByName(string methodName,Solution solution)
@@ -77,7 +83,7 @@ namespace NET.Processor.Core.Services
             {
                 //TODO: THINK OF A BETTER SOLUTION FOR THIS
                 //DO A UNIFIER FOR VB AND C#, TREAT .NET AS UNIQUE
-                if (project.Language == "C#")
+                if (project.Language == _configuration["Framework:Language"])
                 {
                     foreach (var document in project.Documents)
                     {
@@ -99,6 +105,7 @@ namespace NET.Processor.Core.Services
                             }
                             catch (Exception exception)
                             {
+                                Console.WriteLine(exception.Message);
                                 // Swallow the exception of type cast. 
                                 // Could be avoided by a better filtering on above linq.
                                 continue;

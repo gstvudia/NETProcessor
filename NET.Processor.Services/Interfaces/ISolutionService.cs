@@ -3,6 +3,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NET.Processor.Core.Models;
+using NET.Processor.Core.Services;
+using NET.Processor.Core.Models.RelationsGraph.Item;
 
 namespace NET.Processor.Core.Interfaces
 {
@@ -13,14 +15,14 @@ namespace NET.Processor.Core.Interfaces
         /// </summary>
         /// <param name="SolutionPath">Path of the .sln file</param>
         /// <returns>Projects</returns>
-        Task<Solution> GetSolutionFromRepo(WebHook webHook);
+        List<string> GetSolutionFromRepo(WebHook webHook);
 
         /// <summary>
         /// Loads solution from path
         /// </summary>
         /// <param name="SolutionPath">Path of the .sln file</param>
         /// <returns>Projects</returns>
-        Solution LoadSolution(string path);
+        Task<Solution> LoadSolution(string path);
 
         /// <summary>
         /// Loads files from solution path
@@ -29,6 +31,6 @@ namespace NET.Processor.Core.Interfaces
         /// <returns>FilePaths</returns>
         //IEnumerable<FileInfo> LoadFilePaths(string SolutionPath);
 
-        List<Item> GetSolutionItems(Solution solution);
+        IEnumerable<Item> GetSolutionItems(Solution solution, Filter filter);
     }
 }

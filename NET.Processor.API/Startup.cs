@@ -1,13 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using NET.Processor.API.Helpers.Interfaces;
+using NET.Processor.API.Helpers.Mappers;
+using NET.Processor.API.Models.DTO;
 using NET.Processor.Core.Interfaces;
 using NET.Processor.Core.Services;
 
@@ -26,9 +26,20 @@ namespace NETWebTest
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(options =>
+                options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            );
+
             services.AddCors();
-            services.AddScoped<ISolutionService, SolutionService>();
+            services.AddAutoMapper(typeof(RelationsGraphDTO));
+
+            #region Services
+                services.AddSingleton<ISolutionService, SolutionService>();
+                services.AddSingleton<ICommentService, CommentService>();
+            #endregion
+            #region Mappers
+            services.AddSingleton<IRelationsGraphMapper, RelationsGraphMapper>();
+            #endregion
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
