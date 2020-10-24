@@ -10,6 +10,7 @@ using NET.Processor.API.Helpers.Mappers;
 using NET.Processor.API.Models.DTO;
 using NET.Processor.Core.Interfaces;
 using NET.Processor.Core.Services;
+using NET.Processor.Core.Services.Database;
 
 namespace NETWebTest
 {
@@ -34,8 +35,9 @@ namespace NETWebTest
             services.AddAutoMapper(typeof(RelationsGraphDTO));
 
             #region Services
-                services.AddSingleton<ISolutionService, SolutionService>();
-                services.AddSingleton<ICommentService, CommentService>();
+                services.AddScoped<ISolutionService, SolutionService>();
+                services.AddScoped<ICommentService, CommentService>();
+                services.AddScoped<IDatabaseService, DatabaseService>();
             #endregion
             #region Mappers
             services.AddSingleton<IRelationsGraphMapper, RelationsGraphMapper>();

@@ -1,23 +1,29 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using MongoDB.Bson.Serialization.Attributes;
 using System;
 
 namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
+    // BSON Annotation means that Database (MongoDB) ignores any properties it cannot recognize
+    [BsonIgnoreExtraElements]
     public class Comment : Item
     {
         /// <summary>
         /// This will always be a positive integer
         /// </summary>
+        [BsonElement("LineNumber")]
         public int LineNumber { get; private set; }
 
         /// <summary>
         ///  This is the id of the source (method, class, field etc.) that this comment is attached to
         /// </summary>
+        [BsonElement("AttachedPropertyId")]
         public int AttachedPropertyId { get; private set; }
 
         /// <summary>
         ///  This is the name of the source (method, class, field etc.) that this comment is attached to
         /// </summary>
+        [BsonElement("AttachedPropertyName")]
         public string AttachedPropertyName { get; private set; }
 
         /// <summary>

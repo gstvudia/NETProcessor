@@ -29,13 +29,15 @@ namespace NET.Processor.Core.Services
     public class SolutionService : ISolutionService
     {
         private readonly ICommentService _commentService;
+        private readonly IDatabaseService _databaseService;
         private readonly IConfiguration _configuration;
         private Solution solution = null;
         private string currentSolutionPath = "";
 
-        public SolutionService(ICommentService commentService, IConfiguration configuration)
+        public SolutionService(ICommentService commentService, IDatabaseService databaseService, IConfiguration configuration)
         {
             _commentService = commentService;
+            _databaseService = databaseService;
             _configuration = configuration;
 
             if (!MSBuildLocator.IsRegistered)
@@ -82,7 +84,9 @@ namespace NET.Processor.Core.Services
                     ImmutableList<WorkspaceDiagnostic> diagnostics = msWorkspace.Diagnostics;
 
                 }
-                catch (Exception){}
+                catch (Exception ex) {
+                    
+                }
             
                 return solution;
             }
@@ -102,7 +106,7 @@ namespace NET.Processor.Core.Services
             return msWorkspace;
         }
 
-        public IEnumerable<Item> GetSolutionItems(Solution solution, Filter filter)
+        public IEnumerable<Item> GetSolutionItems(Solution solution)
         {
             SyntaxNode root = null;
             var list = new List<Item>();
@@ -110,15 +114,11 @@ namespace NET.Processor.Core.Services
             List<EndRegionDirectiveTriviaSyntax> endRegionDirectives = null;
             EndRegionDirectiveTriviaSyntax endNode = null;
 
-            // Selecting Projects based on Project Filter
-            IEnumerable<Project> selectedProjects = RelationsGraphFilter.FilterSolutions(solution, filter);
-            foreach (var project in selectedProjects)
+            foreach (var project in solution.Projects)
             {
                 if (project.Language == _configuration["Framework:Language"])
                 {
-                    // Selecting Documents based on Document Filter
-                    IEnumerable<Document> selectedDocuments = RelationsGraphFilter.FilterDocuments(project, filter);
-                    foreach (var document in selectedDocuments)
+                    foreach (var document in project.Documents)
                     {
                         root = document.GetSyntaxRootAsync().Result;
 
@@ -134,14 +134,14 @@ namespace NET.Processor.Core.Services
                         }
 
                         // TODO: There must be a proper ID assigned to each project
-                        var projects = selectedProjects.Select(x => new NodeProject(x.Id.Id, x.Name.ToString()))
+                        var projects = solution.Projects.Select(x => new NodeProject(x.Id.Id, x.Name.ToString()))
                                      .ToList();
                         list.AddRange(projects);
 
-                        var documents = selectedDocuments.Select(x => new NodeDocument(x.Id.Id, x.Name.Split('.')[0].ToString()))
+                        var documents = project.Documents.Select(x => new NodeDocument(x.Id.Id, x.Name.Split('.')[0].ToString()))
                                      .ToList();
                         list.AddRange(documents);
-
+                        
                         var namespaces = root.DescendantNodes()
                                      .OfType<NamespaceDeclarationSyntax>()
                                      .Select(x => new Namespace(root.DescendantNodes().IndexOf(x), x.Name.ToString(), x.Span))
@@ -162,10 +162,7 @@ namespace NET.Processor.Core.Services
                                           .Select(x => new Method(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, x.Span))
                                           .Where(x => !list.Any(l => l.Name == x.Name))
                                           .ToList();
-
-                        // Select found methods based on Methods filter
-                        IEnumerable<Item> filteredMethods = RelationsGraphFilter.FilterMethods(methods, filter);
-                        list.AddRange(filteredMethods);
+                        list.AddRange(methods);
 
                         /*
                         var interfaces = root.DescendantNodes()

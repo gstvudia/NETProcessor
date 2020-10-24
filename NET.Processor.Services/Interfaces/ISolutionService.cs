@@ -31,6 +31,6 @@ namespace NET.Processor.Core.Interfaces
         /// <returns>FilePaths</returns>
         //IEnumerable<FileInfo> LoadFilePaths(string SolutionPath);
 
-        IEnumerable<Item> GetSolutionItems(Solution solution, Filter filter);
+        IEnumerable<Item> GetSolutionItems(Solution solution);
     }
 }
