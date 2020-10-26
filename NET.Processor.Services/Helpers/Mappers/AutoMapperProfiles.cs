@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using NET.Processor.API.Models.DTO;
-using NET.Processor.Core.Models;
 using NET.Processor.Core.Models.RelationsGraph.Item;
-using System.Linq;
+using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 
-namespace NET.Processor.API.Helpers.Mappers
+namespace NET.Processor.Core.Helpers.Mappers
 {
     public class AutoMapperProfiles : Profile
     {

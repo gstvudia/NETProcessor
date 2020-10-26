@@ -4,8 +4,6 @@ using System;
 
 namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
-    // BSON Annotation means that Database (MongoDB) ignores any properties it cannot recognize
-    [BsonIgnoreExtraElements]
     public class Comment : Item
     {
         /// <summary>
@@ -29,16 +27,19 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         /// <summary>
         /// This may be null since the comment may not exist within a method or property
         /// </summary>
+        [BsonIgnore]
         public MemberDeclarationSyntax MethodOrPropertyIfAny { get; private set; }
 
         /// <summary>
         /// This may be null since the comment may not exist within an class, interface or struct
         /// </summary>
+        [BsonIgnore]
         public TypeDeclarationSyntax TypeIfAny { get; private set; }
 
         /// <summary>
         /// This may be null since the comment may not exist within a namespace
         /// </summary>
+        [BsonIgnore]
         public NamespaceDeclarationSyntax NamespaceIfAny { get; private set; }
 
         public Comment(int lineNumber, string content, int attachedPropertyId, string attachedPropertyName, MemberDeclarationSyntax methodOrPropertyIfAny, TypeDeclarationSyntax typeIfAny, NamespaceDeclarationSyntax namespaceIfAny)

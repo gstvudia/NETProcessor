@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using NET.Processor.API.Helpers.Interfaces;
-using NET.Processor.API.Helpers.Mappers;
-using NET.Processor.API.Models.DTO;
+using NET.Processor.Core.Helpers.Interfaces;
+using NET.Processor.Core.Helpers.Mappers;
 using NET.Processor.Core.Interfaces;
+using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using NET.Processor.Core.Services;
 using NET.Processor.Core.Services.Database;
 

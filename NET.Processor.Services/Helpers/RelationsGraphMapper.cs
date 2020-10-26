@@ -1,13 +1,11 @@
-﻿using NET.Processor.API.Helpers.Interfaces;
-using NET.Processor.API.Models.DTO;
-using NET.Processor.Core.Models;
+﻿using NET.Processor.Core.Helpers.Interfaces;
 using NET.Processor.Core.Models.RelationsGraph.Item;
+using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace NET.Processor.API.Helpers.Mappers
+namespace NET.Processor.Core.Helpers.Mappers
 {
     public class RelationsGraphMapper : IRelationsGraphMapper
     {

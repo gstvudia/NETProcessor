@@ -1,25 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using NET.Processor.Core.Models;
-using Microsoft.CodeAnalysis;
 using NET.Processor.Core.Interfaces;
-using System.IO;
-using NET.Processor.Core.Services;
 using AutoMapper;
 using System.Linq;
-using NET.Processor.API.Models.DTO;
-using NET.Processor.API.Helpers.Mappers;
-using DynamicData;
-using NET.Processor.API.Helpers.Interfaces;
-using System.Collections;
+using NET.Processor.Core.Models.RelationsGraph.Item.Base;
+using NET.Processor.Core.Helpers.Interfaces;
 using NET.Processor.Core.Helpers;
-using NET.Processor.Core.Models.RelationsGraph.Item;
-using MongoDB.Driver.Core.Operations;
-using NET.Processor.Core.Services.Database;
 
 namespace NET.Processor.API.Controllers
 {
@@ -61,37 +49,12 @@ namespace NET.Processor.API.Controllers
         {
             var solution = await _solutionService.LoadSolution(solutionName);
             var listItems =  _solutionService.GetSolutionItems(solution).ToList();
-
-            // Store collection in Database
-            _databaseService.StoreCollection(solutionName, listItems);
-            // Remark: No need to close db again, handled by database engine (MongoDB)
-
-           return Ok("Solution has been processed successfully");
-        }
-
-        [HttpGet("GetSolution/{solutionName}")]
-        public IEnumerable<Item> GetSolution(string solutionName)
-        {
-            // TODO: This Filter should later be served from Filter functionality on the Frontend
-            var filter = new Filter();
-            /* filter.Projects.Add("TestProject");
-            filter.Documents.Add("Program1");
-            filter.Documents.Add("Program2");
-            filter.Methods.Add("Main");
-            filter.Methods.Add("Program1TestFunction1");*/
-
-            IEnumerable<Item> listItems = _databaseService.GetCollection(solutionName);
-
-            listItems = RelationsGraph.BuildTree(listItems.ToList())
-                .Where(item => item.GetType().Name == ItemType.Class.ToString() ||
-                       item.GetType().Name == ItemType.Method.ToString()) //||
-                                                                          //item.GetType().Name == ItemType.Comment.ToString() ||
-                                                                          //item.GetType().Name == ItemType.Namespace.ToString())
-            .ToList();
+            listItems = RelationsGraph.BuildTree(listItems.Where(item => item.GetType().Name == ItemType.Method.ToString()).ToList());
 
             List<Node> graphNodes = new List<Node>();
             List<Edge> graphEdges = new List<Edge>();
             NodeData nodeData = new NodeData();
+
             foreach (var item in listItems)
             {
                 nodeData = _mapper.Map<NodeData>(item);
@@ -113,7 +76,26 @@ namespace NET.Processor.API.Controllers
                 edges = graphEdges
             };
 
-            return listItems;
+            // Store collection in Database
+            _databaseService.StoreCollection(solutionName, relationGraph);
+            // Remark: No need to close db again, handled by database engine (MongoDB)
+
+           return Ok("Solution has been processed successfully");
+        }
+
+        [HttpGet("GetSolution/{solutionName}")]
+        public async Task<IActionResult> GetSolution(string solutionName)
+        {
+            // TODO: This Filter should later be served from Filter functionality on the Frontend
+            var filter = new Filter();
+            /* filter.Projects.Add("TestProject");
+            filter.Documents.Add("Program1");
+            filter.Documents.Add("Program2");
+            filter.Methods.Add("Main");
+            filter.Methods.Add("Program1TestFunction1");*/
+
+            // Root relationgraph = await _databaseService.GetCollection(solutionName);
+            return Ok(null);
         }
 
         /*

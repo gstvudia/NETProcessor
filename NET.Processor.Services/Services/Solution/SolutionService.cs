@@ -132,15 +132,6 @@ namespace NET.Processor.Core.Services
 
                             list.Add(new Region(startNode.ToString(), new TextSpan(startNode.Span.Start, endNode.Span.End - startNode.Span.Start)));
                         }
-
-                        // TODO: There must be a proper ID assigned to each project
-                        var projects = solution.Projects.Select(x => new NodeProject(x.Id.Id, x.Name.ToString()))
-                                     .ToList();
-                        list.AddRange(projects);
-
-                        var documents = project.Documents.Select(x => new NodeDocument(x.Id.Id, x.Name.Split('.')[0].ToString()))
-                                     .ToList();
-                        list.AddRange(documents);
                         
                         var namespaces = root.DescendantNodes()
                                      .OfType<NamespaceDeclarationSyntax>()
@@ -252,7 +243,15 @@ namespace NET.Processor.Core.Services
                         list.AddRange(comments);
                     }
                 }
+                // Get all documents from one project and add them to list
+                var documents = project.Documents.Select(x => new NodeDocument(x.Id.Id, x.Name.Split('.')[0].ToString()))
+                                .ToList();
+                list.AddRange(documents);
             }
+            // TODO: Reason about whether it makes sense to also add another entry per project in mongodb
+            var projects = solution.Projects.Select(x => new NodeProject(x.Id.Id, x.Name.ToString()))
+             .ToList();
+            list.AddRange(projects);
 
             return list;
         }

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using NET.Processor.Core.Interfaces;
 using NET.Processor.Core.Models.RelationsGraph.Item;
+using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 
 namespace NET.Processor.Core.Services.Database
 {
@@ -33,39 +35,37 @@ namespace NET.Processor.Core.Services.Database
             }
         }
 
-        public void StoreCollection(string solutionName, IEnumerable<Item> itemList)
+        public void StoreCollection(string solutionName, Root relationGraph)
         {
             try
             {
+                // If project exists, remove it and recreate it in the database
+                if(database.GetCollection<Item>(solutionName) != null)
+                {
+                    database.DropCollection(solutionName);
+                }
                 // Create collection name corresponding to project name
                 database.CreateCollection(solutionName);
                 // Get newly created collection from database based on project name
-                var collection = database.GetCollection<Item>(solutionName);
+                var collection = database.GetCollection<Root>(solutionName);
                 // Insert graph data into collection per project
-                collection.InsertMany(itemList);
+                collection.InsertOne(relationGraph);
             } catch(Exception e)
             {
                 throw new Exception(e.Message);
             }
         }
 
-        public IEnumerable<Item> GetCollection(string solutionName)
+        public async Task<IEnumerable<Item>> GetCollection(string solutionName)
         {
-            // Projection builder
-            var projectionBuilder = Builders<Item>.Projection;
-            var projection = projectionBuilder.Include(x => x.Id).Include(x => x.Name).Include(u => u.Span);
-            // Filter builder
-            var filterBuilder = Builders<Item>.Filter;
-            var filter = filterBuilder.Empty;
-
             try
             {
                 // Get collection based on project name
                 var collection = database.GetCollection<Item>(solutionName);
+                List<Item> itemList = null;
                 // Get cursor based on projection and filter builder
-                var itemCollections = collection.Find(filter).Project(projection).ToList();
-                // Convert what cursor found to List<Item> itemList
-                return null;
+                // await collection.Find(new BsonDocument()).ForEachAsync(x => itemList.Add()));
+                return itemList;
             } catch(Exception e)
             {
                 throw new Exception(e.Message);

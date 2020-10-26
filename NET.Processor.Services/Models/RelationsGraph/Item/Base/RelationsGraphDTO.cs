@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NET.Processor.API.Models.DTO
+namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
 {
-    class RelationsGraphDTO
+    public class RelationsGraphDTO
     {
         public Tuple<Int32, string> Nodes { get; set; }
         public Tuple<Int32, Int32> Edges { get; set; }

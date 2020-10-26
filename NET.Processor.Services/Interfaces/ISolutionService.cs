@@ -30,7 +30,6 @@ namespace NET.Processor.Core.Interfaces
         /// <param name="SolutionPath">Path of the .sln file</param>
         /// <returns>FilePaths</returns>
         //IEnumerable<FileInfo> LoadFilePaths(string SolutionPath);
-
         IEnumerable<Item> GetSolutionItems(Solution solution);
     }
 }

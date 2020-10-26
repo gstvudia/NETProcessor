@@ -7,19 +7,22 @@ using System.Text;
 
 namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
-    // BSON Annotation means that Database (MongoDB) ignores any properties it cannot recognize
-    [BsonIgnoreExtraElements]
     public class Item : IDisposable
     {
         [BsonId]
         public ObjectId databaseId { get; set; }
-
         [BsonElement("Id")]
         public int Id { get; set; }
         [BsonElement ("Name")]
         public string Name { get; set; }
+
+        [BsonIgnore]
         public TextSpan Span { get; set; }
+
+        [BsonIgnore]
         public Item Parent { get; set; }
+
+        [BsonIgnore]
         public List<Item> ChildList { get; } = new List<Item>();
 
         public Item()
