@@ -30,20 +30,39 @@ namespace NET.Processor.API.Controllers
             _relationsGraphMapper = relationsGraphMapper;
         }
 
-        [HttpGet("test")]
-        public bool Get()
+        /// <summary>
+        /// This call saves all Graph properties (Items) directly into the database to debug issues
+        /// </summary>
+        /// <param name="solutionName"></param>
+        /// <returns></returns>
+        [HttpGet("ProcessSolution/Test/{solutionName}")]
+        public async Task<IActionResult> ProcessSolutionTest(string solutionName)
         {
-            return true;
+            var solution = await _solutionService.LoadSolution(solutionName);
+            var listItems = _solutionService.GetSolutionItems(solution).ToList();
+            // Store collection in Database
+            _databaseService.StoreCollectionTest(solutionName + "-TEST", listItems);
+            // Remark: No need to close db again, handled by database engine (MongoDB)
+            return Ok("Solution (DEBUG / TEST) has been processed successfully, it can be found in the database under the name: " + solutionName);
         }
 
-        // This call is being made automatically through a Webhook
-        [HttpPost("ProcessSolution/Webhook")]
+
+        /// <summary>
+        /// This call processes the solution, it is called automatically via webhook
+        /// </summary>
+        /// <param name="webHook"></param>
+        /// <returns></returns>
+        [HttpPost("ProcessSolution/{solutionName}/Webhook")]
         public async Task<IActionResult> ProcessSolution([FromBody] WebHook webHook)
         {
             return Ok();
         }
 
-        // This call is being made manually through triggering on the platform
+        /// <summary>
+        /// This call processes the solution, it is done manually
+        /// </summary>
+        /// <param name="solutionName"></param>
+        /// <returns></returns>
         [HttpGet("ProcessSolution/{solutionName}")]
         public async Task<IActionResult> ProcessSolution(string solutionName)
         {
