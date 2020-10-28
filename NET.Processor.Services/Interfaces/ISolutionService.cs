@@ -15,14 +15,14 @@ namespace NET.Processor.Core.Interfaces
         /// </summary>
         /// <param name="SolutionPath">Path of the .sln file</param>
         /// <returns>Projects</returns>
-        List<string> GetSolutionFromRepo(WebHook webHook);
+        Task<Solution> LoadSolution(string path);
 
         /// <summary>
-        /// Loads solution from path
+        /// Load solution from repository
         /// </summary>
-        /// <param name="SolutionPath">Path of the .sln file</param>
-        /// <returns>Projects</returns>
-        Task<Solution> LoadSolution(string path);
+        /// <param name="repositoryName"></param>
+        /// <returns></returns>
+        Task<Solution> LoadSolutionFromRepository(WebHook webhook);
 
         /// <summary>
         /// Loads files from solution path

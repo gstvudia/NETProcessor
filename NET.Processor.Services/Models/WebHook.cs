@@ -8,6 +8,7 @@ namespace NET.Processor.Core.Models
     public class WebHook
     {
         public string RepositoryURL { get; set; }
+        public string SolutionName { get; set; }
         public string User { get; set; }
         public string Password { get; set; }
     }

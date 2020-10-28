@@ -23,6 +23,7 @@ using DynamicData;
 using Microsoft.Extensions.Configuration;
 using AutoMapper;
 using NET.Processor.Core.Models.RelationsGraph.Item;
+using LibGit2Sharp;
 
 namespace NET.Processor.Core.Services
 {
@@ -33,6 +34,8 @@ namespace NET.Processor.Core.Services
         private readonly IConfiguration _configuration;
         private Solution solution = null;
         private string currentSolutionPath = "";
+        private string homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
+        private string homePath = Environment.GetEnvironmentVariable("HOMEPATH");
 
         public SolutionService(ICommentService commentService, IDatabaseService databaseService, IConfiguration configuration)
         {
@@ -51,17 +54,34 @@ namespace NET.Processor.Core.Services
             //);
         }
 
+        /// <summary>
+        /// Get repository to load solution from
+        /// </summary>
+        /// <param name="repositoryName"></param>
+        /// <returns></returns>
+        public Task<Solution> LoadSolutionFromRepository(WebHook webhook)
+        {
+            string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\" + webhook.SolutionName;
+            try
+            {
+                var cloneOptions = new CloneOptions();
+                cloneOptions.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = webhook.User, Password = webhook.Password };
+                Repository.Clone(webhook.RepositoryURL, path, cloneOptions);
+            } catch(Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+            return null;
+        }
+
         public async Task<Solution> LoadSolution(string newSolutionPath)
         {
+            var path = string.Empty;
             // Skip loading of solution, if solution has already been loaded
             if (solution != null && newSolutionPath == currentSolutionPath)
             {
                 return solution;
             }
-
-            var homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
-            var homePath = Environment.GetEnvironmentVariable("HOMEPATH");
-            string path = string.Empty;
             currentSolutionPath = newSolutionPath;
 
             switch (newSolutionPath)
@@ -254,43 +274,6 @@ namespace NET.Processor.Core.Services
             list.AddRange(projects);
 
             return list;
-        }
-
-
-
-
-
-
-
-
-
-
-        // TODO: Decide if this is still needed, otherwise delete
-        public async Task<Stream> GetContentsFromRepo(string contentsUrl, HttpClient httpClient)
-        {
-            var repository = await httpClient.GetStreamAsync(contentsUrl);
-            return repository;
-        }
-
-        // TODO: Implement loading from Repo instead of locally
-        public List<string> GetSolutionFromRepo(WebHook webHook)
-        {
-            List<string> DirectoryFiles = new List<string>();
-            try
-            {
-                //CHECK IF FOLDER EXISTS ADN REMOVE FIRST
-                //Repository.Clone("https://github.com/ardalis/CleanArchitecture.git", Directory.GetParent(Directory.GetCurrentDirectory()).FullName + "/Clones");
-
-                //get file names or something like that and add on the list
-                //DirectoryFiles.Add();
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception.Message);
-            }
-
-
-            return DirectoryFiles;
         }
     }
 }

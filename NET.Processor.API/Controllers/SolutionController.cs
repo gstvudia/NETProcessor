@@ -52,9 +52,10 @@ namespace NET.Processor.API.Controllers
         /// </summary>
         /// <param name="webHook"></param>
         /// <returns></returns>
-        [HttpPost("ProcessSolution/{solutionName}/Webhook")]
+        [HttpPost("ProcessSolution/Webhook")]
         public async Task<IActionResult> ProcessSolution([FromBody] WebHook webHook)
         {
+            await _solutionService.LoadSolutionFromRepository(webHook);
             return Ok();
         }
 
