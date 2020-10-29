@@ -22,7 +22,7 @@ namespace NET.Processor.Core.Interfaces
         /// </summary>
         /// <param name="repositoryName"></param>
         /// <returns></returns>
-        Task<Solution> LoadSolutionFromRepository(WebHook webhook);
+        void LoadSolutionFromRepository(WebHook webhook);
 
         /// <summary>
         /// Loads files from solution path

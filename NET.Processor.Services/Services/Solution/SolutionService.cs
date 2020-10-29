@@ -30,17 +30,20 @@ namespace NET.Processor.Core.Services
     public class SolutionService : ISolutionService
     {
         private readonly ICommentService _commentService;
-        private readonly IDatabaseService _databaseService;
         private readonly IConfiguration _configuration;
         private Solution solution = null;
-        private string currentSolutionPath = "";
-        private string homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
-        private string homePath = Environment.GetEnvironmentVariable("HOMEPATH");
+        private static string homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
+        private static string homePath = Environment.GetEnvironmentVariable("HOMEPATH");
+        private string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\";
 
-        public SolutionService(ICommentService commentService, IDatabaseService databaseService, IConfiguration configuration)
+        path = @"" + homeDrive + homePath + "\\source\\repos\\NETWebhookTest\\TestProject.sln";
+            // TODO: All repos need to be loaded easily via name!
+            // TODO: If path exists, remove old path and overwrite the path
+            // https://stackoverflow.com/questions/26270873/check-if-file-or-folder-by-given-path-exists
+
+        public SolutionService(ICommentService commentService, IConfiguration configuration)
         {
             _commentService = commentService;
-            _databaseService = databaseService;
             _configuration = configuration;
 
             if (!MSBuildLocator.IsRegistered)
@@ -59,9 +62,9 @@ namespace NET.Processor.Core.Services
         /// </summary>
         /// <param name="repositoryName"></param>
         /// <returns></returns>
-        public Task<Solution> LoadSolutionFromRepository(WebHook webhook)
+        public void LoadSolutionFromRepository(WebHook webhook)
         {
-            string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\" + webhook.SolutionName;
+            path += webhook.SolutionName;
             try
             {
                 var cloneOptions = new CloneOptions();
@@ -71,29 +74,11 @@ namespace NET.Processor.Core.Services
             {
                 throw new Exception(e.Message);
             }
-            return null;
         }
 
-        public async Task<Solution> LoadSolution(string newSolutionPath)
+        public async Task<Solution> LoadSolution(string solutionName)
         {
-            var path = string.Empty;
-            // Skip loading of solution, if solution has already been loaded
-            if (solution != null && newSolutionPath == currentSolutionPath)
-            {
-                return solution;
-            }
-            currentSolutionPath = newSolutionPath;
-
-            switch (newSolutionPath)
-            {
-                case "CleanArchitecture":
-                    path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\CleanArchitecture-master\\CleanArchitecture.sln";
-                    break;
-                case "TestProject":
-                    path = @"" + homeDrive + homePath + "\\source\\repos\\NETWebhookTest\\TestProject.sln";
-                    break;
-            }
-
+            path += solutionName;
             using (var msWorkspace = CreateMSBuildWorkspace())
             {
                 try

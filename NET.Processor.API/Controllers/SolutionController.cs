@@ -31,6 +31,31 @@ namespace NET.Processor.API.Controllers
         }
 
         /// <summary>
+        /// This call processes the solution, it is called automatically via webhook
+        /// </summary>
+        /// <param name="webHook"></param>
+        /// <returns></returns>
+        [HttpPost("ProcessSolution/Webhook")]
+        public async Task<IActionResult> ProcessSolution([FromBody] WebHook webHook)
+        {
+            _solutionService.LoadSolutionFromRepository(webHook);
+            await Process(webHook.SolutionName);
+            return Ok();
+        }
+
+        /// <summary>
+        /// This call processes the solution, it is done manually
+        /// </summary>
+        /// <param name="solutionName"></param>
+        /// <returns></returns>
+        [HttpGet("ProcessSolution/{solutionName}")]
+        public async Task<IActionResult> ProcessSolution(string solutionName)
+        {
+            await Process(solutionName);
+            return Ok("Solution has been processed successfully");
+        }
+
+        /// <summary>
         /// This call saves all Graph properties (Items) directly into the database to debug issues
         /// </summary>
         /// <param name="solutionName"></param>
@@ -46,29 +71,10 @@ namespace NET.Processor.API.Controllers
             return Ok("Solution (DEBUG / TEST) has been processed successfully, it can be found in the database under the name: " + solutionName);
         }
 
-
-        /// <summary>
-        /// This call processes the solution, it is called automatically via webhook
-        /// </summary>
-        /// <param name="webHook"></param>
-        /// <returns></returns>
-        [HttpPost("ProcessSolution/Webhook")]
-        public async Task<IActionResult> ProcessSolution([FromBody] WebHook webHook)
-        {
-            await _solutionService.LoadSolutionFromRepository(webHook);
-            return Ok();
-        }
-
-        /// <summary>
-        /// This call processes the solution, it is done manually
-        /// </summary>
-        /// <param name="solutionName"></param>
-        /// <returns></returns>
-        [HttpGet("ProcessSolution/{solutionName}")]
-        public async Task<IActionResult> ProcessSolution(string solutionName)
+        private async Task Process(string solutionName)
         {
             var solution = await _solutionService.LoadSolution(solutionName);
-            var listItems =  _solutionService.GetSolutionItems(solution).ToList();
+            var listItems = _solutionService.GetSolutionItems(solution).ToList();
             listItems = RelationsGraph.BuildTree(listItems.Where(item => item.GetType().Name == ItemType.Method.ToString()).ToList());
 
             List<Node> graphNodes = new List<Node>();
@@ -99,8 +105,6 @@ namespace NET.Processor.API.Controllers
             // Store collection in Database
             _databaseService.StoreCollection(solutionName, relationGraph);
             // Remark: No need to close db again, handled by database engine (MongoDB)
-
-           return Ok("Solution has been processed successfully");
         }
 
         [HttpGet("GetSolution/{solutionName}")]
