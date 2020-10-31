@@ -6,22 +6,13 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using NET.Processor.Core.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Microsoft.CodeAnalysis.CSharp;
-using NET.Processor.Core.Helpers;
 using System.Threading.Tasks;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Net;
 using Microsoft.Build.Locator;
 using DynamicData;
 using Microsoft.Extensions.Configuration;
-using AutoMapper;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using LibGit2Sharp;
 
@@ -32,15 +23,10 @@ namespace NET.Processor.Core.Services
         private readonly ICommentService _commentService;
         private readonly IConfiguration _configuration;
         private Solution solution = null;
-        private static string homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
-        private static string homePath = Environment.GetEnvironmentVariable("HOMEPATH");
+        private static readonly string homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
+        private static readonly string homePath = Environment.GetEnvironmentVariable("HOMEPATH");
         private string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\";
-
-        path = @"" + homeDrive + homePath + "\\source\\repos\\NETWebhookTest\\TestProject.sln";
-            // TODO: All repos need to be loaded easily via name!
-            // TODO: If path exists, remove old path and overwrite the path
-            // https://stackoverflow.com/questions/26270873/check-if-file-or-folder-by-given-path-exists
-
+           
         public SolutionService(ICommentService commentService, IConfiguration configuration)
         {
             _commentService = commentService;
@@ -62,13 +48,28 @@ namespace NET.Processor.Core.Services
         /// </summary>
         /// <param name="repositoryName"></param>
         /// <returns></returns>
-        public void LoadSolutionFromRepository(WebHook webhook)
+        public void SaveSolutionFromRepository(WebHook webhook)
         {
+            // If path exists, remove old solution and add new one
+            string solutionPath = FindPathOfSolution(webhook.SolutionName);
+            if(solutionPath != null)
+            {
+                try
+                {
+                    Directory.Delete(solutionPath, true);
+                } catch(Exception e)
+                {
+                    throw new Exception(e.Message);
+                }
+            }
+
             path += webhook.SolutionName;
             try
             {
-                var cloneOptions = new CloneOptions();
-                cloneOptions.CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = webhook.User, Password = webhook.Password };
+                var cloneOptions = new CloneOptions
+                {
+                    CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = webhook.User, Password = webhook.Password }
+                };
                 Repository.Clone(webhook.RepositoryURL, path, cloneOptions);
             } catch(Exception e)
             {
@@ -78,26 +79,52 @@ namespace NET.Processor.Core.Services
 
         public async Task<Solution> LoadSolution(string solutionName)
         {
-            path += solutionName;
-            using (var msWorkspace = CreateMSBuildWorkspace())
+            var solutionPath = FindPathOfSolution(solutionName);
+            // If solution to process could not be found, throw exception
+            if(solutionPath == null)
             {
-                try
-                {                    
-                    solution = await msWorkspace.OpenSolutionAsync(path);
-
-                    //TODO: We can log diagnosis later
-                    ImmutableList<WorkspaceDiagnostic> diagnostics = msWorkspace.Diagnostics;
-
-                }
-                catch (Exception ex) {
-                    
-                }
-            
-                return solution;
+                throw new Exception("The solution path could not be found, have you forgotten to clone the project?");
             }
+            solutionPath = solutionPath + "\\" + solutionName + ".sln";
+
+            using var msWorkspace = CreateMSBuildWorkspace();
+            try
+            {
+                solution = await msWorkspace.OpenSolutionAsync(solutionPath);
+
+                //TODO: We can log diagnosis later
+                ImmutableList<WorkspaceDiagnostic> diagnostics = msWorkspace.Diagnostics;
+
+            }
+            catch (Exception exception)
+            {
+                Console.WriteLine(exception);
+            }
+
+            return solution;
         }
 
-        private MSBuildWorkspace CreateMSBuildWorkspace()
+        private string FindPathOfSolution(string solutionName)
+        {
+            try
+            {
+                foreach (string directory in Directory.GetDirectories(path))
+                {
+                    foreach (string file in Directory.GetFiles(directory, solutionName + ".sln"))
+                    {
+                        return directory;
+                    }
+                    FindPathOfSolution(directory);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            return null;
+        }
+
+    private MSBuildWorkspace CreateMSBuildWorkspace()
         {
             MSBuildWorkspace msWorkspace = null;
 

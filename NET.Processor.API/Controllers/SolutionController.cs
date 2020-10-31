@@ -8,6 +8,8 @@ using System.Linq;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using NET.Processor.Core.Helpers.Interfaces;
 using NET.Processor.Core.Helpers;
+using Microsoft.CodeAnalysis;
+using System;
 
 namespace NET.Processor.API.Controllers
 {
@@ -38,7 +40,8 @@ namespace NET.Processor.API.Controllers
         [HttpPost("ProcessSolution/Webhook")]
         public async Task<IActionResult> ProcessSolution([FromBody] WebHook webHook)
         {
-            _solutionService.LoadSolutionFromRepository(webHook);
+            // TODO: Ticket on Trello, ticket is called: Error when deleting solution using webhook
+            _solutionService.SaveSolutionFromRepository(webHook);
             await Process(webHook.SolutionName);
             return Ok();
         }
@@ -71,9 +74,15 @@ namespace NET.Processor.API.Controllers
             return Ok("Solution (DEBUG / TEST) has been processed successfully, it can be found in the database under the name: " + solutionName);
         }
 
-        private async Task Process(string solutionName)
+        private async Task<Solution> Process(string solutionName)
         {
             var solution = await _solutionService.LoadSolution(solutionName);
+            // If solution path cannot be found, return an error
+            if(solution == null)
+            {
+                throw new Exception("The solution could not be found, have you cloned it into the respective directory before processing the solution?");
+            }
+
             var listItems = _solutionService.GetSolutionItems(solution).ToList();
             listItems = RelationsGraph.BuildTree(listItems.Where(item => item.GetType().Name == ItemType.Method.ToString()).ToList());
 
@@ -105,8 +114,15 @@ namespace NET.Processor.API.Controllers
             // Store collection in Database
             _databaseService.StoreCollection(solutionName, relationGraph);
             // Remark: No need to close db again, handled by database engine (MongoDB)
+            return solution;
         }
 
+        /// <summary>
+        /// Obsolete since we use client to query database directly
+        /// </summary>
+        /// <param name="solutionName"></param>
+        /// <returns></returns>
+        /*
         [HttpGet("GetSolution/{solutionName}")]
         public async Task<IActionResult> GetSolution(string solutionName)
         {
@@ -116,12 +132,16 @@ namespace NET.Processor.API.Controllers
             filter.Documents.Add("Program1");
             filter.Documents.Add("Program2");
             filter.Methods.Add("Main");
-            filter.Methods.Add("Program1TestFunction1");*/
+            filter.Methods.Add("Program1TestFunction1");
 
             // Root relationgraph = await _databaseService.GetCollection(solutionName);
             return Ok(null);
         }
+        */
 
+        /// <summary>
+        /// Obsolete since we use client to query database directly
+        /// </summary>
         /*
         [HttpGet("GetSolutionAssets/{solutionName}")]
         public async Task<IActionResult> GetSolutionAssets(string solutionName)
@@ -135,7 +155,7 @@ namespace NET.Processor.API.Controllers
             // var methodsTree = RelationsGraph.BuildTree(selectedItems.Where(item => item.GetType().Name == ItemType.Method.ToString()).ToList());
             // Select specific assets that should be sent back to frontend
 
-            var solutionAssets = new solutionInfo
+            var solutionAssets = new SolutionInfo
             {
                 Projects = selectedItems
                            .Where(p => p.GetType().Name == ItemType.NodeProject.ToString())
@@ -155,7 +175,7 @@ namespace NET.Processor.API.Controllers
         }
         */
 
-        public struct solutionInfo
+        public struct SolutionInfo
         {
             public IEnumerable<string> Projects { get; set; }
             public IEnumerable<string> Documents { get; set; }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using NET.Processor.Core.Models;
 using NET.Processor.Core.Services;
 using NET.Processor.Core.Models.RelationsGraph.Item;
+using System;
 
 namespace NET.Processor.Core.Interfaces
 {
@@ -22,7 +23,7 @@ namespace NET.Processor.Core.Interfaces
         /// </summary>
         /// <param name="repositoryName"></param>
         /// <returns></returns>
-        void LoadSolutionFromRepository(WebHook webhook);
+        void SaveSolutionFromRepository(WebHook webhook);
 
         /// <summary>
         /// Loads files from solution path
