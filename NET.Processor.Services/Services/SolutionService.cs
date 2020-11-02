@@ -20,6 +20,10 @@ using Newtonsoft.Json.Linq;
 using System.Net;
 using Microsoft.Build.Locator;
 using DynamicData;
+using Microsoft.CodeAnalysis.FindSymbols;
+using System.Linq.Expressions;
+using static NET.Processor.Core.Services.CommentIdentifier;
+using ReactiveUI;
 
 namespace NET.Processor.Core.Services
 {
@@ -94,6 +98,10 @@ namespace NET.Processor.Core.Services
         {
             SyntaxNode root = null;
             var list = new List<Item>();
+
+            var methodsSheize = new List<Item>();
+            var invocationsSheize = new List<InvocationExpressionSyntax>();
+
             List<RegionDirectiveTriviaSyntax> regionDirectives = null;
             List<EndRegionDirectiveTriviaSyntax> endRegionDirectives = null;
             EndRegionDirectiveTriviaSyntax endNode = null;
@@ -107,122 +115,65 @@ namespace NET.Processor.Core.Services
                     {
                         root = documentClass.GetSyntaxRootAsync().Result;
 
-                        regionDirectives = root.DescendantNodes(null, true).OfType<RegionDirectiveTriviaSyntax>().Reverse().ToList();
-                        endRegionDirectives = root.DescendantNodes(null, true).OfType<EndRegionDirectiveTriviaSyntax>().ToList();
-
-                        foreach (var startNode in regionDirectives)
-                        {
-                            endNode = endRegionDirectives.First(r => r.SpanStart > startNode.SpanStart);
-                            endRegionDirectives.Remove(endNode);
-
-                            list.Add(new Item(startNode.ToString(), ItemType.Region, new TextSpan(startNode.Span.Start, endNode.Span.End - startNode.Span.Start)));
-                        }
-
-
-                        var namespaces = root.DescendantNodes()
-                                     .OfType<NamespaceDeclarationSyntax>()
-                                     .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Name.ToString(), ItemType.Namespace, x.Span))
-                                     .ToList();
-
-                        if (namespaces.Count > 1)
-                            list.AddRange(namespaces);
-
-                        var classes = root.DescendantNodes()
-                                          .OfType<ClassDeclarationSyntax>()
-                                          .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Class, x.Span))
-                                          .ToList();
-
-                        list.AddRange(classes);
-
-                        var interfaces = root.DescendantNodes()
-                                             .OfType<InterfaceDeclarationSyntax>()
-                                             .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Interface, x.Span))
-                                             .ToList();
-
-                        list.AddRange(interfaces);
-
-                        var enums = root.DescendantNodes()
-                                             .OfType<EnumDeclarationSyntax>()
-                                             .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Enum, x.Span))
-                                             .ToList();
-
-                        list.AddRange(enums);
-
-                        var enumMembers = root.DescendantNodes()
-                                             .OfType<EnumMemberDeclarationSyntax>()
-                                             .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.EnumMember, x.Span))
-                                             .ToList();
-
-                        list.AddRange(enumMembers);
-
-                        var structs = root.DescendantNodes()
-                                             .OfType<StructDeclarationSyntax>()
-                                             .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Struct, x.Span))
-                                             .ToList();
-
-                        list.AddRange(structs);
-
-                        var constructors = root.DescendantNodes()
-                                               .OfType<ConstructorDeclarationSyntax>()
-                                               .Select(x => new Item(root.DescendantNodes().IndexOf(x),x.Identifier.ValueText, ItemType.Constructor, x.Span))
-                                               .ToList();
-
-                        list.AddRange(constructors);
-
-                        var methods = root.DescendantNodes()
-                                          .OfType<MethodDeclarationSyntax>()
-                                          .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Method, x.Span))
-                                          .ToList();
-
-                        list.AddRange(methods);
-
-                        var fields = root.DescendantNodes()
-                                         .OfType<FieldDeclarationSyntax>()
-                                         .SelectMany(x => x.Declaration.Variables,
-                                                     (f, v) => f.Modifiers.Any(SyntaxKind.ConstKeyword) ? new Item(root.DescendantNodes().IndexOf(v),v.Identifier.ValueText, ItemType.Const, v.Span)
-                                                                                                        : new Item(root.DescendantNodes().IndexOf(v), v.Identifier.ValueText, ItemType.Field, v.Span))
-                                         .ToList();
-
-                        list.AddRange(fields);
-
-                        var properties = root.DescendantNodes()
-                                             .OfType<PropertyDeclarationSyntax>()
-                                             .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Property, x.Span))
-                                             .ToList();
-
-                        list.AddRange(properties);
-
-                        var eventFields = root.DescendantNodes()
-                                              .OfType<EventFieldDeclarationSyntax>()
-                                              .SelectMany(x => x.Declaration.Variables, (f, v) => new Item(root.DescendantNodes().IndexOf(v),v.Identifier.ValueText, ItemType.Event, v.Span))
-                                              .ToList();
-
-                        list.AddRange(eventFields);
-
-                        var eventProperties = root.DescendantNodes()
-                                                  .OfType<EventDeclarationSyntax>()
-                                                  .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Event, x.Span))
-                                                  .ToList();
-
-                        list.AddRange(eventProperties);
-
-                        var delegates = root.DescendantNodes()
-                                             .OfType<DelegateDeclarationSyntax>()
-                                             .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, ItemType.Delegate, x.Span))
-                                             .ToList();
-
-                        list.AddRange(delegates);
+                        invocationsSheize.AddRange(root.DescendantNodes().OfType<InvocationExpressionSyntax>());
 
                         
-                        //End of document/class
-                    }
 
+
+                        MapMethods(root);
+                    }
                     
                 }
 
             }
 
-            return RelationsGraph.BuildTree(list).Where(item => item.Type == ItemType.Method);
+                      
+            return RelationsGraph.BuildTree(list.Where(item => item.Type == ItemType.Method).ToList());
         }
+
+        private void MapMethods (SyntaxNode root)
+        {
+            var methodNodes = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
+            var methods = methodNodes
+                                          .Select(x => new Item(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, x.Body))
+                                          .ToList();
+            foreach (var method in methods)
+            {
+                var invokees = method.Body.Statements.Where(x => x.Kind().ToString() == "ExpressionStatement").ToList();
+                foreach (var invoked in invokees)
+                {
+                    var expression = invoked as ExpressionStatementSyntax;
+                    var arguments = expression.Expression as InvocationExpressionSyntax;
+                    var child = invoked.ToString().Replace(arguments.ArgumentList.ToString(), string.Empty).Replace(";", string.Empty).Split(".");
+
+                    if (child.Length > 1)
+                    {
+                        var methodId = MapChildsId(methodNodes.ToList(), child[1]);
+                        if (methodId > -1)
+                        {
+                            method.ChildList.Add(new Item(methodId, child[1]));
+                        }
+
+                    }
+                    else
+                    {
+                        var methodId = MapChildsId(methodNodes.ToList(), child[0]);
+                        if (methodId > -1)
+                        {
+                            method.ChildList.Add(new Item(methodId, child[0]));
+                        }
+                    }
+                }
+
+            }
+
+        }
+        private int MapChildsId(List<MethodDeclarationSyntax> nodes, string method)
+        {
+            
+            return nodes.IndexOf(nodes.Where(x => x.Identifier.ValueText == method).Select(x => x).FirstOrDefault());
+        }
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.Text;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,7 +16,7 @@ namespace NET.Processor.Core.Models
         public TextSpan Span { get; }
 
         public Item Parent { get; set; }
-
+        public BlockSyntax Body { get; set; }
         public List<Item> ChildList { get; } = new List<Item>();
 
         public Item(string name, ItemType type, TextSpan span)
@@ -31,6 +32,19 @@ namespace NET.Processor.Core.Models
             Name = name;
             Type = type;
             Span = span;
+        }
+
+        public Item(int id, string name, BlockSyntax body)
+        {
+            Id = id;
+            Name = name;
+            Body = body;
+        }
+
+        public Item(int id, string name)
+        {
+            Id = id;
+            Name = name;
         }
 
         public override string ToString()
