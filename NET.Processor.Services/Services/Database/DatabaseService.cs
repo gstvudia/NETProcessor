@@ -6,6 +6,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using NET.Processor.Core.Interfaces;
+using NET.Processor.Core.Models;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 
@@ -77,7 +78,7 @@ namespace NET.Processor.Core.Services.Database
                 throw new Exception(e.Message);
             }
         }
-
+        
         // Not used, data is retrieved directly through frontend from mongodb instead!
         /*
         public async Task<IEnumerable<Item>> GetCollection(string solutionName)

@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.Text;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
@@ -17,9 +18,6 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         public string Name { get; set; }
 
         [BsonIgnore]
-        public TextSpan Span { get; set; }
-
-        [BsonIgnore]
         public Item Parent { get; set; }
 
         [BsonIgnore]
@@ -29,19 +27,17 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         {
         }
 
-        public Item(int id, string name, TextSpan span)
+        public Item(int id, string name)
         {
             Id = id;
             Name = name;
-            Span = span;
 
             databaseId = ObjectId.GenerateNewId();
         }
 
-        public Item(string name, TextSpan span)
+        public Item(string name)
         {
             Name = name;
-            Span = span;
 
             databaseId = ObjectId.GenerateNewId();
         }
@@ -53,7 +49,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
 
         public Item Clone()
         {
-            return new Item(Name, Span);
+            return new Item(Name);
         }
 
         public void Dispose()

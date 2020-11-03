@@ -4,10 +4,9 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
     class Region : Item
     {
-        public Region(string name, TextSpan span)
+        public Region(string name)
         {
             Name = name;
-            Span = span;
         }
     }
 }

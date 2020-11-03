@@ -32,5 +32,6 @@ namespace NET.Processor.Core.Interfaces
         /// <returns>FilePaths</returns>
         //IEnumerable<FileInfo> LoadFilePaths(string SolutionPath);
         IEnumerable<Item> GetSolutionItems(Solution solution);
+        IEnumerable<Method> GetRelationsGraph(Solution solution);
     }
 }

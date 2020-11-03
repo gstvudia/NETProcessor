@@ -15,6 +15,10 @@ using DynamicData;
 using Microsoft.Extensions.Configuration;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using LibGit2Sharp;
+using Microsoft.CodeAnalysis.FindSymbols;
+using System.Linq.Expressions;
+using static NET.Processor.Core.Services.CommentIdentifier;
+using ReactiveUI;
 
 namespace NET.Processor.Core.Services
 {
@@ -145,6 +149,7 @@ namespace NET.Processor.Core.Services
             List<RegionDirectiveTriviaSyntax> regionDirectives = null;
             List<EndRegionDirectiveTriviaSyntax> endRegionDirectives = null;
             EndRegionDirectiveTriviaSyntax endNode = null;
+            List<Method> methods = new List<Method>();
 
             foreach (var project in solution.Projects)
             {
@@ -162,12 +167,12 @@ namespace NET.Processor.Core.Services
                             endNode = endRegionDirectives.First(r => r.SpanStart > startNode.SpanStart);
                             endRegionDirectives.Remove(endNode);
 
-                            list.Add(new Region(startNode.ToString(), new TextSpan(startNode.Span.Start, endNode.Span.End - startNode.Span.Start)));
+                            list.Add(new Region(startNode.ToString()));
                         }
                         
                         var namespaces = root.DescendantNodes()
                                      .OfType<NamespaceDeclarationSyntax>()
-                                     .Select(x => new Namespace(root.DescendantNodes().IndexOf(x), x.Name.ToString(), x.Span))
+                                     .Select(x => new Namespace(root.DescendantNodes().IndexOf(x), x.Name.ToString()))
                                      .ToList();
 
                         if (namespaces.Count > 1)
@@ -175,18 +180,12 @@ namespace NET.Processor.Core.Services
 
                         var classes = root.DescendantNodes()
                                           .OfType<ClassDeclarationSyntax>()
-                                          .Select(x => new Class(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, x.Span))
+                                          .Select(x => new Class(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText))
                                           .ToList();
 
                         list.AddRange(classes);
 
-                        var methods = root.DescendantNodes()
-                                          .OfType<MethodDeclarationSyntax>()
-                                          .Select(x => new Method(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, x.Span))
-                                          .Where(x => !list.Any(l => l.Name == x.Name))
-                                          .ToList();
-                        list.AddRange(methods);
-
+                        MapMethods(root, ref methods);
                         /*
                         var interfaces = root.DescendantNodes()
                                              .OfType<InterfaceDeclarationSyntax>()
@@ -265,11 +264,7 @@ namespace NET.Processor.Core.Services
                         //End of document/class
 
                         // Get all comments and assigns comment to specific property id from the item list
-                        var commentReferences = _commentService.GetCommentReferences(root, list
-                                                .Where(x => x.GetType() == typeof(Class) || 
-                                                x.GetType() == typeof(Method) || 
-                                                x.GetType() == typeof(Namespace))
-                                                .Select(x => new KeyValuePair<string, int>(x.Name, x.Id)));
+                        var commentReferences = _commentService.GetCommentReferences(root);
                         var comments = commentReferences.Select(x => new Comment(x.LineNumber, x.Name, x.AttachedPropertyId, x.AttachedPropertyName, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
                                 .ToList();
                         list.AddRange(comments);
@@ -286,6 +281,99 @@ namespace NET.Processor.Core.Services
             list.AddRange(projects);
 
             return list;
+        }
+
+
+
+
+
+        public IEnumerable<Method> GetRelationsGraph(Solution solution)
+        {
+            SyntaxNode root = null;
+            List<Method> methodsRelations = new List<Method>();
+
+            foreach (var project in solution.Projects)
+            {
+                if (project.Language == _configuration["Framework:Language"])
+                {
+                    foreach (var document in project.Documents)
+                    {
+                        root = document.GetSyntaxRootAsync().Result;
+
+                        methodsRelations.AddRange(MapMethods(root, ref methodsRelations));                        
+                    }
+                }
+            }
+
+            return methodsRelations;
+        }
+
+        private List<Method> MapMethods(SyntaxNode root, ref List<Method> methodsList)
+        {
+            var methodNodes = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
+            var methods = methodNodes
+                                     .Select(x => new Method(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, x.Body))
+                                     .ToList();
+
+            foreach (var method in methods)
+            {
+                var methodExists = methodsList.Where(m => m.Name == method.Name).FirstOrDefault();
+                if(methodExists == null)
+                {
+                    methodsList.Add(new Method
+                    (
+                        GetMethodId(method.Name, methodsList),
+                        method.Name,
+                        method.Body
+                    ));
+                }
+                else
+                {
+                    methodExists.Body = method.Body;
+                }
+
+
+                method.ChildList.AddRange(GetChilds(method, methodsList));
+            }
+
+            return methodsList;
+        }
+
+        private List<Method> GetChilds(Method method, List<Method> existingMethods)
+        {
+            List<Method> childList = new List<Method>();
+
+            var invokees = method.Body.Statements.Where(x => x.Kind().ToString() == "ExpressionStatement").ToList();
+            foreach (var invoked in invokees)
+            {
+                var expression = invoked as ExpressionStatementSyntax;
+                var arguments = expression.Expression as InvocationExpressionSyntax;
+                var child = invoked.ToString().Replace(arguments.ArgumentList.ToString(), string.Empty).Replace(";", string.Empty).Split(".");
+
+                if (child.Length > 1)
+                {
+                    childList.Add(new Method(GetMethodId(child[1], existingMethods), child[1]));
+                }
+                else
+                {
+                    childList.Add(new Method(GetMethodId(child[0], existingMethods), child[0]));
+                }
+            }
+
+            return childList;
+        }
+
+        private int GetMethodId (string methodName, List<Method> existingMethods)
+        {
+            var methodExists = existingMethods.Where(m => m.Name == methodName).FirstOrDefault();
+            if (methodExists == null)
+            {
+                return existingMethods.Max(m => m.Id) + 1;
+            }
+            else
+            {
+                return methodExists.Id;
+            }
         }
     }
 }
