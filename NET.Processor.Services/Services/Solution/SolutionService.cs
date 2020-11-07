@@ -185,7 +185,7 @@ namespace NET.Processor.Core.Services
 
                         list.AddRange(classes);
 
-                        MapMethods(root, ref methods);
+                        MapMethods(root, methods);
                         /*
                         var interfaces = root.DescendantNodes()
                                              .OfType<InterfaceDeclarationSyntax>()
@@ -264,10 +264,10 @@ namespace NET.Processor.Core.Services
                         //End of document/class
 
                         // Get all comments and assigns comment to specific property id from the item list
-                        var commentReferences = _commentService.GetCommentReferences(root);
-                        var comments = commentReferences.Select(x => new Comment(x.LineNumber, x.Name, x.AttachedPropertyId, x.AttachedPropertyName, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
-                                .ToList();
-                        list.AddRange(comments);
+                        //var commentReferences = _commentService.GetCommentReferences(root);
+                        //var comments = commentReferences.Select(x => new Comment(x.LineNumber, x.Name, x.AttachedPropertyId, x.AttachedPropertyName, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
+                        //        .ToList();
+                        //list.AddRange(comments);
                     }
                 }
                 // Get all documents from one project and add them to list
@@ -300,7 +300,8 @@ namespace NET.Processor.Core.Services
                     {
                         root = document.GetSyntaxRootAsync().Result;
 
-                        methodsRelations.AddRange(MapMethods(root, ref methodsRelations));                        
+                        var mappedMethods = MapMethods(root, methodsRelations);
+                        //methodsRelations.AddRange(mappedMethods);                        
                     }
                 }
             }
@@ -308,32 +309,28 @@ namespace NET.Processor.Core.Services
             return methodsRelations;
         }
 
-        private List<Method> MapMethods(SyntaxNode root, ref List<Method> methodsList)
+        private List<Method> MapMethods(SyntaxNode root, List<Method> methodsList)
         {
             var methodNodes = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
-            var methods = methodNodes
+            var nodes = methodNodes
                                      .Select(x => new Method(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, x.Body))
                                      .ToList();
 
-            foreach (var method in methods)
+            foreach (var method in nodes)
             {
+                //We do this to avoid adding method's declation and invocation to the list
                 var methodExists = methodsList.Where(m => m.Name == method.Name).FirstOrDefault();
                 if(methodExists == null)
                 {
-                    methodsList.Add(new Method
-                    (
-                        GetMethodId(method.Name, methodsList),
-                        method.Name,
-                        method.Body
-                    ));
+                    method.Id = GetMethodId(method.Name, methodsList);
                 }
                 else
                 {
                     methodExists.Body = method.Body;
                 }
 
-
                 method.ChildList.AddRange(GetChilds(method, methodsList));
+                methodsList.Add(method);
             }
 
             return methodsList;
@@ -365,7 +362,14 @@ namespace NET.Processor.Core.Services
 
         private int GetMethodId (string methodName, List<Method> existingMethods)
         {
+
+            if (existingMethods.Count == 0)
+            {
+                return 1;
+            }
+
             var methodExists = existingMethods.Where(m => m.Name == methodName).FirstOrDefault();
+
             if (methodExists == null)
             {
                 return existingMethods.Max(m => m.Id) + 1;

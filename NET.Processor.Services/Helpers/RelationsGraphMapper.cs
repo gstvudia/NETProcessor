@@ -1,4 +1,5 @@
 ﻿using NET.Processor.Core.Helpers.Interfaces;
+using NET.Processor.Core.Models;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using System;
@@ -10,7 +11,7 @@ namespace NET.Processor.Core.Helpers.Mappers
     public class RelationsGraphMapper : IRelationsGraphMapper
     {
 
-        public List<Edge> MapItemsToEdges(List<Item> items)
+        public List<Edge> MapItemsToEdges(List<Method> items)
         {
             List<Edge> graphEdges = new List<Edge>();
             foreach (var item in items.Where(item => item.ChildList.Count > 0))
