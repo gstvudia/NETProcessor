@@ -74,6 +74,12 @@ namespace NET.Processor.API.Controllers
             return Ok("Solution (DEBUG / TEST) has been processed successfully, it can be found in the database under the name: " + solutionName);
         }
 
+        /// <summary>
+        /// This method loads the solution by solutionName and processes the various items of the solution, 
+        /// finally it saves the solution as graph nodes and edges into the database
+        /// </summary>
+        /// <param name="solutionName"></param>
+        /// <returns>solution</returns>
         private async Task<Solution> Process(string solutionName)
         {
             var solution = await _solutionService.LoadSolution(solutionName);
@@ -83,13 +89,13 @@ namespace NET.Processor.API.Controllers
                 throw new Exception("The solution could not be found, have you cloned it into the respective directory before processing the solution?");
             }
 
-            var relations = _solutionService.GetRelationsGraph(solution).ToList();
+            var relationsGraph = _solutionService.GetRelationsGraph(solution).ToList();
 
             List<Node> graphNodes = new List<Node>();
             List<Edge> graphEdges = new List<Edge>();
             NodeData nodeData = new NodeData();
 
-            foreach (var item in relations)
+            foreach (var item in relationsGraph)
             {
                 nodeData = _mapper.Map<NodeData>(item);
                 nodeData.colorCode = "orange";
@@ -102,7 +108,7 @@ namespace NET.Processor.API.Controllers
                 });
             }
 
-            graphEdges = _relationsGraphMapper.MapItemsToEdges(relations.ToList());
+            // graphEdges = _relationsGraphMapper.MapItemsToEdges(relationsGraph.ToList());
 
             var relationGraph = new Root
             {

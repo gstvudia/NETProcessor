@@ -185,7 +185,8 @@ namespace NET.Processor.Core.Services
 
                         list.AddRange(classes);
 
-                        MapMethods(root, methods);
+                        MapMethods(root, ref methods);
+
                         /*
                         var interfaces = root.DescendantNodes()
                                              .OfType<InterfaceDeclarationSyntax>()
@@ -264,10 +265,13 @@ namespace NET.Processor.Core.Services
                         //End of document/class
 
                         // Get all comments and assigns comment to specific property id from the item list
-                        //var commentReferences = _commentService.GetCommentReferences(root);
-                        //var comments = commentReferences.Select(x => new Comment(x.LineNumber, x.Name, x.AttachedPropertyId, x.AttachedPropertyName, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
-                        //        .ToList();
-                        //list.AddRange(comments);
+                        var commentReferences = _commentService.GetCommentReferences(root, list.Where(x => x.GetType() == typeof(Class) ||
+                                                x.GetType() == typeof(Method) ||
+                                                x.GetType() == typeof(Namespace))
+                                                .Select(x => new KeyValuePair<string, int>(x.Name, x.Id)));
+                        var comments = commentReferences.Select(x => new Comment(x.LineNumber, x.Name, x.AttachedPropertyId, x.AttachedPropertyName, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
+                                .ToList();
+                        list.AddRange(comments);                                
                     }
                 }
                 // Get all documents from one project and add them to list
@@ -283,10 +287,6 @@ namespace NET.Processor.Core.Services
             return list;
         }
 
-
-
-
-
         public IEnumerable<Method> GetRelationsGraph(Solution solution)
         {
             SyntaxNode root = null;
@@ -300,8 +300,7 @@ namespace NET.Processor.Core.Services
                     {
                         root = document.GetSyntaxRootAsync().Result;
 
-                        var mappedMethods = MapMethods(root, methodsRelations);
-                        //methodsRelations.AddRange(mappedMethods);                        
+                        methodsRelations.AddRange(MapMethods(root, ref methodsRelations));                        
                     }
                 }
             }
@@ -309,20 +308,24 @@ namespace NET.Processor.Core.Services
             return methodsRelations;
         }
 
-        private List<Method> MapMethods(SyntaxNode root, List<Method> methodsList)
+        private List<Method> MapMethods(SyntaxNode root, ref List<Method> methodsList)
         {
             var methodNodes = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
-            var nodes = methodNodes
-                                     .Select(x => new Method(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, x.Body))
+            var methods = methodNodes
+                                     .Select(x => new Method(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText))
                                      .ToList();
 
-            foreach (var method in nodes)
+            foreach (var method in methods)
             {
-                //We do this to avoid adding method's declation and invocation to the list
                 var methodExists = methodsList.Where(m => m.Name == method.Name).FirstOrDefault();
                 if(methodExists == null)
                 {
-                    method.Id = GetMethodId(method.Name, methodsList);
+                    methodsList.Add(new Method
+                    (
+                        GetMethodId(method.Name, methodsList),
+                        method.Name,
+                        method.Body
+                    ));
                 }
                 else
                 {
@@ -330,10 +333,21 @@ namespace NET.Processor.Core.Services
                 }
 
                 method.ChildList.AddRange(GetChilds(method, methodsList));
-                methodsList.Add(method);
             }
 
             return methodsList;
+        }
+        private int GetMethodId(string methodName, List<Method> existingMethods)
+        {
+            var methodExists = existingMethods.Where(m => m.Name == methodName).FirstOrDefault();
+            if (methodExists == null)
+            {
+                return existingMethods.Max(m => m.Id) + 1;
+            }
+            else
+            {
+                return methodExists.Id;
+            }
         }
 
         private List<Method> GetChilds(Method method, List<Method> existingMethods)
@@ -358,26 +372,6 @@ namespace NET.Processor.Core.Services
             }
 
             return childList;
-        }
-
-        private int GetMethodId (string methodName, List<Method> existingMethods)
-        {
-
-            if (existingMethods.Count == 0)
-            {
-                return 1;
-            }
-
-            var methodExists = existingMethods.Where(m => m.Name == methodName).FirstOrDefault();
-
-            if (methodExists == null)
-            {
-                return existingMethods.Max(m => m.Id) + 1;
-            }
-            else
-            {
-                return methodExists.Id;
-            }
         }
     }
 }

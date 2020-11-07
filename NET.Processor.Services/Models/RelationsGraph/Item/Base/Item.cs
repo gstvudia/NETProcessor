@@ -11,7 +11,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
     public class Item : IDisposable
     {
         [BsonId]
-        public ObjectId databaseId { get; set; }
+        public ObjectId DatabaseId { get; set; }
         [BsonElement("Id")]
         public int Id { get; set; }
         [BsonElement ("Name")]
@@ -32,14 +32,14 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
             Id = id;
             Name = name;
 
-            databaseId = ObjectId.GenerateNewId();
+            DatabaseId = ObjectId.GenerateNewId();
         }
 
         public Item(string name)
         {
             Name = name;
 
-            databaseId = ObjectId.GenerateNewId();
+            DatabaseId = ObjectId.GenerateNewId();
         }
 
         public override string ToString()
