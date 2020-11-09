@@ -185,7 +185,7 @@ namespace NET.Processor.Core.Services
 
                         list.AddRange(classes);
 
-                        MapMethods(root, ref methods);
+                        MapMethods(root);
 
                         /*
                         var interfaces = root.DescendantNodes()
@@ -299,50 +299,49 @@ namespace NET.Processor.Core.Services
                     foreach (var document in project.Documents)
                     {
                         root = document.GetSyntaxRootAsync().Result;
-
-                        methodsRelations.AddRange(MapMethods(root, ref methodsRelations));                        
+                        methodsRelations.AddRange(MapMethods(root));                        
                     }
                 }
             }
 
+            //Map childs id
+            foreach (var method in methodsRelations)
+            {
+                //Remove built in method
+                //TODO
+
+                foreach (var child in method.ChildList.Where(x => x.Id == -1).ToList())
+                {
+                    child.Id = methodsRelations.Where(x=>x.Name == child.Name).Select(x=>x.Id).FirstOrDefault();
+                }
+
+            }
+            
             return methodsRelations;
         }
 
-        private List<Method> MapMethods(SyntaxNode root, ref List<Method> methodsList)
+        private List<Method> MapMethods(SyntaxNode root)
         {
+            List<Method> methodsList = new List<Method>();
             var methodNodes = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
             var methods = methodNodes
-                                     .Select(x => new Method(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText))
+                                     .Select(x => new Method(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, x.Body))
                                      .ToList();
 
             foreach (var method in methods)
             {
-                var methodExists = methodsList.Where(m => m.Name == method.Name).FirstOrDefault();
-                if(methodExists == null)
-                {
-                    methodsList.Add(new Method
-                    (
-                        GetMethodId(method.Name, methodsList),
-                        method.Name,
-                        method.Body
-                    ));
-                }
-                else
-                {
-                    methodExists.Body = method.Body;
-                }
-
-                method.ChildList.AddRange(GetChilds(method, methodsList));
+                method.ChildList.AddRange(GetChilds(method));
+                methodsList.Add(method);                
             }
 
             return methodsList;
         }
-        private int GetMethodId(string methodName, List<Method> existingMethods)
+        private int GetMethodId(string methodName, List<Method> AllMethods)
         {
-            var methodExists = existingMethods.Where(m => m.Name == methodName).FirstOrDefault();
+            var methodExists = AllMethods.Where(m => m.Name == methodName).FirstOrDefault();
             if (methodExists == null)
             {
-                return existingMethods.Max(m => m.Id) + 1;
+                return AllMethods.Max(m => m.Id) + 1;
             }
             else
             {
@@ -350,7 +349,7 @@ namespace NET.Processor.Core.Services
             }
         }
 
-        private List<Method> GetChilds(Method method, List<Method> existingMethods)
+        private List<Method> GetChilds(Method method)
         {
             List<Method> childList = new List<Method>();
 
@@ -363,11 +362,11 @@ namespace NET.Processor.Core.Services
 
                 if (child.Length > 1)
                 {
-                    childList.Add(new Method(GetMethodId(child[1], existingMethods), child[1]));
+                    childList.Add(new Method(-1, child[1]));
                 }
                 else
                 {
-                    childList.Add(new Method(GetMethodId(child[0], existingMethods), child[0]));
+                    childList.Add(new Method(-1, child[0]));
                 }
             }
 
