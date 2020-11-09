@@ -21,7 +21,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         public Item Parent { get; set; }
 
         [BsonIgnore]
-        public List<Item> ChildList { get; } = new List<Item>();
+        public List<Method> ChildList { get; } = new List<Method>();
 
         public Item()
         {

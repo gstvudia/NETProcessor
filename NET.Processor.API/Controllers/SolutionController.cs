@@ -89,13 +89,13 @@ namespace NET.Processor.API.Controllers
                 throw new Exception("The solution could not be found, have you cloned it into the respective directory before processing the solution?");
             }
 
-            var relationsGraph = _solutionService.GetRelationsGraph(solution).ToList();
+            var relations = _solutionService.GetRelationsGraph(solution).ToList();
 
             List<Node> graphNodes = new List<Node>();
             List<Edge> graphEdges = new List<Edge>();
             NodeData nodeData = new NodeData();
 
-            foreach (var item in relationsGraph)
+            foreach (var item in relations)
             {
                 nodeData = _mapper.Map<NodeData>(item);
                 nodeData.colorCode = "orange";
@@ -108,7 +108,7 @@ namespace NET.Processor.API.Controllers
                 });
             }
 
-            // graphEdges = _relationsGraphMapper.MapItemsToEdges(relationsGraph.ToList());
+            graphEdges = _relationsGraphMapper.MapItemsToEdges(relations.ToList());
 
             var relationGraph = new Root
             {
