@@ -317,10 +317,10 @@ namespace NET.Processor.Core.Services
 
             }
 
-            //Remove built in methods
+            //Remove built or invalid methods
             foreach (var method in methodsRelations)
             {
-                method.ChildList.RemoveAll(c => c.Id == 0);
+                method.ChildList.RemoveAll(c => c.Id == 0 || c.Name == string.Empty);
             }
             return methodsRelations;
         }
@@ -334,9 +334,12 @@ namespace NET.Processor.Core.Services
                                      .ToList();
 
             foreach (var method in methods)
-            {
-                method.ChildList.AddRange(GetChilds(method));
-                methodsList.Add(method);
+            {                
+                if(!methodsList.Any(x=>x.Name == method.Name))
+                {
+                    method.ChildList.AddRange(GetChilds(method));
+                    methodsList.Add(method);
+                }                
             }
 
             return methodsList;
@@ -358,22 +361,33 @@ namespace NET.Processor.Core.Services
         {
             List<Method> childList = new List<Method>();
 
-            var invokees = method.Body.Statements.Where(x => x.Kind().ToString() == "ExpressionStatement").ToList();
-            foreach (var invoked in invokees)
+            if(method.Body != null)
             {
-                var expression = invoked as ExpressionStatementSyntax;
-                var arguments = expression.Expression as InvocationExpressionSyntax;
-                var child = invoked.ToString().Replace(arguments.ArgumentList.ToString(), string.Empty).Replace(";", string.Empty).Split(".");
+                var invokees = method.Body.Statements.Where(x => x.Kind().ToString() == "ExpressionStatement").ToList();
+                foreach (var invoked in invokees)
+                {
+                    var expression = invoked as ExpressionStatementSyntax;
+                    var arguments = expression.Expression as InvocationExpressionSyntax;
+                    string[] child = null;
 
-                if (child.Length > 1)
-                {
-                    childList.Add(new Method(-1, child[1]));
+                    child = invoked.ToString().Replace(";", string.Empty).Split(".");
+
+                    if (child.Length > 1)
+                    {
+                        childList
+                            .Add(new Method(
+                                -1, child[1].Substring(0, child[1].LastIndexOf("(") + 1).Replace("(", string.Empty)
+                            ));
+                    }
+                    else
+                    {
+                        childList
+                            .Add(new Method(
+                                -1, child[0].Substring(0, child[0].LastIndexOf("(") + 1).Replace("(", string.Empty)
+                            ));
+                    }
                 }
-                else
-                {
-                    childList.Add(new Method(-1, child[0]));
-                }
-            }
+            }            
 
             return childList;
         }
