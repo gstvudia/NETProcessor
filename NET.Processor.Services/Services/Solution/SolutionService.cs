@@ -85,7 +85,7 @@ namespace NET.Processor.Core.Services
         {
             var solutionPath = FindPathOfSolution(solutionName);
             // If solution to process could not be found, throw exception
-            if(solutionPath == null)
+            if (solutionPath == null)
             {
                 throw new Exception("The solution path could not be found, have you forgotten to clone the project?");
             }
@@ -128,14 +128,16 @@ namespace NET.Processor.Core.Services
             return null;
         }
 
-    private MSBuildWorkspace CreateMSBuildWorkspace()
+        private MSBuildWorkspace CreateMSBuildWorkspace()
         {
             MSBuildWorkspace msWorkspace = null;
 
             try
             {
                 msWorkspace = MSBuildWorkspace.Create();
-            } catch(Exception e) {
+            }
+            catch (Exception e)
+            {
                 Console.WriteLine(e);
             }
 
@@ -169,7 +171,7 @@ namespace NET.Processor.Core.Services
 
                             list.Add(new Region(startNode.ToString()));
                         }
-                        
+
                         var namespaces = root.DescendantNodes()
                                      .OfType<NamespaceDeclarationSyntax>()
                                      .Select(x => new Namespace(root.DescendantNodes().IndexOf(x), x.Name.ToString()))
@@ -271,7 +273,7 @@ namespace NET.Processor.Core.Services
                                                 .Select(x => new KeyValuePair<string, int>(x.Name, x.Id)));
                         var comments = commentReferences.Select(x => new Comment(x.LineNumber, x.Name, x.AttachedPropertyId, x.AttachedPropertyName, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
                                 .ToList();
-                        list.AddRange(comments);                                
+                        list.AddRange(comments);
                     }
                 }
                 // Get all documents from one project and add them to list
@@ -299,7 +301,7 @@ namespace NET.Processor.Core.Services
                     foreach (var document in project.Documents)
                     {
                         root = document.GetSyntaxRootAsync().Result;
-                        methodsRelations.AddRange(MapMethods(root));                        
+                        methodsRelations.AddRange(MapMethods(root));
                     }
                 }
             }
@@ -307,16 +309,19 @@ namespace NET.Processor.Core.Services
             //Map childs id
             foreach (var method in methodsRelations)
             {
-                //Remove built in method
-                //TODO
 
                 foreach (var child in method.ChildList.Where(x => x.Id == -1).ToList())
                 {
-                    child.Id = methodsRelations.Where(x=>x.Name == child.Name).Select(x=>x.Id).FirstOrDefault();
+                    child.Id = methodsRelations.Where(x => x.Name == child.Name).Select(x => x.Id).FirstOrDefault();
                 }
 
             }
-            
+
+            //Remove built in methods
+            foreach (var method in methodsRelations)
+            {
+                method.ChildList.RemoveAll(c => c.Id == 0);
+            }
             return methodsRelations;
         }
 
@@ -331,7 +336,7 @@ namespace NET.Processor.Core.Services
             foreach (var method in methods)
             {
                 method.ChildList.AddRange(GetChilds(method));
-                methodsList.Add(method);                
+                methodsList.Add(method);
             }
 
             return methodsList;

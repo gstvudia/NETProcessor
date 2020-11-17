@@ -19,17 +19,17 @@ namespace NET.Processor.Core.Helpers.Mappers
                 foreach (var child in item.ChildList)
                 {
                     graphEdges.Add(new Edge
+                    {
+                        data = new EdgeData
                         {
-                            data = new EdgeData
-                            {
-                                source = Convert.ToString(item.Id),
-                                target = Convert.ToString(child.Id),
-                                colorCode = "blue",
-                                strength = 5
-                            }
+                            source = Convert.ToString(item.Id),
+                            target = Convert.ToString(child.Id),
+                            colorCode = "white",
+                            strength = 5
                         }
+                    }
                     );
-                }                
+                }
             }
 
             return graphEdges;
