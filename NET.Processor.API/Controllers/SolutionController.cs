@@ -51,20 +51,20 @@ namespace NET.Processor.API.Controllers
         /// </summary>
         /// <param name="solutionName"></param>
         /// <returns></returns>
-        [HttpGet("ProcessSolution/{solutionName}")]
-        public async Task<IActionResult> ProcessSolution(string solutionName)
+        [HttpPost("ProcessSolution")]
+        public async Task<IActionResult> ProcessSolution([FromBody] string solutionName)
         {
             await Process(solutionName);
             return Ok("Solution has been processed successfully");
         }
 
         /// <summary>
-        /// This call saves all Graph properties (Items) directly into the database to debug issues
+        /// This call saves all Graph properties (Items) directly into the database
         /// </summary>
         /// <param name="solutionName"></param>
         /// <returns></returns>
-        [HttpGet("ProcessSolution/Test/{solutionName}")]
-        public async Task<IActionResult> ProcessSolutionTest(string solutionName)
+        [HttpPost("ProcessSolution/Items")]
+        public async Task<IActionResult> ProcessSolutionTest([FromBody] string solutionName)
         {
             var solution = await _solutionService.LoadSolution(solutionName);
             var listItems = _solutionService.GetSolutionItems(solution).ToList();
