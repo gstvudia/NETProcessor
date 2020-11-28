@@ -37,12 +37,12 @@ namespace NET.Processor.API.Controllers
         /// </summary>
         /// <param name="webHook"></param>
         /// <returns></returns>
-        [HttpPost("ProcessSolution/Webhook")]
-        public async Task<IActionResult> ProcessSolution([FromBody] WebHook webHook)
+        [HttpPost("SaveAndProcessSolutionFromRepository")]
+        public async Task<IActionResult> SaveSolutionFromRepository([FromBody] CodeRepository repository)
         {
             // TODO: Ticket on Trello, ticket is called: Error when deleting solution using webhook
-            _solutionService.SaveSolutionFromRepository(webHook);
-            await Process(webHook.SolutionName);
+            //_solutionService.SaveSolutionFromRepository(repository);
+            await Process(repository.ProjectName, repository.ProjectFilename);
             return Ok();
         }
 
@@ -52,9 +52,9 @@ namespace NET.Processor.API.Controllers
         /// <param name="solutionName"></param>
         /// <returns></returns>
         [HttpPost("ProcessSolution")]
-        public async Task<IActionResult> ProcessSolution([FromBody] string solutionName)
+        public async Task<IActionResult> ProcessSolution([FromBody] CodeRepository solution)
         {
-            await Process(solutionName);
+            await Process(solution.ProjectName, solution.ProjectFilename);
             return Ok("Solution has been processed successfully");
         }
 
@@ -64,14 +64,14 @@ namespace NET.Processor.API.Controllers
         /// <param name="solutionName"></param>
         /// <returns></returns>
         [HttpPost("ProcessSolution/Items")]
-        public async Task<IActionResult> ProcessSolutionTest([FromBody] string solutionName)
+        public async Task<IActionResult> ProcessSolutionTest([FromBody] CodeRepository solutionTest)
         {
-            var solution = await _solutionService.LoadSolution(solutionName);
+            var solution = await _solutionService.LoadSolution(solutionTest.ProjectName, solutionTest.ProjectFilename);
             var listItems = _solutionService.GetSolutionItems(solution).ToList();
             // Store collection in Database
-            _databaseService.StoreCollectionTest(solutionName + "-TEST", listItems);
+            _databaseService.StoreCollectionTest(solutionTest.ProjectName + "-TEST", listItems);
             // Remark: No need to close db again, handled by database engine (MongoDB)
-            return Ok("Solution (DEBUG / TEST) has been processed successfully, it can be found in the database under the name: " + solutionName);
+            return Ok("Solution (DEBUG / TEST) has been processed successfully, it can be found in the database under the name: " + solutionTest.ProjectName);
         }
 
         /// <summary>
@@ -80,9 +80,9 @@ namespace NET.Processor.API.Controllers
         /// </summary>
         /// <param name="solutionName"></param>
         /// <returns>solution</returns>
-        private async Task<Solution> Process(string solutionName)
+        private async Task<Solution> Process(string solutionName, string solutionFilename)
         {
-            var solution = await _solutionService.LoadSolution(solutionName);
+            var solution = await _solutionService.LoadSolution(solutionName, solutionFilename);
             // If solution path cannot be found, return an error
             if(solution == null)
             {

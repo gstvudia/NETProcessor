@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using NET.Processor.Core.Interfaces;
-using NET.Processor.Core.Models;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 
@@ -14,8 +9,8 @@ namespace NET.Processor.Core.Services.Database
 {
     public class DatabaseService : IDatabaseService
     {
-        private string databaseString = "netProcessorDB";
-        private string databaseConnectionString = "mongodb+srv://admin_ben:6IePzWJHwqcPapWV@cluster0.zqe3a.mongodb.net/netProcessorDB?retryWrites=true&w=majority";
+        private readonly string databaseString = "netProcessorDB";
+        private readonly string databaseConnectionString = "mongodb+srv://admin_ben:6IePzWJHwqcPapWV@cluster0.zqe3a.mongodb.net/netProcessorDB?retryWrites=true";
         private IMongoClient client;
         private IMongoDatabase database;
 

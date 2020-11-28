@@ -29,7 +29,7 @@ namespace NET.Processor.Core.Services
         private Solution solution = null;
         private static readonly string homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
         private static readonly string homePath = Environment.GetEnvironmentVariable("HOMEPATH");
-        private string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\";
+        private readonly string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\";
            
         public SolutionService(ICommentService commentService, IConfiguration configuration)
         {
@@ -52,10 +52,10 @@ namespace NET.Processor.Core.Services
         /// </summary>
         /// <param name="repositoryName"></param>
         /// <returns></returns>
-        public void SaveSolutionFromRepository(WebHook webhook)
+        public void SaveSolutionFromRepository(CodeRepository repository)
         {
             // If path exists, remove old solution and add new one
-            string solutionPath = FindPathOfSolution(webhook.SolutionName);
+            string solutionPath = FindPathOfSolution(repository.ProjectFilename);
             if(solutionPath != null)
             {
                 try
@@ -66,30 +66,31 @@ namespace NET.Processor.Core.Services
                     throw new Exception(e.Message);
                 }
             }
-
-            path += webhook.SolutionName;
+            string repositoryPath = path + repository.ProjectName;
             try
             {
                 var cloneOptions = new CloneOptions
                 {
-                    CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = webhook.User, Password = webhook.Password }
-                };
-                Repository.Clone(webhook.RepositoryURL, path, cloneOptions);
+                    // CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.User, Password = repository.Password }
+                    CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.Token, Password = string.Empty }
+            };
+                Repository.Clone(repository.RepositoryURL, repositoryPath, cloneOptions);
             } catch(Exception e)
             {
                 throw new Exception(e.Message);
             }
         }
 
-        public async Task<Solution> LoadSolution(string solutionName)
+        public async Task<Solution> LoadSolution(string solutionName, string solutionFilename)
         {
-            var solutionPath = FindPathOfSolution(solutionName);
+            string solutionPath = FindPathOfSolution(solutionFilename);
             // If solution to process could not be found, throw exception
             if (solutionPath == null)
             {
                 throw new Exception("The solution path could not be found, have you forgotten to clone the project?");
             }
-            solutionPath = solutionPath + "\\" + solutionName + ".sln";
+            // Solution base path "\\source\\repos\\Solutions\\ + {{ ProjectName }} + \\ {{ SolutionFilename }}.sln
+            solutionPath = solutionPath + "\\" + solutionFilename + ".sln";
 
             using var msWorkspace = CreateMSBuildWorkspace();
             try
@@ -108,17 +109,18 @@ namespace NET.Processor.Core.Services
             return solution;
         }
 
-        private string FindPathOfSolution(string solutionName)
+        private string FindPathOfSolution(string projectFilename)
         {
+            string repositoryPath = path;
             try
             {
                 foreach (string directory in Directory.GetDirectories(path))
                 {
-                    foreach (string file in Directory.GetFiles(directory, solutionName + ".sln"))
+                    foreach (string file in Directory.GetFiles(directory, projectFilename + ".sln"))
                     {
                         return directory;
                     }
-                    FindPathOfSolution(directory);
+                    // FindPathOfSolution(directory); // Recursive folder checking not needed as of now
                 }
             }
             catch (Exception e)

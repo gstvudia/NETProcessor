@@ -16,14 +16,14 @@ namespace NET.Processor.Core.Interfaces
         /// </summary>
         /// <param name="SolutionPath">Path of the .sln file</param>
         /// <returns>Projects</returns>
-        Task<Solution> LoadSolution(string path);
+        Task<Solution> LoadSolution(string solutionName, string solutionFilename);
 
         /// <summary>
         /// Load solution from repository
         /// </summary>
         /// <param name="repositoryName"></param>
         /// <returns></returns>
-        void SaveSolutionFromRepository(WebHook webhook);
+        void SaveSolutionFromRepository(CodeRepository repository);
 
         /// <summary>
         /// Loads files from solution path
