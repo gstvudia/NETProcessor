@@ -66,8 +66,8 @@ namespace NET.Processor.Core.Services.Database
                 // Get newly created collection from database based on project name
                 var collection = database.GetCollection<Root>(solutionName);
                 // Insert graph data into collection per project
-                collection.InsertOne(relationGraph);
-               
+                collection.InsertOne(relationGraph);    
+                
             } catch(Exception e)
             {
                 throw new Exception(e.Message);

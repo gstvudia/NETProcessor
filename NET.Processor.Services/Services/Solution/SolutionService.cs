@@ -15,10 +15,10 @@ using DynamicData;
 using Microsoft.Extensions.Configuration;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using LibGit2Sharp;
-using Microsoft.CodeAnalysis.FindSymbols;
-using System.Linq.Expressions;
-using static NET.Processor.Core.Services.CommentIdentifier;
-using ReactiveUI;
+using System.Net.Http;
+using System.Net;
+using System.Web.Http;
+using NET.Processor.Core.Helpers;
 
 namespace NET.Processor.Core.Services
 {
@@ -55,12 +55,12 @@ namespace NET.Processor.Core.Services
         public void SaveSolutionFromRepository(CodeRepository repository)
         {
             // If path exists, remove old solution and add new one
-            string solutionPath = FindPathOfSolution(repository.ProjectFilename);
+            string solutionPath = DirectoryHelper.FindFileInDirectory(path, repository.ProjectFilename);
             if(solutionPath != null)
             {
                 try
                 {
-                    Directory.Delete(solutionPath, true);
+                    DirectoryHelper.ForceDeleteReadOnlyDirectory(solutionPath);
                 } catch(Exception e)
                 {
                     throw new Exception(e.Message);
@@ -71,8 +71,8 @@ namespace NET.Processor.Core.Services
             {
                 var cloneOptions = new CloneOptions
                 {
-                    // CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.User, Password = repository.Password }
-                    CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.Token, Password = string.Empty }
+                    CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.User, Password = repository.Password }
+                    // CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.Token, Password = string.Empty }
             };
                 Repository.Clone(repository.RepositoryURL, repositoryPath, cloneOptions);
             } catch(Exception e)
@@ -83,12 +83,18 @@ namespace NET.Processor.Core.Services
 
         public async Task<Solution> LoadSolution(string solutionName, string solutionFilename)
         {
-            string solutionPath = FindPathOfSolution(solutionFilename);
+            string solutionPath = DirectoryHelper.FindFileInDirectory(path, solutionFilename);
             // If solution to process could not be found, throw exception
             if (solutionPath == null)
             {
-                throw new Exception("The solution path could not be found, have you forgotten to clone the project?");
+                // TODO: Needs to properly return HttpStatusCode to frontend and show the message as shown below!
+                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound)
+                {
+                    Content = new StringContent("Solution could not be found, please check if the path you use is correct"),
+                    ReasonPhrase = "Path not found"
+                });
             }
+
             // Solution base path "\\source\\repos\\Solutions\\ + {{ ProjectName }} + \\ {{ SolutionFilename }}.sln
             solutionPath = solutionPath + "\\" + solutionFilename + ".sln";
 
@@ -107,27 +113,6 @@ namespace NET.Processor.Core.Services
             }
 
             return solution;
-        }
-
-        private string FindPathOfSolution(string projectFilename)
-        {
-            string repositoryPath = path;
-            try
-            {
-                foreach (string directory in Directory.GetDirectories(path))
-                {
-                    foreach (string file in Directory.GetFiles(directory, projectFilename + ".sln"))
-                    {
-                        return directory;
-                    }
-                    // FindPathOfSolution(directory); // Recursive folder checking not needed as of now
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
-            return null;
         }
 
         private MSBuildWorkspace CreateMSBuildWorkspace()

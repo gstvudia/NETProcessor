@@ -41,7 +41,7 @@ namespace NET.Processor.API.Controllers
         public async Task<IActionResult> SaveSolutionFromRepository([FromBody] CodeRepository repository)
         {
             // TODO: Ticket on Trello, ticket is called: Error when deleting solution using webhook
-            //_solutionService.SaveSolutionFromRepository(repository);
+            _solutionService.SaveSolutionFromRepository(repository);
             await Process(repository.ProjectName, repository.ProjectFilename);
             return Ok();
         }
