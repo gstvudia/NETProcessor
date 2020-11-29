@@ -17,6 +17,7 @@
     <PackageReference Include="AutoMapper" Version="10.0.0" />
     <PackageReference Include="DynamicData" Version="6.16.9" />
     <PackageReference Include="LibGit2Sharp" Version="0.26.2" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
     <PackageReference Include="Microsoft.Build" Version="16.7.0" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.Build.Locator" Version="1.2.6" />
     <PackageReference Include="Microsoft.CodeAnalysis" Version="3.7.0" />
