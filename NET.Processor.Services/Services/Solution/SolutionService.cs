@@ -67,14 +67,27 @@ namespace NET.Processor.Core.Services
             {
                 var cloneOptions = new CloneOptions
                 {
-                    CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.User, Password = repository.Password }
-                    // CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.Token, Password = string.Empty }
+                    //CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.User, Password = repository.Password }
+                    CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.Token, Password = string.Empty }
             };
                 Repository.Clone(repository.RepositoryURL, repositoryPath, cloneOptions);
             } catch(Exception e)
             {
-                throw new Exception(
-                    $"There was an error cloning the project with the following repository URL: { repository.RepositoryURL }, the error was: { e } ");
+                if (e is NameConflictException)
+                {
+                    throw new NameConflictException(
+                    $"There was an error cloning the project with the following repository URL: { repository.RepositoryURL }, the repository already exists");
+                }
+                else if (e is NotFoundException)
+                {
+                    throw new NotFoundException(
+                    $"There was an error cloning the project with the following repository URL: { repository.RepositoryURL }, the repository specified could not be found");
+                }
+                else
+                {
+                    throw new Exception(
+                        $"There was an error cloning the project with the following repository URL: { repository.RepositoryURL }, the error was: { e } ");
+                }
             }
         }
 
