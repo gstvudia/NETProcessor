@@ -71,8 +71,8 @@ namespace NET.Processor.Core.Services
             {
                 var cloneOptions = new CloneOptions
                 {
-                    CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.User, Password = repository.Password }
-                    // CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.Token, Password = string.Empty }
+                    // CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.User, Password = repository.Password }
+                    CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.Token, Password = string.Empty }
             };
                 Repository.Clone(repository.RepositoryURL, repositoryPath, cloneOptions);
             } catch(Exception e)
