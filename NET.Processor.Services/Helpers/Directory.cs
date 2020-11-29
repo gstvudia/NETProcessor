@@ -20,7 +20,8 @@ namespace NET.Processor.Core.Helpers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                throw new Exception(
+                    $"There was an error during finding the file: { filename } in the base path: { basePath }, the error was: { e } ");
             }
             return null;
         }

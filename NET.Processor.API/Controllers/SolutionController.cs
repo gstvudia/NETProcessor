@@ -7,7 +7,6 @@ using AutoMapper;
 using System.Linq;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using NET.Processor.Core.Helpers.Interfaces;
-using NET.Processor.Core.Helpers;
 using Microsoft.CodeAnalysis;
 using System;
 
@@ -40,10 +39,9 @@ namespace NET.Processor.API.Controllers
         [HttpPost("SaveAndProcessSolutionFromRepository")]
         public async Task<IActionResult> SaveSolutionFromRepository([FromBody] CodeRepository repository)
         {
-            // TODO: Ticket on Trello, ticket is called: Error when deleting solution using webhook
             _solutionService.SaveSolutionFromRepository(repository);
             await Process(repository.ProjectName, repository.ProjectFilename);
-            return Ok();
+            return Ok("Solution has been processed successfully");
         }
 
         /// <summary>

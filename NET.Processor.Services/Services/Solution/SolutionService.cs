@@ -4,20 +4,15 @@ using NET.Processor.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.IO;
 using System.Linq;
 using NET.Processor.Core.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
 using System.Threading.Tasks;
 using Microsoft.Build.Locator;
 using DynamicData;
 using Microsoft.Extensions.Configuration;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using LibGit2Sharp;
-using System.Net.Http;
-using System.Net;
-using System.Web.Http;
 using NET.Processor.Core.Helpers;
 
 namespace NET.Processor.Core.Services
@@ -63,7 +58,8 @@ namespace NET.Processor.Core.Services
                     DirectoryHelper.ForceDeleteReadOnlyDirectory(solutionPath);
                 } catch(Exception e)
                 {
-                    throw new Exception(e.Message);
+                    throw new Exception(
+                    $"There was an error deleting the project under the following path: { solutionPath }, the error was: { e } ");
                 }
             }
             string repositoryPath = path + repository.ProjectName;
@@ -71,13 +67,14 @@ namespace NET.Processor.Core.Services
             {
                 var cloneOptions = new CloneOptions
                 {
-                    // CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.User, Password = repository.Password }
-                    CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.Token, Password = string.Empty }
+                    CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.User, Password = repository.Password }
+                    // CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.Token, Password = string.Empty }
             };
                 Repository.Clone(repository.RepositoryURL, repositoryPath, cloneOptions);
             } catch(Exception e)
             {
-                throw new Exception(e.Message);
+                throw new Exception(
+                    $"There was an error cloning the project with the following repository URL: { repository.RepositoryURL }, the error was: { e } ");
             }
         }
 
@@ -87,12 +84,8 @@ namespace NET.Processor.Core.Services
             // If solution to process could not be found, throw exception
             if (solutionPath == null)
             {
-                // TODO: Needs to properly return HttpStatusCode to frontend and show the message as shown below!
-                throw new HttpResponseException(new HttpResponseMessage(HttpStatusCode.NotFound)
-                {
-                    Content = new StringContent("Solution could not be found, please check if the path you use is correct"),
-                    ReasonPhrase = "Path not found"
-                });
+                throw new NotFoundException(
+                    $"The specified solution under the solution path: { solutionPath } could not be found.");
             }
 
             // Solution base path "\\source\\repos\\Solutions\\ + {{ ProjectName }} + \\ {{ SolutionFilename }}.sln
@@ -103,13 +96,14 @@ namespace NET.Processor.Core.Services
             {
                 solution = await msWorkspace.OpenSolutionAsync(solutionPath);
 
-                //TODO: We can log diagnosis later
+                // TODO: We can log diagnosis later
                 ImmutableList<WorkspaceDiagnostic> diagnostics = msWorkspace.Diagnostics;
 
             }
-            catch (Exception exception)
+            catch (Exception e)
             {
-                Console.WriteLine(exception);
+                throw new Exception(
+                    $"There was an error opening the project with the following path: { solutionPath }, the error was: { e } ");
             }
 
             return solution;
@@ -125,7 +119,8 @@ namespace NET.Processor.Core.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                throw new Exception(
+                    $"There was an error creting the MSBuildWorkspace, the error was: { e } ");
             }
 
             return msWorkspace;
