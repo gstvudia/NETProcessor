@@ -11,6 +11,7 @@ namespace NET.Processor.Core.Services.Database
     {
         private readonly string databaseString = "netProcessorDB";
         private readonly string databaseConnectionString = "mongodb+srv://admin_ben:6IePzWJHwqcPapWV@cluster0.zqe3a.mongodb.net/netProcessorDB?retryWrites=true";
+        private readonly string projectsCollectionName = "Projects";
         private IMongoClient client;
         private IMongoDatabase database;
 
@@ -52,21 +53,27 @@ namespace NET.Processor.Core.Services.Database
             }
         }
 
-        public void StoreCollection(string solutionName, Root relationGraph)
+        public void StoreCollection(ProjectRelationsGraph relationGraph)
         {
             try
             {
-                // If project exists, remove it and recreate it in the database
-                if(database.GetCollection<Item>(solutionName) != null)
-                {
-                    database.DropCollection(solutionName);
+                if(database.GetCollection<Item>(projectsCollectionName) == null) {
+                    database.CreateCollection(projectsCollectionName);
                 }
-                // Create collection name corresponding to project name
-                database.CreateCollection(solutionName);
                 // Get newly created collection from database based on project name
-                var collection = database.GetCollection<Root>(solutionName);
-                // Insert graph data into collection per project
-                collection.InsertOne(relationGraph);    
+                var collection = database.GetCollection<ProjectRelationsGraph>(projectsCollectionName);
+                var result = collection.Find(x => x.projectName == relationGraph.projectName).ToList();
+
+                if(result.Count == 0)
+                {
+                    // Insert graph data into collection per project
+                    collection.InsertOne(relationGraph);
+                } else
+                {
+                    // Delete graph data first then create collection again per project
+                    collection.DeleteOne(a => a.Id == result[0].Id);
+                    collection.InsertOne(relationGraph);
+                } 
                 
             } catch(Exception e)
             {

@@ -9,6 +9,7 @@ using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using NET.Processor.Core.Helpers.Interfaces;
 using Microsoft.CodeAnalysis;
 using System;
+using MongoDB.Bson;
 
 namespace NET.Processor.API.Controllers
 {
@@ -108,14 +109,14 @@ namespace NET.Processor.API.Controllers
 
             graphEdges = _relationsGraphMapper.MapItemsToEdges(relations.ToList());
 
-            var relationGraph = new Root
-            {
-                nodes = graphNodes,
-                edges = graphEdges
-            };
+            var relationGraph = new ProjectRelationsGraph();
+            relationGraph.Id = ObjectId.GenerateNewId();
+            relationGraph.projectName = solutionName;
+            relationGraph.projectContent.nodes = graphNodes;
+            relationGraph.projectContent.edges = graphEdges;
 
             // Store collection in Database
-            _databaseService.StoreCollection(solutionName, relationGraph);
+            _databaseService.StoreCollection(relationGraph);
             // Remark: No need to close db again, handled by database engine (MongoDB)
             return solution;
         }

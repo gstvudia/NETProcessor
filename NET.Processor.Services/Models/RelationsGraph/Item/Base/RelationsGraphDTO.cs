@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 
 namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
@@ -11,7 +12,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
     }
 
 
-    public struct NodeData
+    public class NodeData
     {
         public string id { get; set; }
         public string name { get; set; }
@@ -21,12 +22,12 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         public string shapeType { get; set; }
     }
 
-    public struct Node
+    public class Node
     {
         public NodeData data { get; set; }
     }
 
-    public struct EdgeData
+    public class EdgeData
     {
         public string source { get; set; }
         public string target { get; set; }
@@ -34,12 +35,19 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         public int strength { get; set; }
     }
 
-    public struct Edge
+    public class Edge
     {
         public EdgeData data { get; set; }
     }
 
-    public struct Root
+    public class ProjectRelationsGraph
+    {
+        public ObjectId Id { get; set; }
+        public string projectName { get; set; }
+        public ProjectRelationsGraphRoot projectContent = new ProjectRelationsGraphRoot();
+    }
+
+    public class ProjectRelationsGraphRoot
     {
         public List<Node> nodes { get; set; }
         public List<Edge> edges { get; set; }

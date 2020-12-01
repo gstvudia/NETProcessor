@@ -16,7 +16,7 @@ namespace NET.Processor.Core.Interfaces
         /// <summary>
         /// Store collection in Database
         /// </summary>
-        void StoreCollection(string solutionName, Root relationGraph);
+        void StoreCollection(ProjectRelationsGraph relationGraph);
 
         /// <summary>
         /// Store test collection in Database
