@@ -44,7 +44,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
     {
         public ObjectId Id { get; set; }
         public string projectName { get; set; }
-        public ProjectRelationsGraphRoot projectContent = new ProjectRelationsGraphRoot();
+        public ProjectRelationsGraphRoot graphData = new ProjectRelationsGraphRoot();
     }
 
     public class ProjectRelationsGraphRoot

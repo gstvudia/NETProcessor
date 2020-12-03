@@ -112,8 +112,8 @@ namespace NET.Processor.API.Controllers
             var relationGraph = new ProjectRelationsGraph();
             relationGraph.Id = ObjectId.GenerateNewId();
             relationGraph.projectName = solutionName;
-            relationGraph.projectContent.nodes = graphNodes;
-            relationGraph.projectContent.edges = graphEdges;
+            relationGraph.graphData.nodes = graphNodes;
+            relationGraph.graphData.edges = graphEdges;
 
             // Store collection in Database
             _databaseService.StoreCollection(relationGraph);
