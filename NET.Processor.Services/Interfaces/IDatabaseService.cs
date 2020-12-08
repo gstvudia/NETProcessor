@@ -14,16 +14,14 @@ namespace NET.Processor.Core.Interfaces
         void ConnectDatabase();
 
         /// <summary>
-        /// Store collection in Database
+        /// Store Graph Data (Nodes and Edges) in Database
         /// </summary>
-        void StoreCollection(ProjectRelationsGraph relationGraph);
-
+        void StoreGraphNodesAndEdges(ProjectRelationsGraph relationGraph);
         /// <summary>
-        /// Store test collection in Database
+        /// Store graph items (File, Project, Comments, etc.) in Database
         /// </summary>
-        /// <param name="solutionName"></param>
-        /// <param name="listItems"></param>
-        void StoreCollectionTest(string solutionName, List<Item> listItems);
+        /// <param name="graphItems"></param>
+        void StoreGraphItems(ProjectRelationsGraph relationGraphItems, string solutionName);
 
         /// <summary>
         /// Gets the Graph Items of the Solution specified

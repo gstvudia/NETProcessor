@@ -3,13 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using NET.Processor.Core.Models;
 using NET.Processor.Core.Interfaces;
-using AutoMapper;
 using System.Linq;
-using NET.Processor.Core.Models.RelationsGraph.Item.Base;
-using NET.Processor.Core.Helpers.Interfaces;
 using Microsoft.CodeAnalysis;
 using System;
-using MongoDB.Bson;
 
 namespace NET.Processor.API.Controllers
 {
@@ -18,18 +14,10 @@ namespace NET.Processor.API.Controllers
     public class SolutionController : ControllerBase
     {
         private readonly ISolutionService _solutionService;
-        private readonly IDatabaseService _databaseService;
-        private readonly IMapper _mapper;
-        private readonly IRelationsGraphMapper _relationsGraphMapper;
 
-        public SolutionController(ISolutionService solutionService, IDatabaseService 
-                                  databaseService, IMapper mapper, IRelationsGraphMapper relationsGraphMapper)
+        public SolutionController(ISolutionService solutionService)
         {
             _solutionService = solutionService;
-            _databaseService = databaseService;
-            _databaseService.ConnectDatabase();
-            _mapper = mapper;
-            _relationsGraphMapper = relationsGraphMapper;
         }
 
         /// <summary>
@@ -67,8 +55,7 @@ namespace NET.Processor.API.Controllers
         {
             var solution = await _solutionService.LoadSolution(solutionTest.ProjectName, solutionTest.ProjectFilename);
             var listItems = _solutionService.GetSolutionItems(solution).ToList();
-            // Store collection in Database
-            _databaseService.StoreCollectionTest(solutionTest.ProjectName + "-TEST", listItems);
+            _solutionService.SaveSolutionItems(listItems, solutionTest.ProjectName);
             // Remark: No need to close db again, handled by database engine (MongoDB)
             return Ok("Solution (DEBUG / TEST) has been processed successfully, it can be found in the database under the name: " + solutionTest.ProjectName);
         }
@@ -89,35 +76,7 @@ namespace NET.Processor.API.Controllers
             }
 
             var relations = _solutionService.GetRelationsGraph(solution).ToList();
-
-            List<Node> graphNodes = new List<Node>();
-            List<Edge> graphEdges = new List<Edge>();
-            NodeData nodeData = new NodeData();
-
-            foreach (var item in relations)
-            {
-                nodeData = _mapper.Map<NodeData>(item);
-                nodeData.colorCode = "orange";
-                nodeData.weight = 100;
-                nodeData.shapeType = "roundrectangle";
-                nodeData.nodeType = item.GetType().ToString();
-                graphNodes.Add(new Node
-                {
-                    data = nodeData
-                });
-            }
-
-            graphEdges = _relationsGraphMapper.MapItemsToEdges(relations.ToList());
-
-            var relationGraph = new ProjectRelationsGraph();
-            relationGraph.Id = ObjectId.GenerateNewId();
-            relationGraph.projectName = solutionName;
-            relationGraph.graphData.nodes = graphNodes;
-            relationGraph.graphData.edges = graphEdges;
-
-            // Store collection in Database
-            _databaseService.StoreCollection(relationGraph);
-            // Remark: No need to close db again, handled by database engine (MongoDB)
+            _solutionService.ProcessRelationsGraph(relations, solutionName);
             return solution;
         }
 
@@ -178,11 +137,5 @@ namespace NET.Processor.API.Controllers
             return Ok(solutionAssets);
         }
         */
-
-        public struct SolutionInfo
-        {
-            public IEnumerable<string> Projects { get; set; }
-            public IEnumerable<string> Documents { get; set; }
-        }
     }
 }

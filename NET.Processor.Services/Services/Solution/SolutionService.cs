@@ -14,6 +14,10 @@ using Microsoft.Extensions.Configuration;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using LibGit2Sharp;
 using NET.Processor.Core.Helpers;
+using AutoMapper;
+using NET.Processor.Core.Helpers.Interfaces;
+using NET.Processor.Core.Models.RelationsGraph.Item.Base;
+using MongoDB.Bson;
 
 namespace NET.Processor.Core.Services
 {
@@ -21,15 +25,24 @@ namespace NET.Processor.Core.Services
     {
         private readonly ICommentService _commentService;
         private readonly IConfiguration _configuration;
+        private readonly IDatabaseService _databaseService;
+        private readonly IMapper _mapper;
+        private readonly IRelationsGraphMapper _relationsGraphMapper;
         private Solution solution = null;
         private static readonly string homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
         private static readonly string homePath = Environment.GetEnvironmentVariable("HOMEPATH");
         private readonly string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\";
            
-        public SolutionService(ICommentService commentService, IConfiguration configuration)
+        public SolutionService(ICommentService commentService, IConfiguration configuration, 
+                               IDatabaseService databaseService, IMapper mapper, 
+                               IRelationsGraphMapper relationsGraphMapper)
         {
             _commentService = commentService;
             _configuration = configuration;
+            _databaseService = databaseService;
+            _databaseService.ConnectDatabase();
+            _mapper = mapper;
+            _relationsGraphMapper = relationsGraphMapper;
 
             if (!MSBuildLocator.IsRegistered)
             {
@@ -385,6 +398,46 @@ namespace NET.Processor.Core.Services
             }            
 
             return childList;
+        }
+
+        public void ProcessRelationsGraph(IEnumerable<Method> relations, string solutionName)
+        {
+            List<Node> graphNodes = new List<Node>();
+            List<Edge> graphEdges = new List<Edge>();
+            NodeData nodeData = new NodeData();
+
+            foreach (var item in relations)
+            {
+                nodeData = _mapper.Map<NodeData>(item);
+                nodeData.colorCode = "orange";
+                nodeData.weight = 100;
+                nodeData.shapeType = "roundrectangle";
+                nodeData.nodeType = item.GetType().ToString();
+                graphNodes.Add(new Node
+                {
+                    data = nodeData
+                });
+            }
+
+            graphEdges = _relationsGraphMapper.MapItemsToEdges(relations.ToList());
+
+            var relationGraph = new ProjectRelationsGraph();
+            relationGraph.Id = MongoDB.Bson.ObjectId.GenerateNewId();
+            relationGraph.projectName = solutionName;
+            relationGraph.graphData.nodes = graphNodes;
+            relationGraph.graphData.edges = graphEdges;
+
+            // Store collection in Database
+            _databaseService.StoreGraphNodesAndEdges(relationGraph);
+            // Remark: No need to close db again, handled by database engine (MongoDB)
+        }
+
+        public void SaveSolutionItems(List<Item> graphItems, string solutionName)
+        {
+            var relationGraph = new ProjectRelationsGraph();
+            relationGraph.graphItems = graphItems;
+            // Store collection in Database
+            _databaseService.StoreGraphItems(relationGraph, solutionName);
         }
     }
 }

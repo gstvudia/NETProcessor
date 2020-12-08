@@ -32,6 +32,21 @@ namespace NET.Processor.Core.Interfaces
         /// <returns>FilePaths</returns>
         //IEnumerable<FileInfo> LoadFilePaths(string SolutionPath);
         IEnumerable<Item> GetSolutionItems(Solution solution);
+        /// <summary>
+        /// Save Items of solution in the database
+        /// </summary>
+        /// <param name="listItems"></param>
+        void SaveSolutionItems(List<Item> listItems, string solutionName);
+        /// <summary>
+        /// Getting all method nodes and relations
+        /// </summary>
+        /// <param name="solution"></param>
+        /// <returns></returns>
         IEnumerable<Method> GetRelationsGraph(Solution solution);
+        /// <summary>
+        /// Processing method nodes and relations
+        /// </summary>
+        /// <param name="relations"></param>
+        void ProcessRelationsGraph(IEnumerable<Method> relations, string solutionName);
     }
 }
