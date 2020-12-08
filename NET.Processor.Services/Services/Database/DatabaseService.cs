@@ -32,6 +32,8 @@ namespace NET.Processor.Core.Services.Database
 
         public void StoreGraphItems(ProjectRelationsGraph relationGraphItems, string solutionName)
         {
+            const string GraphItemsField = "graphItems";
+
             try
             {
                 if (database.GetCollection<Item>(projectsCollectionName) == null)
@@ -42,7 +44,7 @@ namespace NET.Processor.Core.Services.Database
                 // Get newly created collection from database based on project name
                 var collection = database.GetCollection<ProjectRelationsGraph>(projectsCollectionName);
                 var filter = Builders<ProjectRelationsGraph>.Filter.Eq(x => x.projectName, solutionName);
-                var update = Builders<ProjectRelationsGraph>.Update.SetOnInsert(x => x.graphItems, relationGraphItems);
+                var update = Builders<ProjectRelationsGraph>.Update.SetOnInsert(GraphItemsField, relationGraphItems);
                 collection.UpdateOne(filter, update);
             }
             catch (Exception e)
