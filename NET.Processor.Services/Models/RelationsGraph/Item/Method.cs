@@ -8,11 +8,14 @@ namespace NET.Processor.Core.Models
     {
         public BlockSyntax Body { get; set; }
 
-        public Method(int id, string name, BlockSyntax body) : base(id, name)
+        public Method(int id, string name,
+                      BlockSyntax body, string itemName,
+                      string className) : base(id, name, itemName, className)
         {
             Body = body;
         }
-        public Method(int id, string name) : base(id, name){}
+        public Method(int id, string name,
+                      string itemName, string className) : base(id, name, itemName, className) {}
 
     }
 }

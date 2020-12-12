@@ -23,6 +23,11 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         [BsonIgnore]
         public List<Method> ChildList { get; } = new List<Method>();
 
+        [BsonElement("ItemName")]
+        public string ItemName { get; set; }
+
+        [BsonElement("ClassName")]
+        public string ClassName { get; set; }
         public Item()
         {
         }
@@ -31,7 +36,15 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         {
             Id = id;
             Name = name;
+            DatabaseId = ObjectId.GenerateNewId();
+        }
 
+        public Item(int id, string name, string itemName, string className)
+        {
+            Id = id;
+            Name = name;
+            ItemName = itemName;
+            ClassName = className;
             DatabaseId = ObjectId.GenerateNewId();
         }
 

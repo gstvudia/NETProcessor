@@ -341,7 +341,8 @@ namespace NET.Processor.Core.Services
             List<Method> methodsList = new List<Method>();
             var methodNodes = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
             var methods = methodNodes
-                                     .Select(x => new Method(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, x.Body))
+                                     .Select(x => new Method(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText,
+                                                             x.Body,"",""))
                                      .ToList();
 
             foreach (var method in methods)
@@ -354,19 +355,7 @@ namespace NET.Processor.Core.Services
             }
 
             return methodsList;
-        }
-        private int GetMethodId(string methodName, List<Method> AllMethods)
-        {
-            var methodExists = AllMethods.Where(m => m.Name == methodName).FirstOrDefault();
-            if (methodExists == null)
-            {
-                return AllMethods.Max(m => m.Id) + 1;
-            }
-            else
-            {
-                return methodExists.Id;
-            }
-        }
+        }        
 
         private List<Method> GetChilds(Method method)
         {
@@ -388,14 +377,14 @@ namespace NET.Processor.Core.Services
                         childList
                             .Add(new Method(
                                 -1, child[1].Substring(0, child[1].LastIndexOf("(") + 1).Replace("(", string.Empty)
-                            ));
+                                , "", ""));
                     }
                     else
                     {
                         childList
                             .Add(new Method(
                                 -1, child[0].Substring(0, child[0].LastIndexOf("(") + 1).Replace("(", string.Empty)
-                            ));
+                                , "", ""));
                     }
                 }
             }            

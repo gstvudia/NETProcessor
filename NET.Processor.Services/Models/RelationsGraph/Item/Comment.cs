@@ -42,7 +42,9 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         [BsonIgnore]
         public NamespaceDeclarationSyntax NamespaceIfAny { get; private set; }
 
-        public Comment(int lineNumber, string content, int attachedPropertyId, string attachedPropertyName, MemberDeclarationSyntax methodOrPropertyIfAny, TypeDeclarationSyntax typeIfAny, NamespaceDeclarationSyntax namespaceIfAny)
+        public Comment(int lineNumber, string content, int attachedPropertyId,
+                       string attachedPropertyName, MemberDeclarationSyntax methodOrPropertyIfAny,
+                       TypeDeclarationSyntax typeIfAny, NamespaceDeclarationSyntax namespaceIfAny)                                              
         {
             if (string.IsNullOrEmpty(content))
                 throw new ArgumentException("Null/blank content specified");
