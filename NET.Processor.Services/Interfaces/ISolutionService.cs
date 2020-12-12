@@ -33,11 +33,6 @@ namespace NET.Processor.Core.Interfaces
         //IEnumerable<FileInfo> LoadFilePaths(string SolutionPath);
         IEnumerable<Item> GetSolutionItems(Solution solution);
         /// <summary>
-        /// Save Items of solution in the database
-        /// </summary>
-        /// <param name="listItems"></param>
-        void SaveSolutionItems(List<Item> listItems, string solutionName);
-        /// <summary>
         /// Getting all method nodes and relations
         /// </summary>
         /// <param name="solution"></param>

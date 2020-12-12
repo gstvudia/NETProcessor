@@ -1,4 +1,5 @@
-﻿using MongoDB.Bson;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 
@@ -11,47 +12,63 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         public RelationsGraphDTO Type { get; set; }
     }
 
+    public class Node
+    {
+        public NodeRoot Data { get; set; }
+    }
+
+    public class NodeRoot
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Body { get; set; }
+        public string NodeType { get; set; }
+        public int Weight { get; set; }
+        public string ColorCode { get; set; }
+        public string ShapeType { get; set; }
+        public NodeData NodeData { get; set; }
+    }
 
     public class NodeData
     {
-        public string id { get; set; }
-        public string name { get; set; }
-        public string nodeType { get; set; }
-        public int weight { get; set; }
-        public string colorCode { get; set; }
-        public string shapeType { get; set; }
-    }
+        public string Name { get; set; }
+        public string File { get; set; }
+        public string ItemClass { get; set; }
 
-    public class Node
-    {
-        public NodeData data { get; set; }
+        /* The following values belonging to this class are pulled in dynamically by trigger through frontend
+        // method body
+        // sectionTags
+        // tickets
+        // history of changes
+        // documentation
+        // goToMethod
+        */ 
     }
 
     public class EdgeData
     {
-        public string source { get; set; }
-        public string target { get; set; }
-        public string colorCode { get; set; }
-        public int strength { get; set; }
+        public string Source { get; set; }
+        public string Target { get; set; }
+        public string ColorCode { get; set; }
+        public int Strength { get; set; }
     }
 
     public class Edge
     {
-        public EdgeData data { get; set; }
+        public EdgeData Data { get; set; }
     }
 
     public class ProjectRelationsGraph
     {
         public ObjectId Id { get; set; }
-        public string solutionName { get; set; }
+        public string SolutionName { get; set; }
         public ProjectRelationsGraphRoot graphData = new ProjectRelationsGraphRoot();
-        public List<Item> graphItems = new List<Item>();
     }
 
     public class ProjectRelationsGraphRoot
     {
-        public List<Node> nodes { get; set; }
-        public List<Edge> edges { get; set; }
+        public List<Node> Nodes { get; set; }
+        public List<Edge> Edges { get; set; }
     }
 
 }

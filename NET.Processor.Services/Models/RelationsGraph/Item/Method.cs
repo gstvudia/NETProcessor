@@ -6,16 +6,13 @@ namespace NET.Processor.Core.Models
 {
     public class Method : Item
     {
-        [BsonIgnore]
         public BlockSyntax Body { get; set; }
 
         public Method(int id, string name, BlockSyntax body) : base(id, name)
         {
-            this.Body = body;
+            Body = body;
         }
         public Method(int id, string name) : base(id, name){}
-
-        
 
     }
 }

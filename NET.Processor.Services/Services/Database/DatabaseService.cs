@@ -31,29 +31,6 @@ namespace NET.Processor.Core.Services.Database
             }
         }
 
-        public void StoreGraphItems(List<Item> graphItems, string solutionName)
-        {
-            const string GraphItemsField = "graphItems";
-
-            try
-            {
-                if (database.GetCollection<Item>(projectsCollectionName) == null)
-                {
-                    database.CreateCollection(projectsCollectionName);
-                }
-
-                // Get newly created collection from database based on project name
-                var collection = database.GetCollection<ProjectRelationsGraph>(projectsCollectionName);
-                var filter = Builders<ProjectRelationsGraph>.Filter.Eq(x => x.solutionName, solutionName);
-                var update = Builders<ProjectRelationsGraph>.Update.PushEach(GraphItemsField, graphItems);
-                collection.UpdateOne(filter, update);
-            }
-            catch (Exception e)
-            {
-                throw new Exception(e.Message);
-            }
-        }
-
         public void StoreGraphNodesAndEdges(ProjectRelationsGraph relationGraphNodesAndEdges)
         {
             try
@@ -63,7 +40,7 @@ namespace NET.Processor.Core.Services.Database
                 }
                 // Get newly created collection from database based on project name
                 var collection = database.GetCollection<ProjectRelationsGraph>(projectsCollectionName);
-                var result = collection.Find(x => x.solutionName == relationGraphNodesAndEdges.solutionName).ToList();
+                var result = collection.Find(x => x.SolutionName == relationGraphNodesAndEdges.SolutionName).ToList();
 
                 // If Solution name cannot be found, insert collection directly, otherwise delete old one 
                 // and insert new solution afterwards

@@ -407,18 +407,21 @@ namespace NET.Processor.Core.Services
         {
             List<Node> graphNodes = new List<Node>();
             List<Edge> graphEdges = new List<Edge>();
-            NodeData nodeData = new NodeData();
+            NodeRoot nodeBase = new NodeRoot();
 
             foreach (var item in relations)
             {
-                nodeData = _mapper.Map<NodeData>(item);
-                nodeData.colorCode = "orange";
-                nodeData.weight = 100;
-                nodeData.shapeType = "roundrectangle";
-                nodeData.nodeType = item.GetType().ToString();
+                nodeBase = _mapper.Map<NodeRoot>(item);
+                nodeBase.ColorCode = "orange";
+                nodeBase.Weight = 100;
+                nodeBase.ShapeType = "roundrectangle";
+                nodeBase.NodeType = item.GetType().ToString();
+                nodeBase.NodeData.Name = item.Name;
+                //nodeBase.NodeData.File = item.file;
+                //nodeBase.NodeData.ItemClass = item.itemClass;
                 graphNodes.Add(new Node
                 {
-                    data = nodeData
+                    Data = nodeBase
                 });
             }
 
@@ -426,19 +429,13 @@ namespace NET.Processor.Core.Services
 
             var relationGraph = new ProjectRelationsGraph();
             relationGraph.Id = MongoDB.Bson.ObjectId.GenerateNewId();
-            relationGraph.solutionName = solutionName;
-            relationGraph.graphData.nodes = graphNodes;
-            relationGraph.graphData.edges = graphEdges;
+            relationGraph.SolutionName = solutionName;
+            relationGraph.graphData.Nodes = graphNodes;
+            relationGraph.graphData.Edges = graphEdges;
 
             // Store collection in Database
             _databaseService.StoreGraphNodesAndEdges(relationGraph);
             // Remark: No need to close db again, handled by database engine (MongoDB)
-        }
-
-        public void SaveSolutionItems(List<Item> graphItems, string solutionName)
-        {
-            // Store collection in Database
-            _databaseService.StoreGraphItems(graphItems, solutionName);
         }
     }
 }

@@ -8,10 +8,10 @@ namespace NET.Processor.Core.Helpers.Mappers
     {
         public AutoMapperProfiles()
         {
-            CreateMap<Item, NodeData>()
-                .ForMember(property => property.id, options => options.MapFrom(
+            CreateMap<Item, NodeRoot>()
+                .ForMember(property => property.Id, options => options.MapFrom(
                     source => source.Id))
-                .ForMember(property => property.name, options => options.MapFrom(
+                .ForMember(property => property.Name, options => options.MapFrom(
                     source => source.Name));
         }
     }

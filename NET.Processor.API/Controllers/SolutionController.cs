@@ -60,14 +60,10 @@ namespace NET.Processor.API.Controllers
                 throw new Exception("The solution could not be found, have you cloned it into the respective directory before processing the solution?");
             }
 
-            // Process graph nodes and edges and item nodes (project, file, etc.)
+            // Process graph nodes and edges and corresponding information (project, file, etc.)
             var relations = _solutionService.GetRelationsGraph(solution).ToList();
-            var listItems = _solutionService.GetSolutionItems(solution).ToList();
-
-
-            // Store graph nodes and edges and item nodes (project, file, etc.)
+            // Store graph nodes and edges and corresponding information (project, file, etc.)
             _solutionService.ProcessRelationsGraph(relations, solutionName);
-            _solutionService.SaveSolutionItems(listItems, solutionName);
 
             return solution;
         }
