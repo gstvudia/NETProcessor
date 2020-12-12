@@ -25,12 +25,15 @@ namespace NET.Processor.Core.Services
         public IEnumerable<Comment> GetCommentReferences(SyntaxNode rootNode, IEnumerable<KeyValuePair<string, int>> itemNames)
         {
 			List<Comment> comments = new List<Comment>();
-
-			if (itemNames.IsNullOrEmpty())
+			// Check if an empty key value pair has been passed
+			foreach(var itemName in itemNames)
             {
-				throw new Exception("KeyValuePair<string, int> itemNames passed to Comment Service may not be empty!");
+				if (itemName.Equals(default(KeyValuePair<string, int>)))
+				{
+					throw new Exception("KeyValuePair<string, int> itemNames passed to Comment Service may not be empty!");
+				}
 			}
-				
+
 			foreach (var comment in _commentIdentifier.GetComments(rootNode.SyntaxTree.GetRoot(), itemNames))
 			{
 				// Print additional console information in dev mode

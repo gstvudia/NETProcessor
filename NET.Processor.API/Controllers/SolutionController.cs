@@ -29,7 +29,7 @@ namespace NET.Processor.API.Controllers
         public async Task<IActionResult> SaveSolutionFromRepository([FromBody] CodeRepository repository)
         {
             _solutionService.SaveSolutionFromRepository(repository);
-            await Process(repository.ProjectName, repository.ProjectFilename);
+            await Process(repository.SolutionName, repository.SolutionFilename);
             return Ok("Solution has been processed successfully");
         }
 
@@ -41,23 +41,8 @@ namespace NET.Processor.API.Controllers
         [HttpPost("ProcessSolution")]
         public async Task<IActionResult> ProcessSolution([FromBody] CodeRepository solution)
         {
-            await Process(solution.ProjectName, solution.ProjectFilename);
+            await Process(solution.SolutionName, solution.SolutionFilename);
             return Ok("Solution has been processed successfully");
-        }
-
-        /// <summary>
-        /// This call saves all Graph properties (Items) directly into the database
-        /// </summary>
-        /// <param name="solutionName"></param>
-        /// <returns></returns>
-        [HttpPost("ProcessSolution/Items")]
-        public async Task<IActionResult> ProcessSolutionTest([FromBody] CodeRepository solutionTest)
-        {
-            var solution = await _solutionService.LoadSolution(solutionTest.ProjectName, solutionTest.ProjectFilename);
-            var listItems = _solutionService.GetSolutionItems(solution).ToList();
-            _solutionService.SaveSolutionItems(listItems, solutionTest.ProjectName);
-            // Remark: No need to close db again, handled by database engine (MongoDB)
-            return Ok("Solution (DEBUG / TEST) has been processed successfully, it can be found in the database under the name: " + solutionTest.ProjectName);
         }
 
         /// <summary>
@@ -75,8 +60,15 @@ namespace NET.Processor.API.Controllers
                 throw new Exception("The solution could not be found, have you cloned it into the respective directory before processing the solution?");
             }
 
+            // Process graph nodes and edges and item nodes (project, file, etc.)
             var relations = _solutionService.GetRelationsGraph(solution).ToList();
+            var listItems = _solutionService.GetSolutionItems(solution).ToList();
+
+
+            // Store graph nodes and edges and item nodes (project, file, etc.)
             _solutionService.ProcessRelationsGraph(relations, solutionName);
+            _solutionService.SaveSolutionItems(listItems, solutionName);
+
             return solution;
         }
 

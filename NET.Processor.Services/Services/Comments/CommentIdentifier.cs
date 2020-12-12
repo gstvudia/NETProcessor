@@ -156,6 +156,7 @@ namespace NET.Processor.Core.Services
 						containingNode,
 						n => !(n is NamespaceDeclarationSyntax) && !(n is TypeDeclarationSyntax)
 					);
+
 					var containingTypeIfAny = TryToGetContainingNode<TypeDeclarationSyntax>(containingNode);
 					var containingNameSpaceIfAny = TryToGetContainingNode<NamespaceDeclarationSyntax>(containingNode);
 

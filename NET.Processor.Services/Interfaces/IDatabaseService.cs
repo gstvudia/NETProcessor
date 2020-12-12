@@ -21,7 +21,7 @@ namespace NET.Processor.Core.Interfaces
         /// Store graph items (File, Project, Comments, etc.) in Database
         /// </summary>
         /// <param name="graphItems"></param>
-        void StoreGraphItems(ProjectRelationsGraph relationGraphItems, string solutionName);
+        void StoreGraphItems(List<Item> graphItems, string solutionName);
 
         /// <summary>
         /// Gets the Graph Items of the Solution specified

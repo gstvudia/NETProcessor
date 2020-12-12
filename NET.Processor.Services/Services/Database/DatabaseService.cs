@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using MongoDB.Driver;
 using NET.Processor.Core.Interfaces;
 using NET.Processor.Core.Models.RelationsGraph.Item;
@@ -30,7 +31,7 @@ namespace NET.Processor.Core.Services.Database
             }
         }
 
-        public void StoreGraphItems(ProjectRelationsGraph relationGraphItems, string solutionName)
+        public void StoreGraphItems(List<Item> graphItems, string solutionName)
         {
             const string GraphItemsField = "graphItems";
 
@@ -43,8 +44,8 @@ namespace NET.Processor.Core.Services.Database
 
                 // Get newly created collection from database based on project name
                 var collection = database.GetCollection<ProjectRelationsGraph>(projectsCollectionName);
-                var filter = Builders<ProjectRelationsGraph>.Filter.Eq(x => x.projectName, solutionName);
-                var update = Builders<ProjectRelationsGraph>.Update.SetOnInsert(GraphItemsField, relationGraphItems);
+                var filter = Builders<ProjectRelationsGraph>.Filter.Eq(x => x.solutionName, solutionName);
+                var update = Builders<ProjectRelationsGraph>.Update.PushEach(GraphItemsField, graphItems);
                 collection.UpdateOne(filter, update);
             }
             catch (Exception e)
@@ -62,7 +63,7 @@ namespace NET.Processor.Core.Services.Database
                 }
                 // Get newly created collection from database based on project name
                 var collection = database.GetCollection<ProjectRelationsGraph>(projectsCollectionName);
-                var result = collection.Find(x => x.projectName == relationGraphNodesAndEdges.projectName).ToList();
+                var result = collection.Find(x => x.solutionName == relationGraphNodesAndEdges.solutionName).ToList();
 
                 // If Solution name cannot be found, insert collection directly, otherwise delete old one 
                 // and insert new solution afterwards

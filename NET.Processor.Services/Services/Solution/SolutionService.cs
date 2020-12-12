@@ -63,7 +63,7 @@ namespace NET.Processor.Core.Services
         public void SaveSolutionFromRepository(CodeRepository repository)
         {
             // If path exists, remove old solution and add new one
-            string solutionPath = DirectoryHelper.FindFileInDirectory(path, repository.ProjectFilename);
+            string solutionPath = DirectoryHelper.FindFileInDirectory(path, repository.SolutionFilename);
             if(solutionPath != null)
             {
                 try
@@ -75,7 +75,7 @@ namespace NET.Processor.Core.Services
                     $"There was an error deleting the project under the following path: { solutionPath }, the error was: { e } ");
                 }
             }
-            string repositoryPath = path + repository.ProjectName;
+            string repositoryPath = path + repository.SolutionName;
             try
             {
                 var cloneOptions = new CloneOptions
@@ -114,7 +114,7 @@ namespace NET.Processor.Core.Services
                     $"The specified solution under the solution path: { solutionPath } could not be found.");
             }
 
-            // Solution base path "\\source\\repos\\Solutions\\ + {{ ProjectName }} + \\ {{ SolutionFilename }}.sln
+            // Solution base path "\\source\\repos\\Solutions\\ + {{ SolutionName }} + \\ {{ SolutionFilename }}.sln
             solutionPath = solutionPath + "\\" + solutionFilename + ".sln";
 
             using var msWorkspace = CreateMSBuildWorkspace();
@@ -195,7 +195,9 @@ namespace NET.Processor.Core.Services
 
                         list.AddRange(classes);
 
+                        var methodList = MapMethods(root);
                         MapMethods(root);
+                        list.AddRange(methodList);
 
                         /*
                         var interfaces = root.DescendantNodes()
@@ -275,9 +277,10 @@ namespace NET.Processor.Core.Services
                         //End of document/class
 
                         // Get all comments and assigns comment to specific property id from the item list
-                        var commentReferences = _commentService.GetCommentReferences(root, list.Where(x => x.GetType() == typeof(Class) ||
-                                                x.GetType() == typeof(Method) ||
-                                                x.GetType() == typeof(Namespace))
+                        var commentReferences = _commentService.GetCommentReferences(root, list.Where(x => 
+                                                    x.GetType() == typeof(Class) ||
+                                                    x.GetType() == typeof(Method) ||
+                                                    x.GetType() == typeof(Namespace))
                                                 .Select(x => new KeyValuePair<string, int>(x.Name, x.Id)));
                         var comments = commentReferences.Select(x => new Comment(x.LineNumber, x.Name, x.AttachedPropertyId, x.AttachedPropertyName, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
                                 .ToList();
@@ -423,7 +426,7 @@ namespace NET.Processor.Core.Services
 
             var relationGraph = new ProjectRelationsGraph();
             relationGraph.Id = MongoDB.Bson.ObjectId.GenerateNewId();
-            relationGraph.projectName = solutionName;
+            relationGraph.solutionName = solutionName;
             relationGraph.graphData.nodes = graphNodes;
             relationGraph.graphData.edges = graphEdges;
 
@@ -434,10 +437,8 @@ namespace NET.Processor.Core.Services
 
         public void SaveSolutionItems(List<Item> graphItems, string solutionName)
         {
-            var relationGraph = new ProjectRelationsGraph();
-            relationGraph.graphItems = graphItems;
             // Store collection in Database
-            _databaseService.StoreGraphItems(relationGraph, solutionName);
+            _databaseService.StoreGraphItems(graphItems, solutionName);
         }
     }
 }
