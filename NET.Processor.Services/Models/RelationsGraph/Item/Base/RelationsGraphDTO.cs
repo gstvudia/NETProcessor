@@ -32,8 +32,8 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
     public class NodeData
     {
         public string Name { get; set; }
-        public string File { get; set; }
-        public string ItemClass { get; set; }
+        public string FileName { get; set; }
+        public string ClassName { get; set; }
 
         /* The following values belonging to this class are pulled in dynamically by trigger through frontend
         // method body

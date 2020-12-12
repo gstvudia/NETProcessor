@@ -4,45 +4,40 @@ using NET.Processor.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
-using System.Linq;
 using NET.Processor.Core.Models;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Threading.Tasks;
 using Microsoft.Build.Locator;
-using DynamicData;
-using Microsoft.Extensions.Configuration;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using LibGit2Sharp;
 using NET.Processor.Core.Helpers;
-using AutoMapper;
-using NET.Processor.Core.Helpers.Interfaces;
-using NET.Processor.Core.Models.RelationsGraph.Item.Base;
-using MongoDB.Bson;
+using VSSolution = Microsoft.CodeAnalysis.Solution;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
+using DynamicData;
+using Microsoft.Extensions.Configuration;
 
-namespace NET.Processor.Core.Services
+namespace NET.Processor.Core.Services.Solution
 {
     public class SolutionService : ISolutionService
     {
-        private readonly ICommentService _commentService;
-        private readonly IConfiguration _configuration;
         private readonly IDatabaseService _databaseService;
-        private readonly IMapper _mapper;
-        private readonly IRelationsGraphMapper _relationsGraphMapper;
-        private Solution solution = null;
+        private readonly ISolutionGraph _solutionGraph;
+        private readonly IConfiguration _configuration;
+        private readonly ICommentService _commentService;
+
+        private VSSolution solution = null;
         private static readonly string homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
         private static readonly string homePath = Environment.GetEnvironmentVariable("HOMEPATH");
         private readonly string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\";
-           
-        public SolutionService(ICommentService commentService, IConfiguration configuration, 
-                               IDatabaseService databaseService, IMapper mapper, 
-                               IRelationsGraphMapper relationsGraphMapper)
+
+        public SolutionService(IDatabaseService databaseService, ISolutionGraph solutionGraph, IConfiguration configuration, ICommentService commentService)
         {
+            _solutionGraph = solutionGraph;
+            _databaseService = databaseService;
             _commentService = commentService;
             _configuration = configuration;
-            _databaseService = databaseService;
+
             _databaseService.ConnectDatabase();
-            _mapper = mapper;
-            _relationsGraphMapper = relationsGraphMapper;
 
             if (!MSBuildLocator.IsRegistered)
             {
@@ -64,12 +59,12 @@ namespace NET.Processor.Core.Services
         {
             // If path exists, remove old solution and add new one
             string solutionPath = DirectoryHelper.FindFileInDirectory(path, repository.SolutionFilename);
-            if(solutionPath != null)
+            if (solutionPath != null)
             {
                 try
                 {
                     DirectoryHelper.ForceDeleteReadOnlyDirectory(solutionPath);
-                } catch(Exception e)
+                } catch (Exception e)
                 {
                     throw new Exception(
                     $"There was an error deleting the project under the following path: { solutionPath }, the error was: { e } ");
@@ -82,9 +77,9 @@ namespace NET.Processor.Core.Services
                 {
                     //CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.User, Password = repository.Password }
                     CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.Token, Password = string.Empty }
-            };
+                };
                 Repository.Clone(repository.RepositoryURL, repositoryPath, cloneOptions);
-            } catch(Exception e)
+            } catch (Exception e)
             {
                 if (e is NameConflictException)
                 {
@@ -104,7 +99,7 @@ namespace NET.Processor.Core.Services
             }
         }
 
-        public async Task<Solution> LoadSolution(string solutionName, string solutionFilename)
+        public async Task<VSSolution> LoadSolution(string solutionName, string solutionFilename)
         {
             string solutionPath = DirectoryHelper.FindFileInDirectory(path, solutionFilename);
             // If solution to process could not be found, throw exception
@@ -152,7 +147,7 @@ namespace NET.Processor.Core.Services
             return msWorkspace;
         }
 
-        public IEnumerable<Item> GetSolutionItems(Solution solution)
+        public IEnumerable<Item> GetSolutionItems(VSSolution solution)
         {
             SyntaxNode root = null;
             var list = new List<Item>();
@@ -195,9 +190,8 @@ namespace NET.Processor.Core.Services
 
                         list.AddRange(classes);
 
-                        var methodList = MapMethods(root);
-                        MapMethods(root);
-                        list.AddRange(methodList);
+                        //var methodList = MapMethods(root);
+                        //list.AddRange(methodList);
 
                         /*
                         var interfaces = root.DescendantNodes()
@@ -277,7 +271,7 @@ namespace NET.Processor.Core.Services
                         //End of document/class
 
                         // Get all comments and assigns comment to specific property id from the item list
-                        var commentReferences = _commentService.GetCommentReferences(root, list.Where(x => 
+                        var commentReferences = _commentService.GetCommentReferences(root, list.Where(x =>
                                                     x.GetType() == typeof(Class) ||
                                                     x.GetType() == typeof(Method) ||
                                                     x.GetType() == typeof(Namespace))
@@ -300,128 +294,14 @@ namespace NET.Processor.Core.Services
             return list;
         }
 
-        public IEnumerable<Method> GetRelationsGraph(Solution solution)
+        public IEnumerable<Method> GetRelationsGraph(VSSolution solution)
         {
-            SyntaxNode root = null;
-            List<Method> methodsRelations = new List<Method>();
-
-            foreach (var project in solution.Projects)
-            {
-                if (project.Language == _configuration["Framework:Language"])
-                {
-                    foreach (var document in project.Documents)
-                    {
-                        root = document.GetSyntaxRootAsync().Result;
-                        methodsRelations.AddRange(MapMethods(root));
-                    }
-                }
-            }
-
-            //Map childs id
-            foreach (var method in methodsRelations)
-            {
-
-                foreach (var child in method.ChildList.Where(x => x.Id == -1).ToList())
-                {
-                    child.Id = methodsRelations.Where(x => x.Name == child.Name).Select(x => x.Id).FirstOrDefault();
-                }
-
-            }
-
-            //Remove built or invalid methods
-            foreach (var method in methodsRelations)
-            {
-                method.ChildList.RemoveAll(c => c.Id == 0 || c.Name == string.Empty);
-            }
-            return methodsRelations;
-        }
-
-        private List<Method> MapMethods(SyntaxNode root)
-        {
-            List<Method> methodsList = new List<Method>();
-            var methodNodes = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
-            var methods = methodNodes
-                                     .Select(x => new Method(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText,
-                                                             x.Body,"",""))
-                                     .ToList();
-
-            foreach (var method in methods)
-            {                
-                if(!methodsList.Any(x=>x.Name == method.Name))
-                {
-                    method.ChildList.AddRange(GetChilds(method));
-                    methodsList.Add(method);
-                }                
-            }
-
-            return methodsList;
-        }        
-
-        private List<Method> GetChilds(Method method)
-        {
-            List<Method> childList = new List<Method>();
-
-            if(method.Body != null)
-            {
-                var invokees = method.Body.Statements.Where(x => x.Kind().ToString() == "ExpressionStatement").ToList();
-                foreach (var invoked in invokees)
-                {
-                    var expression = invoked as ExpressionStatementSyntax;
-                    var arguments = expression.Expression as InvocationExpressionSyntax;
-                    string[] child = null;
-
-                    child = invoked.ToString().Replace(";", string.Empty).Split(".");
-
-                    if (child.Length > 1)
-                    {
-                        childList
-                            .Add(new Method(
-                                -1, child[1].Substring(0, child[1].LastIndexOf("(") + 1).Replace("(", string.Empty)
-                                , "", ""));
-                    }
-                    else
-                    {
-                        childList
-                            .Add(new Method(
-                                -1, child[0].Substring(0, child[0].LastIndexOf("(") + 1).Replace("(", string.Empty)
-                                , "", ""));
-                    }
-                }
-            }            
-
-            return childList;
+            return _solutionGraph.GetRelationsGraph(solution);
         }
 
         public void ProcessRelationsGraph(IEnumerable<Method> relations, string solutionName)
         {
-            List<Node> graphNodes = new List<Node>();
-            List<Edge> graphEdges = new List<Edge>();
-            NodeRoot nodeBase = new NodeRoot();
-
-            foreach (var item in relations)
-            {
-                nodeBase = _mapper.Map<NodeRoot>(item);
-                nodeBase.ColorCode = "orange";
-                nodeBase.Weight = 100;
-                nodeBase.ShapeType = "roundrectangle";
-                nodeBase.NodeType = item.GetType().ToString();
-                nodeBase.NodeData.Name = item.Name;
-                //nodeBase.NodeData.File = item.file;
-                //nodeBase.NodeData.ItemClass = item.itemClass;
-                graphNodes.Add(new Node
-                {
-                    Data = nodeBase
-                });
-            }
-
-            graphEdges = _relationsGraphMapper.MapItemsToEdges(relations.ToList());
-
-            var relationGraph = new ProjectRelationsGraph();
-            relationGraph.Id = MongoDB.Bson.ObjectId.GenerateNewId();
-            relationGraph.SolutionName = solutionName;
-            relationGraph.graphData.Nodes = graphNodes;
-            relationGraph.graphData.Edges = graphEdges;
-
+            var relationGraph = _solutionGraph.ProcessRelationsGraph(relations, solutionName);
             // Store collection in Database
             _databaseService.StoreGraphNodesAndEdges(relationGraph);
             // Remark: No need to close db again, handled by database engine (MongoDB)
