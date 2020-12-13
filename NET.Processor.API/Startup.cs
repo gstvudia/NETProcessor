@@ -11,6 +11,7 @@ using NET.Processor.Core.Interfaces;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using NET.Processor.Core.Services;
 using NET.Processor.Core.Services.Database;
+using NET.Processor.Core.Services.Repository;
 using NET.Processor.Core.Services.Solution;
 
 namespace NETWebTest
@@ -40,6 +41,7 @@ namespace NETWebTest
                 services.AddScoped<ICommentService, CommentService>();
                 services.AddScoped<IDatabaseService, DatabaseService>();
                 services.AddScoped<ISolutionGraph, SolutionGraph>();
+                services.AddScoped<IGithubService, GithubService>();
             #endregion
             #region Mappers
             services.AddSingleton<IRelationsGraphMapper, RelationsGraphMapper>();

@@ -1,6 +1,7 @@
 ﻿using NET.Processor.Core.Models;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace NET.Processor.Core.Services.Solution
 {
@@ -17,6 +18,6 @@ namespace NET.Processor.Core.Services.Solution
         /// </summary>
         /// <param name="relations"></param>
         /// <param name="solutionName"></param>
-        ProjectRelationsGraph ProcessRelationsGraph(IEnumerable<Method> relations, string solutionName);
+        Task<ProjectRelationsGraph> ProcessRelationsGraph(IEnumerable<Method> relations, string solutionName, string repositoryToken);
     }
 }

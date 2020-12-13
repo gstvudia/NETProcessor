@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NET.Processor.Core.Models.API.Database;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 
@@ -12,6 +13,12 @@ namespace NET.Processor.Core.Interfaces
         /// Connect Database
         /// </summary>
         void ConnectDatabase();
+
+        /// <summary>
+        /// Gets a repository token from the database
+        /// </summary>
+        /// <returns></returns>
+        Task<GithubRepository>GetRepositoryToken(string repositoryType);
 
         /// <summary>
         /// Store Graph Data (Nodes and Edges) in Database

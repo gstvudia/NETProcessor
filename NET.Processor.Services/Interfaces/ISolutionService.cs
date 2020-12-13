@@ -39,6 +39,6 @@ namespace NET.Processor.Core.Interfaces
         /// Processing method nodes and relations
         /// </summary>
         /// <param name="relations"></param>
-        void ProcessRelationsGraph(IEnumerable<Method> relations, string solutionName);
+        void ProcessRelationsGraph(IEnumerable<Method> relations, string solutionName, string repositoryToken);
     }
 }

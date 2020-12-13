@@ -8,18 +8,24 @@ namespace NET.Processor.Core.Models
     {
         public BlockSyntax Body { get; set; }
         public string Language { get; set; }
+
         public Method(int id, string name,
-                      BlockSyntax body, string itemName,
-                      string className, string language) : base(id, name, itemName, className)
+                      BlockSyntax body, string fileName,
+                      string className, string language) : base(id, name, fileName)
         {
+            ClassName = className;
             Body = body;
             Language = language;
         }
 
-        public Method(int id, string name) : base(id, name){}
+        [BsonElement("ClassName")]
+        public string ClassName { get; set; }
 
-        public Method(int id, string name,
-                      string itemName, string className) : base(id, name, itemName, className) {}
+        public Method(int id, string name, BlockSyntax body) : base(id, name) 
+        {
+            Body = body;
+        }
 
+        public Method(int id, string name) : base(id, name) {}
     }
 }

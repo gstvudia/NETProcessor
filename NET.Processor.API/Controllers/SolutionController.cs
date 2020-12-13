@@ -29,7 +29,7 @@ namespace NET.Processor.API.Controllers
         public async Task<IActionResult> SaveSolutionFromRepository([FromBody] CodeRepository repository)
         {
             _solutionService.SaveSolutionFromRepository(repository);
-            await Process(repository.SolutionName, repository.SolutionFilename);
+            await Process(repository.SolutionName, repository.SolutionFilename, repository.Token);
             return Ok("Solution has been processed successfully");
         }
 
@@ -39,9 +39,9 @@ namespace NET.Processor.API.Controllers
         /// <param name="solutionName"></param>
         /// <returns></returns>
         [HttpPost("ProcessSolution")]
-        public async Task<IActionResult> ProcessSolution([FromBody] CodeRepository solution)
+        public async Task<IActionResult> ProcessSolution([FromBody] CodeRepository repository)
         {
-            await Process(solution.SolutionName, solution.SolutionFilename);
+            await Process(repository.SolutionName, repository.SolutionFilename, repository.Token);
             return Ok("Solution has been processed successfully");
         }
 
@@ -51,7 +51,7 @@ namespace NET.Processor.API.Controllers
         /// </summary>
         /// <param name="solutionName"></param>
         /// <returns>solution</returns>
-        private async Task<Solution> Process(string solutionName, string solutionFilename)
+        private async Task<Solution> Process(string solutionName, string solutionFilename, string repositoryToken)
         {
             var solution = await _solutionService.LoadSolution(solutionName, solutionFilename);
             // If solution path cannot be found, return an error
@@ -63,7 +63,7 @@ namespace NET.Processor.API.Controllers
             // Process graph nodes and edges and corresponding information (project, file, etc.)
             var relations = _solutionService.GetRelationsGraph(solution).ToList();
             // Store graph nodes and edges and corresponding information (project, file, etc.)
-            _solutionService.ProcessRelationsGraph(relations, solutionName);
+            _solutionService.ProcessRelationsGraph(relations, solutionName, repositoryToken);
 
             return solution;
         }

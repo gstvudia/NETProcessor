@@ -20,12 +20,12 @@ namespace NET.Processor.Core.Helpers.Mappers
                 {
                     graphEdges.Add(new Edge
                     {
-                        Data = new EdgeData
+                        data = new EdgeData
                         {
-                            Source = Convert.ToString(item.Id),
-                            Target = Convert.ToString(child.Id),
-                            ColorCode = "white",
-                            Strength = 5
+                            source = Convert.ToString(item.Id),
+                            target = Convert.ToString(child.Id),
+                            colorCode = "white",
+                            strength = 5
                         }
                     }
                     );

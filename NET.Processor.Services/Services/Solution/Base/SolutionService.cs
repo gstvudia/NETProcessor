@@ -8,13 +8,14 @@ using NET.Processor.Core.Models;
 using System.Threading.Tasks;
 using Microsoft.Build.Locator;
 using NET.Processor.Core.Models.RelationsGraph.Item;
-using LibGit2Sharp;
+using Lib2Git = LibGit2Sharp;
 using NET.Processor.Core.Helpers;
 using VSSolution = Microsoft.CodeAnalysis.Solution;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Linq;
 using DynamicData;
 using Microsoft.Extensions.Configuration;
+using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 
 namespace NET.Processor.Core.Services.Solution
 {
@@ -73,22 +74,22 @@ namespace NET.Processor.Core.Services.Solution
             string repositoryPath = path + repository.SolutionName;
             try
             {
-                var cloneOptions = new CloneOptions
+                var cloneOptions = new Lib2Git.CloneOptions
                 {
                     //CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.User, Password = repository.Password }
-                    CredentialsProvider = (_url, _user, _cred) => new UsernamePasswordCredentials { Username = repository.Token, Password = string.Empty }
+                    CredentialsProvider = (_url, _user, _cred) => new Lib2Git.UsernamePasswordCredentials { Username = repository.Token, Password = string.Empty }
                 };
-                Repository.Clone(repository.RepositoryURL, repositoryPath, cloneOptions);
+                Lib2Git.Repository.Clone(repository.RepositoryURL, repositoryPath, cloneOptions);
             } catch (Exception e)
             {
-                if (e is NameConflictException)
+                if (e is Lib2Git.NameConflictException)
                 {
-                    throw new NameConflictException(
+                    throw new Lib2Git.NameConflictException(
                     $"There was an error cloning the project with the following repository URL: { repository.RepositoryURL }, the repository already exists");
                 }
-                else if (e is NotFoundException)
+                else if (e is Lib2Git.NotFoundException)
                 {
-                    throw new NotFoundException(
+                    throw new Lib2Git.NotFoundException(
                     $"There was an error cloning the project with the following repository URL: { repository.RepositoryURL }, the repository specified could not be found");
                 }
                 else
@@ -105,7 +106,7 @@ namespace NET.Processor.Core.Services.Solution
             // If solution to process could not be found, throw exception
             if (solutionPath == null)
             {
-                throw new NotFoundException(
+                throw new Lib2Git.NotFoundException(
                     $"The specified solution under the solution path: { solutionPath } could not be found.");
             }
 
@@ -141,7 +142,7 @@ namespace NET.Processor.Core.Services.Solution
             catch (Exception e)
             {
                 throw new Exception(
-                    $"There was an error creting the MSBuildWorkspace, the error was: { e } ");
+                    $"There was an error creating the MSBuildWorkspace, the error was: { e } ");
             }
 
             return msWorkspace;
@@ -299,9 +300,9 @@ namespace NET.Processor.Core.Services.Solution
             return _solutionGraph.GetRelationsGraph(solution);
         }
 
-        public void ProcessRelationsGraph(IEnumerable<Method> relations, string solutionName)
+        public void ProcessRelationsGraph(IEnumerable<Method> relations, string solutionName, string repositoryToken)
         {
-            var relationGraph = _solutionGraph.ProcessRelationsGraph(relations, solutionName);
+            ProjectRelationsGraph relationGraph = _solutionGraph.ProcessRelationsGraph(relations, solutionName, repositoryToken).Result;
             // Store collection in Database
             _databaseService.StoreGraphNodesAndEdges(relationGraph);
             // Remark: No need to close db again, handled by database engine (MongoDB)

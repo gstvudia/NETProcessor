@@ -26,8 +26,6 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         [BsonElement("FileName")]
         public string FileName { get; set; }
 
-        [BsonElement("ClassName")]
-        public string ClassName { get; set; }
         public Item()
         {
         }
@@ -39,12 +37,11 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
             DatabaseId = ObjectId.GenerateNewId();
         }
 
-        public Item(int id, string name, string fileName, string className)
+        public Item(int id, string name, string fileName)
         {
             Id = id;
             Name = name;
             FileName = fileName;
-            ClassName = className;
             DatabaseId = ObjectId.GenerateNewId();
         }
 
