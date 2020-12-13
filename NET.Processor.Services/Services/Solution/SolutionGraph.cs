@@ -154,7 +154,13 @@ namespace NET.Processor.Core.Services.Solution
                 nodeBase.nodeData.fileName = item.FileName;
                 nodeBase.nodeData.className = item.ClassName;
                 nodeBase.nodeData.language = item.Language;
-                nodeBase.nodeData.repositoryLinkToMethod = await getRepositoryLinkToMethod(item.Name, item.FileName, "BennieBe", solutionName);
+           
+                // Pulling information for method from Repository (Github)
+                GithubJSONResponse.Root githubJSONResponse = await GetRepositoryInformationForMethod(item.Name, item.FileName, "BennieBe", solutionName);
+                nodeBase.nodeData.repositoryCommitLinkOfMethod = githubJSONResponse.items[0]
+                    .html_url.Replace("blob", "commits");
+                nodeBase.nodeData.repositoryLinkOfMethod = githubJSONResponse.items[0].html_url;
+                
                 graphNodes.Add(new Node
                 {
                     data = nodeBase
@@ -172,11 +178,11 @@ namespace NET.Processor.Core.Services.Solution
             return relationGraph;
         }
 
-        private async Task<string> getRepositoryLinkToMethod(string methodName, string fileName, string repositoryOwner, string solutionName)
+        private async Task<GithubJSONResponse.Root> GetRepositoryInformationForMethod(string methodName, string fileName, string repositoryOwner, string solutionName)
         {
             // Currently only one option Github, in future it could also come from AzureDevops
             GithubJSONResponse.Root githubJSONResponse = await _githubService.GetLinkToMethod(methodName, fileName, repositoryOwner, solutionName);
-            return githubJSONResponse.items[0].html_url;
+            return githubJSONResponse;
         }
     }
 }

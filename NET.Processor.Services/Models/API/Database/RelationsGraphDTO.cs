@@ -34,7 +34,8 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         public string fileName { get; set; }
         public string className { get; set; }
         public string language { get; set; }
-        public string repositoryLinkToMethod { get; set; }
+        public string repositoryLinkOfMethod { get; set; }
+        public string repositoryCommitLinkOfMethod { get; set; }
 
         /* The following values belonging to this class are pulled in dynamically by trigger through frontend
         // sectionTags
