@@ -26,7 +26,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         public int Weight { get; set; }
         public string ColorCode { get; set; }
         public string ShapeType { get; set; }
-        public NodeData NodeData { get; set; }
+        public NodeData NodeData { get; set; } = new NodeData();
     }
 
     public class NodeData
@@ -34,6 +34,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         public string Name { get; set; }
         public string FileName { get; set; }
         public string ClassName { get; set; }
+        public string Language { get; set; }
 
         /* The following values belonging to this class are pulled in dynamically by trigger through frontend
         // method body
@@ -42,7 +43,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         // history of changes
         // documentation
         // goToMethod
-        */ 
+        */
     }
 
     public class EdgeData

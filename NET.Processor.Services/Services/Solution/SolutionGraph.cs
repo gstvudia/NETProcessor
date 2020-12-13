@@ -8,6 +8,7 @@ using NET.Processor.Core.Models;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using VSSolution = Microsoft.CodeAnalysis.Solution;
 
@@ -38,7 +39,7 @@ namespace NET.Processor.Core.Services.Solution
                     foreach (var document in project.Documents)
                     {
                         root = document.GetSyntaxRootAsync().Result;
-                        methodsRelations.AddRange(MapMethods(root));
+                        methodsRelations.AddRange(MapMethods(root, Path.GetFileNameWithoutExtension(document.Name), project.Language));
                     }
                 }
             }
@@ -62,16 +63,21 @@ namespace NET.Processor.Core.Services.Solution
             return methodsRelations;
         }
 
-        private List<Method> MapMethods(SyntaxNode root)
+        private List<Method> MapMethods(SyntaxNode root, string fileName, string language)
         {
             List<Method> methodsList = new List<Method>();
             var methodNodes = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
-            var methods = methodNodes
-                                     .Select(x => new Method(root.DescendantNodes().IndexOf(x), x.Identifier.ValueText, x.Body))
-                                     .ToList();
+            var classDeclarations = root.DescendantNodes().OfType<ClassDeclarationSyntax>();
 
-            foreach (var method in methods)
+            foreach (var node in methodNodes)
             {
+                var members = root.DescendantNodes().OfType<MemberDeclarationSyntax>();
+                var className = classDeclarations.FirstOrDefault(
+                                c => c.SyntaxTree.GetText().ToString().Contains(node.Identifier.ValueText))
+                            .Identifier.ValueText;
+                var method = new Method(root.DescendantNodes().IndexOf(node), node.Identifier.ValueText,
+                                                            node.Body, fileName, className, language);
+                
                 if (!methodsList.Any(x => x.Name == method.Name))
                 {
                     method.ChildList.AddRange(GetChilds(method));
@@ -101,15 +107,13 @@ namespace NET.Processor.Core.Services.Solution
                     {
                         childList
                             .Add(new Method(
-                                -1, child[1].Substring(0, child[1].LastIndexOf("(") + 1).Replace("(", string.Empty)
-                            ));
+                                -1, child[1].Substring(0, child[1].LastIndexOf("(") + 1).Replace("(", string.Empty)));
                     }
                     else
                     {
                         childList
                             .Add(new Method(
-                                -1, child[0].Substring(0, child[0].LastIndexOf("(") + 1).Replace("(", string.Empty)
-                            ));
+                                -1, child[0].Substring(0, child[0].LastIndexOf("(") + 1).Replace("(", string.Empty)));
                     }
                 }
             }
@@ -131,8 +135,9 @@ namespace NET.Processor.Core.Services.Solution
                 nodeBase.ShapeType = "roundrectangle";
                 nodeBase.NodeType = item.GetType().ToString();
                 nodeBase.NodeData.Name = item.Name;
-                //nodeBase.NodeData.FileName = item.fileName;
-                //nodeBase.NodeData.ClassName = item.className;
+                nodeBase.NodeData.FileName = item.FileName;
+                nodeBase.NodeData.ClassName = item.ClassName;
+                nodeBase.NodeData.Language = item.Language;
                 graphNodes.Add(new Node
                 {
                     Data = nodeBase
