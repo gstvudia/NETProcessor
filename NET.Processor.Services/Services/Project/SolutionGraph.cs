@@ -16,9 +16,8 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Threading.Tasks;
-using VSSolution = Microsoft.CodeAnalysis.Solution;
 
-namespace NET.Processor.Core.Services.Solution
+namespace NET.Processor.Core.Services.Project
 {
     public class SolutionGraph : ISolutionGraph
     {
@@ -35,7 +34,7 @@ namespace NET.Processor.Core.Services.Solution
             _relationsGraphMapper = relationsGraphMapper;
         }
 
-        public IEnumerable<Method> GetRelationsGraph(VSSolution solution)
+        public IEnumerable<Method> GetRelationsGraph(Solution solution)
         {
             SyntaxNode root = null;
             List<Method> methodsRelations = new List<Method>();

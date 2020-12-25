@@ -10,7 +10,6 @@ using Microsoft.Build.Locator;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using Lib2Git = LibGit2Sharp;
 using NET.Processor.Core.Helpers;
-using VSSolution = Microsoft.CodeAnalysis.Solution;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Linq;
 using DynamicData;
@@ -18,7 +17,7 @@ using Microsoft.Extensions.Configuration;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using System.IO;
 
-namespace NET.Processor.Core.Services.Solution
+namespace NET.Processor.Core.Services.Project
 {
     public class SolutionService : ISolutionService
     {
@@ -27,7 +26,7 @@ namespace NET.Processor.Core.Services.Solution
         private readonly IConfiguration _configuration;
         private readonly ICommentService _commentService;
 
-        private VSSolution solution = null;
+        private Solution solution = null;
         private readonly string path = null;
 
         public SolutionService(IDatabaseService databaseService, ISolutionGraph solutionGraph, IConfiguration configuration, ICommentService commentService)
@@ -104,7 +103,7 @@ namespace NET.Processor.Core.Services.Solution
             }
         }
 
-        public async Task<VSSolution> LoadSolution(string solutionName, string solutionFilename)
+        public async Task<Solution> LoadSolution(string solutionName, string solutionFilename)
         {
             string solutionPath = DirectoryHelper.FindFileInDirectory(path, solutionFilename);
             // If solution to process could not be found, throw exception
@@ -152,7 +151,7 @@ namespace NET.Processor.Core.Services.Solution
             return msWorkspace;
         }
 
-        public IEnumerable<Item> GetSolutionItems(VSSolution solution)
+        public IEnumerable<Item> GetSolutionItems(Solution solution)
         {
             SyntaxNode root = null;
             var list = new List<Item>();
@@ -299,7 +298,7 @@ namespace NET.Processor.Core.Services.Solution
             return list;
         }
 
-        public IEnumerable<Method> GetRelationsGraph(VSSolution solution)
+        public IEnumerable<Method> GetRelationsGraph(Solution solution)
         {
             return _solutionGraph.GetRelationsGraph(solution);
         }

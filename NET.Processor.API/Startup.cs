@@ -11,8 +11,8 @@ using NET.Processor.Core.Interfaces;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using NET.Processor.Core.Services;
 using NET.Processor.Core.Services.Database;
+using NET.Processor.Core.Services.Project;
 using NET.Processor.Core.Services.Repository;
-using NET.Processor.Core.Services.Solution;
 
 namespace NETWebTest
 {

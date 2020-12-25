@@ -3,7 +3,7 @@ using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace NET.Processor.Core.Services.Solution
+namespace NET.Processor.Core.Services.Project
 {
     public interface ISolutionGraph
     {
