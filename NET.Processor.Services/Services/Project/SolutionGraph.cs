@@ -7,15 +7,14 @@ using NET.Processor.Core.Helpers.Interfaces;
 using NET.Processor.Core.Interfaces;
 using NET.Processor.Core.Models;
 using NET.Processor.Core.Models.API;
+using NET.Processor.Core.Models.RelationsGraph.Item;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text.Json;
 using System.Threading.Tasks;
+using File = NET.Processor.Core.Models.RelationsGraph.Item.File;
 
 namespace NET.Processor.Core.Services.Project
 {
@@ -37,7 +36,7 @@ namespace NET.Processor.Core.Services.Project
         public IEnumerable<Method> GetRelationsGraph(Solution solution)
         {
             SyntaxNode root = null;
-            List<Method> methodsRelations = new List<Method>();
+            List<Item> itemRelations = new List<Item>();
 
             foreach (var project in solution.Projects)
             {
@@ -47,10 +46,22 @@ namespace NET.Processor.Core.Services.Project
                     foreach (var document in project.Documents)
                     {
                         root = document.GetSyntaxRootAsync().Result;
-                        methodsRelations.AddRange(MapMethods(root, Path.GetFileNameWithoutExtension(document.Name), project.Language));
+                        // Add file node 
+                        string fileName = Path.GetFileNameWithoutExtension(document.Name);
+                        File file = new File(document.Id.Id, fileName);
+
+                        // Adding relations of document (file) and all associated Items
+                        itemRelations.Add(file);
+                        itemRelations.AddRange(MapItemRelations(root, fileName, document.Id.Id, project.Language));
                     }
                 }
             }
+
+            // Filter for method relations
+            var methodsRelations = itemRelations
+                                   .OfType<Method>()
+                                   .Where(x => x.GetType() == typeof(Method))
+                                   .ToList();
 
             // Set Ids for each child for being able to reference them later on edges (relations between nodes)
             foreach (var method in methodsRelations)
@@ -74,27 +85,49 @@ namespace NET.Processor.Core.Services.Project
             {
                 method.ChildList.RemoveAll(c => c.Id == 0 || c.Name == string.Empty);
             }
+
             return methodsRelations;
         }
 
-        private List<Method> MapMethods(SyntaxNode root, string fileName, string language)
+        /// <summary>
+        /// Mapping Method, Class, and Namespace relations
+        /// </summary>
+        /// <param name="root"></param>
+        /// <param name="fileName"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
+        private List<Item> MapItemRelations(SyntaxNode root, string fileName, Guid fileId, string language)
         { 
-        //   Save methods and ids in the table, when we load the solution we get the id from the existing
-        //      records, later on it will be equaled based on method name and parameters type and amount
-        //      it is in method class 
             List<Method> methodsList = new List<Method>();
+            List<Class> classList = new List<Class>();
+            List<Namespace> namespaceList = new List<Namespace>();
+
             var methodNodes = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
             var classDeclarations = root.DescendantNodes().OfType<ClassDeclarationSyntax>();
+            var namespaceDeclarations = root.DescendantNodes().OfType<NamespaceDeclarationSyntax>();
 
+            string currentClassName = null;
+            ClassDeclarationSyntax currentClass = null;
+
+            //   Save methods and ids in the table, when we load the solution we get the id from the existing
+            //      records, later on it will be equaled based on method name and parameters type and amount
+            //      it is in method class 
             foreach (var node in methodNodes)
             {
-                var members = root.DescendantNodes().OfType<MemberDeclarationSyntax>();
-                var className = classDeclarations.FirstOrDefault(
-                                c => c.SyntaxTree.GetText().ToString().Contains(node.Identifier.ValueText))
-                            .Identifier.ValueText;
+                // Class name 
+                currentClass = classDeclarations.FirstOrDefault(
+                  c => c.SyntaxTree.GetText().ToString().Contains(node.Identifier.ValueText));
+
+                currentClassName = classDeclarations.FirstOrDefault(
+                  c => c.SyntaxTree.GetText().ToString().Contains(node.Identifier.ValueText))
+                .Identifier.ValueText;
+
+                // Methods
+                // var members = root.DescendantNodes().OfType<MemberDeclarationSyntax>();
                 var method = new Method(root.DescendantNodes().IndexOf(node), node.Identifier.ValueText,
-                                                            node.Body, fileName, className, language);
+                                                            node.Body, fileId, fileName, currentClassName, root.DescendantNodes().IndexOf(currentClass), language);
                 
+                // Methods relations towards child methods
                 if (!methodsList.Any(x => x.Name == method.Name))
                 {
                     method.ChildList.AddRange(GetChilds(method));
@@ -102,7 +135,25 @@ namespace NET.Processor.Core.Services.Project
                 }
             }
 
-            return methodsList;
+            // Adding class relations towards Namespace
+            var currentNamespace = namespaceDeclarations.FirstOrDefault();
+            var currentNamespaceName = currentNamespace.Name.ToString();
+            var containingNamespace = new Namespace(root.DescendantNodes().IndexOf(currentNamespace), 
+                currentNamespaceName, fileId, fileName, classList);
+            namespaceList.Add(containingNamespace);
+
+            // Adding Method relations towards Class
+            Class containingClass = new Class(root.DescendantNodes().IndexOf(currentClass), currentClassName, 
+                root.DescendantNodes().IndexOf(currentNamespace), currentNamespaceName, fileId, fileName, methodsList);
+            classList.Add(containingClass);
+
+            // Adding all node types to generic item list class
+            List<Item> itemList = new List<Item>();
+            itemList.AddRange(methodsList);
+            itemList.AddRange(classList);
+            itemList.Add(namespaceList);
+
+            return itemList;
         }
 
         private List<Method> GetChilds(Method method)

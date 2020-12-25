@@ -6,15 +6,12 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
     // BSON Annotation means that Database (MongoDB) ignores any properties it cannot recognize
     [BsonIgnoreExtraElements]
-    public class NodeProject : Item
+    public class File : Item
     {
-        [BsonElement("Guid")]
-        public Guid Guid { get; set; }
-
-        public NodeProject(Guid guid, string name)
+        public Guid FileId { get; set; }
+        public File(Guid FileId, string fileName) : base(fileName) 
         {
-            Guid = guid;
-            Name = name;
+            this.FileId = FileId;
         }
     }
 }

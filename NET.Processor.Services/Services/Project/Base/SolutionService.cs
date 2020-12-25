@@ -179,6 +179,7 @@ namespace NET.Processor.Core.Services.Project
                             list.Add(new Region(startNode.ToString()));
                         }
 
+                        /*
                         var namespaces = root.DescendantNodes()
                                      .OfType<NamespaceDeclarationSyntax>()
                                      .Select(x => new Namespace(root.DescendantNodes().IndexOf(x), x.Name.ToString()))
@@ -193,7 +194,7 @@ namespace NET.Processor.Core.Services.Project
                                           .ToList();
 
                         list.AddRange(classes);
-
+                        */
                         //var methodList = MapMethods(root);
                         //list.AddRange(methodList);
 
@@ -286,12 +287,12 @@ namespace NET.Processor.Core.Services.Project
                     }
                 }
                 // Get all documents from one project and add them to list
-                var documents = project.Documents.Select(x => new NodeDocument(x.Id.Id, x.Name.Split('.')[0].ToString()))
+                var documents = project.Documents.Select(x => new Models.RelationsGraph.Item.File(x.Id.Id, x.Name.Split('.')[0].ToString()))
                                 .ToList();
                 list.AddRange(documents);
             }
             // TODO: Reason about whether it makes sense to also add another entry per project in mongodb
-            var projects = solution.Projects.Select(x => new NodeProject(x.Id.Id, x.Name.ToString()))
+            var projects = solution.Projects.Select(x => new Models.RelationsGraph.Item.Project(x.Id.Id, x.Name.ToString()))
              .ToList();
             list.AddRange(projects);
 

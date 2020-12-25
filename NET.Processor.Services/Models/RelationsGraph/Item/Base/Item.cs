@@ -8,7 +8,7 @@ using System.Text;
 
 namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
-    public class Item : IDisposable
+    public class Item
     {
         [BsonId]
         public ObjectId DatabaseId { get; set; }
@@ -16,15 +16,6 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         public int Id { get; set; }
         [BsonElement ("Name")]
         public string Name { get; set; }
-
-        [BsonIgnore]
-        public Item Parent { get; set; }
-
-        [BsonIgnore]
-        public List<Method> ChildList { get; } = new List<Method>();
-
-        [BsonElement("FileName")]
-        public string FileName { get; set; }
 
         public Item()
         {
@@ -34,14 +25,6 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         {
             Id = id;
             Name = name;
-            DatabaseId = ObjectId.GenerateNewId();
-        }
-
-        public Item(int id, string name, string fileName)
-        {
-            Id = id;
-            Name = name;
-            FileName = fileName;
             DatabaseId = ObjectId.GenerateNewId();
         }
 
@@ -60,11 +43,6 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         public Item Clone()
         {
             return new Item(Name);
-        }
-
-        public void Dispose()
-        {
-            ChildList.Clear();
         }
     }
 }
