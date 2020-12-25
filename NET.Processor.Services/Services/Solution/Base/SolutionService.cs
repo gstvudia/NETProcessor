@@ -16,6 +16,7 @@ using System.Linq;
 using DynamicData;
 using Microsoft.Extensions.Configuration;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
+using System.IO;
 
 namespace NET.Processor.Core.Services.Solution
 {
@@ -27,9 +28,7 @@ namespace NET.Processor.Core.Services.Solution
         private readonly ICommentService _commentService;
 
         private VSSolution solution = null;
-        private static readonly string homeDrive = Environment.GetEnvironmentVariable("HOMEDRIVE");
-        private static readonly string homePath = Environment.GetEnvironmentVariable("HOMEPATH");
-        private readonly string path = @"" + homeDrive + homePath + "\\source\\repos\\Solutions\\";
+        private readonly string path = null;
 
         public SolutionService(IDatabaseService databaseService, ISolutionGraph solutionGraph, IConfiguration configuration, ICommentService commentService)
         {
@@ -37,6 +36,11 @@ namespace NET.Processor.Core.Services.Solution
             _databaseService = databaseService;
             _commentService = commentService;
             _configuration = configuration;
+
+            
+            path = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory())), "repos");
+            // Create directory if not existing, otherwise do nothing
+            System.IO.Directory.CreateDirectory(path);
 
             _databaseService.ConnectDatabase();
 
@@ -71,7 +75,7 @@ namespace NET.Processor.Core.Services.Solution
                     $"There was an error deleting the project under the following path: { solutionPath }, the error was: { e } ");
                 }
             }
-            string repositoryPath = path + repository.SolutionName;
+            string repositoryPath = Path.Combine(path, repository.SolutionName);
             try
             {
                 var cloneOptions = new Lib2Git.CloneOptions
@@ -111,7 +115,7 @@ namespace NET.Processor.Core.Services.Solution
             }
 
             // Solution base path "\\source\\repos\\Solutions\\ + {{ SolutionName }} + \\ {{ SolutionFilename }}.sln
-            solutionPath = solutionPath + "\\" + solutionFilename + ".sln";
+            solutionPath = Path.Combine(solutionPath, solutionFilename + ".sln");
 
             using var msWorkspace = CreateMSBuildWorkspace();
             try
