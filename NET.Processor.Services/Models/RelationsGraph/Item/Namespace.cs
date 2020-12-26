@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Text;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 
@@ -14,7 +13,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         public string FileName { get; set; }
         public Guid FileId { get; set; }
 
-        public Namespace(int id, string name, Guid FileId, string FileName, List<Class> ChildList) : base(id, name)
+        public Namespace(int id, string name, Guid ProjectId, Guid FileId, string FileName, List<Class> ChildList) : base(id, name, ProjectId)
         {
             this.FileId = FileId;
             this.FileName = FileName;

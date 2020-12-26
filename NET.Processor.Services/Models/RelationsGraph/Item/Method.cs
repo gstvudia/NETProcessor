@@ -10,6 +10,8 @@ namespace NET.Processor.Core.Models
     {
         public BlockSyntax Body { get; set; }
         public string Language { get; set; }
+        public string ClassName { get; set; }
+        public int ClassId { get; set; }
 
         [BsonIgnore]
         public List<Method> ChildList { get; } = new List<Method>();
@@ -18,9 +20,9 @@ namespace NET.Processor.Core.Models
         public string FileName { get; set; }
         public Guid FileId { get; set; }
 
-        public Method(int id, string name,
+        public Method(int id, string name, Guid ProjectId,
                       BlockSyntax body, Guid FileId, string FileName,
-                      string ClassName, int ClassId, string language) : base(id, name)
+                      string ClassName, int ClassId, string language) : base(id, name, ProjectId)
         {
             this.ClassName = ClassName;
             this.ClassId = ClassId;
@@ -29,9 +31,6 @@ namespace NET.Processor.Core.Models
             Body = body;
             Language = language;
         }
-
-        public string ClassName { get; set; }
-        public int ClassId { get; set; }
 
         public Method(int id, string name, BlockSyntax body) : base(id, name) 
         {

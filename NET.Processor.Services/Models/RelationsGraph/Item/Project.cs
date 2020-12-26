@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
+using System.Collections.Generic;
 
 namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
@@ -8,13 +9,11 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
     [BsonIgnoreExtraElements]
     public class Project : Item
     {
-        [BsonElement("Guid")]
-        public Guid Guid { get; set; }
-
-        public Project(Guid guid, string name)
+        [BsonIgnore]
+        public List<File> ChildList { get; } = new List<File>();
+        public Project(Guid guid, string name, List<File> ChildList) : base(guid, name) 
         {
-            Guid = guid;
-            Name = name;
+            this.ChildList = ChildList;
         }
     }
 }

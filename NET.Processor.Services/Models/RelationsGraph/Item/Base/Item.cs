@@ -8,7 +8,7 @@ using System.Text;
 
 namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
-    public class Item
+    public abstract class Item
     {
         [BsonId]
         public ObjectId DatabaseId { get; set; }
@@ -17,32 +17,36 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         [BsonElement ("Name")]
         public string Name { get; set; }
 
+        public Guid ProjectId { get; set; }
+
         public Item()
         {
         }
 
-        public Item(int id, string name)
+        public Item(int id, string name, Guid ProjectId)
         {
             Id = id;
             Name = name;
+            this.ProjectId = ProjectId;
             DatabaseId = ObjectId.GenerateNewId();
         }
 
-        public Item(string name)
+        public Item(Guid ProjectId, string Name)
+        {
+           this.ProjectId = ProjectId;
+           this.Name = Name;
+           DatabaseId = ObjectId.GenerateNewId();
+        }
+
+        public Item(int id, string name)
         {
             Name = name;
-
-            DatabaseId = ObjectId.GenerateNewId();
+            Id = id;
         }
 
         public override string ToString()
         {
             return $"{GetType()} {Name}";
-        }
-
-        public Item Clone()
-        {
-            return new Item(Name);
         }
     }
 }

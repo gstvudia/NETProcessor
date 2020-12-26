@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using File = NET.Processor.Core.Models.RelationsGraph.Item.File;
+using NETProcessorProject = NET.Processor.Core.Models.RelationsGraph.Item.Project;
 
 namespace NET.Processor.Core.Services.Project
 {
@@ -33,11 +34,9 @@ namespace NET.Processor.Core.Services.Project
             _relationsGraphMapper = relationsGraphMapper;
         }
 
-        public IEnumerable<Method> GetRelationsGraph(Solution solution)
+        public IEnumerable<Item> GetRelationsGraph(Solution solution)
         {
-            SyntaxNode root = null;
-            List<Item> itemRelations = new List<Item>();
-
+            List<Item> items = new List<Item>();
             foreach (var project in solution.Projects)
             {
                 if (project.Language == _configuration["Framework:Language"])
@@ -45,26 +44,27 @@ namespace NET.Processor.Core.Services.Project
                     // Get ALL methods inside of each file and save it into methodsRelations
                     foreach (var document in project.Documents)
                     {
-                        root = document.GetSyntaxRootAsync().Result;
-                        // Add file node 
-                        string fileName = Path.GetFileNameWithoutExtension(document.Name);
-                        File file = new File(document.Id.Id, fileName);
-
+                        SyntaxNode root = document.GetSyntaxRootAsync().Result;
                         // Adding relations of document (file) and all associated Items
-                        itemRelations.Add(file);
-                        itemRelations.AddRange(MapItemRelations(root, fileName, document.Id.Id, project.Language));
+                        items.AddRange(MapItemRelations(root, project.Id.Id, project.Name, document.Name, document.Id.Id, project.Language));
                     }
+
+                    var fileList = items
+                        .OfType<File>()
+                        .ToList();
+
+                    // Add Project
+                    NETProcessorProject netProcessorProject = new NETProcessorProject(project.Id.Id, project.Name, fileList);
+                    items.Add(netProcessorProject);
                 }
             }
+            return items;
+        }
 
-            // Filter for method relations
-            var methodsRelations = itemRelations
-                                   .OfType<Method>()
-                                   .Where(x => x.GetType() == typeof(Method))
-                                   .ToList();
-
+        private List<Method> RemoveThirdPartyMethods(List<Method> methodRelations)
+        {
             // Set Ids for each child for being able to reference them later on edges (relations between nodes)
-            foreach (var method in methodsRelations)
+            foreach (var method in methodRelations)
             {
                 // After all methods are mapped, we set the respective ids from the list
                 // Remove methods that should not be in the graph like toString() by setting the child.id to 0
@@ -76,17 +76,17 @@ namespace NET.Processor.Core.Services.Project
                 // filtering out those methods by namespace or library
                 foreach (var child in method.ChildList.Where(x => x.Id == -1).ToList())
                 {
-                    child.Id = methodsRelations.Where(x => x.Name == child.Name).Select(x => x.Id).FirstOrDefault();
+                    child.Id = methodRelations.Where(x => x.Name == child.Name).Select(x => x.Id).FirstOrDefault();
                 }
             }
 
             // Remove built or invalid methods, this is where all methods with id 0 are removed
-            foreach (var method in methodsRelations)
+            foreach (var method in methodRelations)
             {
                 method.ChildList.RemoveAll(c => c.Id == 0 || c.Name == string.Empty);
             }
 
-            return methodsRelations;
+            return methodRelations;
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace NET.Processor.Core.Services.Project
         /// <param name="fileName"></param>
         /// <param name="language"></param>
         /// <returns></returns>
-        private List<Item> MapItemRelations(SyntaxNode root, string fileName, Guid fileId, string language)
+        private List<Item> MapItemRelations(SyntaxNode root, Guid projectId, string projectName, string fileName, Guid fileId, string language)
         { 
             List<Method> methodsList = new List<Method>();
             List<Class> classList = new List<Class>();
@@ -125,7 +125,7 @@ namespace NET.Processor.Core.Services.Project
                 // Methods
                 // var members = root.DescendantNodes().OfType<MemberDeclarationSyntax>();
                 var method = new Method(root.DescendantNodes().IndexOf(node), node.Identifier.ValueText,
-                                                            node.Body, fileId, fileName, currentClassName, root.DescendantNodes().IndexOf(currentClass), language);
+                                                            projectId, node.Body, fileId, fileName, currentClassName, root.DescendantNodes().IndexOf(currentClass), language);
                 
                 // Methods relations towards child methods
                 if (!methodsList.Any(x => x.Name == method.Name))
@@ -139,19 +139,28 @@ namespace NET.Processor.Core.Services.Project
             var currentNamespace = namespaceDeclarations.FirstOrDefault();
             var currentNamespaceName = currentNamespace.Name.ToString();
             var containingNamespace = new Namespace(root.DescendantNodes().IndexOf(currentNamespace), 
-                currentNamespaceName, fileId, fileName, classList);
+                currentNamespaceName, projectId, fileId, fileName, classList);
             namespaceList.Add(containingNamespace);
 
             // Adding Method relations towards Class
             Class containingClass = new Class(root.DescendantNodes().IndexOf(currentClass), currentClassName, 
-                root.DescendantNodes().IndexOf(currentNamespace), currentNamespaceName, fileId, fileName, methodsList);
+                projectId, root.DescendantNodes().IndexOf(currentNamespace), currentNamespaceName, fileId, fileName, language, methodsList);
             classList.Add(containingClass);
+
+            // Remove Third Party Methods 
+            methodsList = RemoveThirdPartyMethods(methodsList);
 
             // Adding all node types to generic item list class
             List<Item> itemList = new List<Item>();
+            // Add Methods
             itemList.AddRange(methodsList);
+            // Add Classes
             itemList.AddRange(classList);
-            itemList.Add(namespaceList);
+            // Add File
+            File file = new File(fileId, fileName, projectId, namespaceList);
+            itemList.Add(file);
+            // Add Namespaces
+            itemList.Add(containingNamespace);
 
             return itemList;
         }
@@ -189,28 +198,60 @@ namespace NET.Processor.Core.Services.Project
             return childList;
         }
 
-        public async Task<ProjectRelationsGraph> ProcessRelationsGraph(IEnumerable<Method> relations, string solutionName, string repositoryToken)
+        public async Task<ProjectRelationsGraph> ProcessRelationsGraph(IEnumerable<Item> relations, string solutionName, string repositoryToken)
         {
             List<Node> graphNodes = new List<Node>();
 
             foreach (var item in relations)
             {
                 NodeRoot nodeBase = _mapper.Map<NodeRoot>(item);
-                nodeBase.colorCode = "orange";
-                nodeBase.weight = 100;
-                nodeBase.shapeType = "roundrectangle";
                 nodeBase.nodeType = item.GetType().ToString();
                 nodeBase.nodeData.name = item.Name;
-                nodeBase.nodeData.fileName = item.FileName;
-                nodeBase.nodeData.className = item.ClassName;
-                nodeBase.nodeData.language = item.Language;
-           
-                // Pulling information for method from Repository (Github)
-                GithubJSONResponse.Root githubJSONResponse = await GetRepositoryInformationForMethod(item.Name, item.FileName, "BennieBe", solutionName);
-                nodeBase.nodeData.repositoryCommitLinkOfMethod = githubJSONResponse.items[0]
-                    .html_url.Replace("blob", "commits");
-                nodeBase.nodeData.repositoryLinkOfMethod = githubJSONResponse.items[0].html_url;
-                
+
+                if (item is Method)
+                {
+                    Method method = (Method) item;
+                    nodeBase.nodeData.name = method.Name;
+                    nodeBase.nodeData.fileName = method.FileName;
+                    nodeBase.nodeData.className = method.ClassName;
+                    nodeBase.nodeData.language = method.Language;
+
+                    // Pulling information for method from Repository (Github)
+                    GithubJSONResponse.Root githubJSONResponse = await GetRepositoryInformationForMethod(method.Name, method.FileName, "BennieBe", solutionName);
+                    nodeBase.nodeData.repositoryCommitLinkOfMethod = githubJSONResponse.items[0]
+                        .html_url.Replace("blob", "commits");
+                    nodeBase.nodeData.repositoryLinkOfMethod = githubJSONResponse.items[0].html_url;
+                }
+                else if(item is Class) 
+                {
+                    Class projectClass = (Class) item;
+                    nodeBase.nodeData.name = projectClass.Name;
+                    nodeBase.nodeData.fileName = projectClass.FileName;
+                    nodeBase.nodeData.namespaceName = projectClass.NamespaceName;
+                    nodeBase.nodeData.language = projectClass.Language;
+                } 
+                else if(item is Namespace)
+                {
+                    Namespace projectNamespace = (Namespace) item;
+                    nodeBase.nodeData.name = projectNamespace.Name;
+                    nodeBase.nodeData.fileName = projectNamespace.FileName;
+                } 
+                else if(item is NETProcessorProject)
+                {
+                    NETProcessorProject netProcessorProject = (NETProcessorProject) item;
+                    nodeBase.nodeData.name = netProcessorProject.Name;
+
+                } 
+                else if(item is File)
+                {
+                    File file = (File) item;
+                    nodeBase.nodeData.name = file.Name;
+                } 
+                else
+                {
+                    throw new Exception("The Item found is not handled by any NodeType! Aborting program");
+                }
+
                 graphNodes.Add(new Node
                 {
                     data = nodeBase

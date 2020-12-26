@@ -287,24 +287,24 @@ namespace NET.Processor.Core.Services.Project
                     }
                 }
                 // Get all documents from one project and add them to list
-                var documents = project.Documents.Select(x => new Models.RelationsGraph.Item.File(x.Id.Id, x.Name.Split('.')[0].ToString()))
-                                .ToList();
-                list.AddRange(documents);
+                //var documents = project.Documents.Select(x => new Models.RelationsGraph.Item.File(x.Id.Id, x.Name.Split('.')[0].ToString()))
+                //                .ToList();
+                //list.AddRange(documents);
             }
             // TODO: Reason about whether it makes sense to also add another entry per project in mongodb
-            var projects = solution.Projects.Select(x => new Models.RelationsGraph.Item.Project(x.Id.Id, x.Name.ToString()))
-             .ToList();
-            list.AddRange(projects);
+            //var projects = solution.Projects.Select(x => new Models.RelationsGraph.Item.Project(x.Id.Id, x.Name.ToString()))
+            // .ToList();
+            //list.AddRange(projects);
 
             return list;
         }
 
-        public IEnumerable<Method> GetRelationsGraph(Solution solution)
+        public IEnumerable<Item> GetRelationsGraph(Solution solution)
         {
             return _solutionGraph.GetRelationsGraph(solution);
         }
 
-        public void ProcessRelationsGraph(IEnumerable<Method> relations, string solutionName, string repositoryToken)
+        public void ProcessRelationsGraph(IEnumerable<Item> relations, string solutionName, string repositoryToken)
         {
             ProjectRelationsGraph relationGraph = _solutionGraph.ProcessRelationsGraph(relations, solutionName, repositoryToken).Result;
             // Store collection in Database

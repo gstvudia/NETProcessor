@@ -1,6 +1,6 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
+using System.Collections.Generic;
 
 namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
@@ -8,10 +8,13 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
     [BsonIgnoreExtraElements]
     public class File : Item
     {
+        [BsonIgnore]
+        public List<Namespace> ChildList { get; set; }
         public Guid FileId { get; set; }
-        public File(Guid FileId, string fileName) : base(fileName) 
+        public File(Guid FileId, string FileName, Guid ProjectId, List<Namespace> ChildList) : base(ProjectId, FileName) 
         {
             this.FileId = FileId;
+            this.ChildList = ChildList;
         }
     }
 }

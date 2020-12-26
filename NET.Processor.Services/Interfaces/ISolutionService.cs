@@ -34,11 +34,11 @@ namespace NET.Processor.Core.Interfaces
         /// </summary>
         /// <param name="solution"></param>
         /// <returns></returns>
-        IEnumerable<Method> GetRelationsGraph(Solution solution);
+        IEnumerable<Item> GetRelationsGraph(Solution solution);
         /// <summary>
         /// Processing method nodes and relations
         /// </summary>
         /// <param name="relations"></param>
-        void ProcessRelationsGraph(IEnumerable<Method> relations, string solutionName, string repositoryToken);
+        void ProcessRelationsGraph(IEnumerable<Item> relations, string solutionName, string repositoryToken);
     }
 }
