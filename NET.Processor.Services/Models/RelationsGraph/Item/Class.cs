@@ -16,10 +16,10 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
 
         [BsonElement("FileName")]
         public string FileName { get; set; }
-        public Guid FileId { get; set; }
+        public string FileId { get; set; }
 
-        public Class(int id, string name, Guid ProjectId, int NamespaceId, string NamespaceName, 
-            Guid FileId, string FileName, string Language, List<Method> ChildList) : base(id, name, ProjectId)
+        public Class(string id, string name, string ProjectId, int NamespaceId, string NamespaceName, 
+            string FileId, string FileName, string Language, List<Method> ChildList) : base(id, name, ProjectId)
         {
             this.ChildList = ChildList;
             this.NamespaceId = NamespaceId;

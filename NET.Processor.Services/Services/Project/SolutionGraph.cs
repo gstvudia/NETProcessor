@@ -54,7 +54,7 @@ namespace NET.Processor.Core.Services.Project
                         .ToList();
 
                     // Add Project
-                    NETProcessorProject netProcessorProject = new NETProcessorProject(project.Id.Id, project.Name, fileList);
+                    NETProcessorProject netProcessorProject = new NETProcessorProject(project.Id.Id.ToString(), project.Name, fileList);
                     items.Add(netProcessorProject);
                 }
             }
@@ -74,7 +74,7 @@ namespace NET.Processor.Core.Services.Project
                 // not show up if we remove them from the Graph, instead of removing the methods we should tag
                 // them as third party, but still remove stuff like toString() by for example creating a custom filter
                 // filtering out those methods by namespace or library
-                foreach (var child in method.ChildList.Where(x => x.Id == -1).ToList())
+                foreach (var child in method.ChildList.Where(x => x.Id == "-1").ToList())
                 {
                     child.Id = methodRelations.Where(x => x.Name == child.Name).Select(x => x.Id).FirstOrDefault();
                 }
@@ -83,7 +83,7 @@ namespace NET.Processor.Core.Services.Project
             // Remove built or invalid methods, this is where all methods with id 0 are removed
             foreach (var method in methodRelations)
             {
-                method.ChildList.RemoveAll(c => c.Id == 0 || c.Name == string.Empty);
+                method.ChildList.RemoveAll(c => c.Id == null || c.Name == string.Empty);
             }
 
             return methodRelations;
@@ -124,8 +124,8 @@ namespace NET.Processor.Core.Services.Project
 
                 // Methods
                 // var members = root.DescendantNodes().OfType<MemberDeclarationSyntax>();
-                var method = new Method(root.DescendantNodes().IndexOf(node), node.Identifier.ValueText,
-                                                            projectId, node.Body, fileId, fileName, currentClassName, root.DescendantNodes().IndexOf(currentClass), language);
+                var method = new Method(Guid.NewGuid().ToString(), node.Identifier.ValueText,
+                                                            projectId.ToString(), node.Body, fileId.ToString(), fileName, currentClassName, root.DescendantNodes().IndexOf(currentClass), language);
                 
                 // Methods relations towards child methods
                 if (!methodsList.Any(x => x.Name == method.Name))
@@ -138,13 +138,13 @@ namespace NET.Processor.Core.Services.Project
             // Adding class relations towards Namespace
             var currentNamespace = namespaceDeclarations.FirstOrDefault();
             var currentNamespaceName = currentNamespace.Name.ToString();
-            var containingNamespace = new Namespace(root.DescendantNodes().IndexOf(currentNamespace), 
-                currentNamespaceName, projectId, fileId, fileName, classList);
+            var containingNamespace = new Namespace(Guid.NewGuid().ToString(), 
+                currentNamespaceName, projectId.ToString(), fileId.ToString(), fileName, classList);
             namespaceList.Add(containingNamespace);
 
             // Adding Method relations towards Class
-            Class containingClass = new Class(root.DescendantNodes().IndexOf(currentClass), currentClassName, 
-                projectId, root.DescendantNodes().IndexOf(currentNamespace), currentNamespaceName, fileId, fileName, language, methodsList);
+            Class containingClass = new Class(Guid.NewGuid().ToString(), currentClassName, 
+                projectId.ToString(), root.DescendantNodes().IndexOf(currentNamespace), currentNamespaceName, fileId.ToString(), fileName, language, methodsList);
             classList.Add(containingClass);
 
             // Remove Third Party Methods 
@@ -157,7 +157,7 @@ namespace NET.Processor.Core.Services.Project
             // Add Classes
             itemList.AddRange(classList);
             // Add File
-            File file = new File(fileId, fileName, projectId, namespaceList);
+            File file = new File(fileId.ToString(), fileName, projectId.ToString(), namespaceList);
             itemList.Add(file);
             // Add Namespaces
             itemList.Add(containingNamespace);
@@ -184,13 +184,13 @@ namespace NET.Processor.Core.Services.Project
                     {
                         childList
                             .Add(new Method(
-                                -1, child[1].Substring(0, child[1].LastIndexOf("(") + 1).Replace("(", string.Empty)));
+                                "-1", child[1].Substring(0, child[1].LastIndexOf("(") + 1).Replace("(", string.Empty)));
                     }
                     else
                     {
                         childList
                             .Add(new Method(
-                                -1, child[0].Substring(0, child[0].LastIndexOf("(") + 1).Replace("(", string.Empty)));
+                                "-1", child[0].Substring(0, child[0].LastIndexOf("(") + 1).Replace("(", string.Empty)));
                     }
                 }
             }

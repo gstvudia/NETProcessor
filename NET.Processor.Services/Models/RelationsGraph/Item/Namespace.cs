@@ -11,9 +11,9 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
 
         [BsonElement("FileName")]
         public string FileName { get; set; }
-        public Guid FileId { get; set; }
+        public string FileId { get; set; }
 
-        public Namespace(int id, string name, Guid ProjectId, Guid FileId, string FileName, List<Class> ChildList) : base(id, name, ProjectId)
+        public Namespace(string id, string name, string ProjectId, string FileId, string FileName, List<Class> ChildList) : base(id, name, ProjectId)
         {
             this.FileId = FileId;
             this.FileName = FileName;

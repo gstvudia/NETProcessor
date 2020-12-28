@@ -13,17 +13,17 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         [BsonId]
         public ObjectId DatabaseId { get; set; }
         [BsonElement("Id")]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [BsonElement ("Name")]
         public string Name { get; set; }
 
-        public Guid ProjectId { get; set; }
+        public string ProjectId { get; set; }
 
         public Item()
         {
         }
 
-        public Item(int id, string name, Guid ProjectId)
+        public Item(string id, string name, string ProjectId)
         {
             Id = id;
             Name = name;
@@ -31,17 +31,11 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
             DatabaseId = ObjectId.GenerateNewId();
         }
 
-        public Item(Guid ProjectId, string Name)
+        public Item(string id, string name)
         {
-           this.ProjectId = ProjectId;
-           this.Name = Name;
-           DatabaseId = ObjectId.GenerateNewId();
-        }
-
-        public Item(int id, string name)
-        {
-            Name = name;
             Id = id;
+            Name = name;
+            DatabaseId = ObjectId.GenerateNewId();
         }
 
         public override string ToString()

@@ -12,18 +12,90 @@ namespace NET.Processor.Core.Helpers.Mappers
     {
         List<Edge> graphEdges = new List<Edge>();
 
-        public List<Edge> MapItemsToEdges(List<Item> items)
+        public List<Edge> MapItemsToEdges(List<Item> listItems)
         {
-            foreach (var item in items
-                .Where(item =>
-                   item.GetType() == typeof(Class) ||
-                   item.GetType() == typeof(Method) ||
-                   item.GetType() == typeof(File) ||
-                   item.GetType() == typeof(Project) ||
-                   item.GetType() == typeof(Namespace))
-                .Select(item => item.ChildList.Count > 0));
+            foreach (var listItem in listItems)
+            {
+                if (listItem is Method)
+                {
+                    Method item = (Method)listItem;
+                    if (item.ChildList.Count > 0)
+                    {
+                        foreach (var child in item.ChildList)
+                        {
+                            MapToEdge(item, child);
+                        }
+                    }
+                }
+                else if (listItem is Class)
+                {
+                    Class item = (Class)listItem;
+                    if (item.ChildList.Count > 0)
+                    {
+                        foreach (var child in item.ChildList)
+                        {
+                            MapToEdge(item, child);
+                        }
+                    }
+                }
+                else if (listItem is Namespace)
+                {
+                    Namespace item = (Namespace)listItem;
+                    if (item.ChildList.Count > 0)
+                    {
+                        foreach (var child in item.ChildList)
+                        {
+                            MapToEdge(item, child);
+                        }
+                    }
+                }
+                else if (listItem is Project)
+                {
+                    Project item = (Project)listItem;
+                    if (item.ChildList.Count > 0)
+                    {
+                        foreach (var child in item.ChildList)
+                        {
+                            MapToEdge(item, child);
+                        }
+                    }
+                }
+                else if (listItem is File)
+                {
+                    File item = (File)listItem;
+                    if (item.ChildList.Count > 0)
+                    {
+                        foreach (var child in item.ChildList)
+                        {
+                            MapToEdge(item, child);
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception("The Item found for mapping Edges is not handled by any NodeType! Aborting program");
+                }
+            }
 
+            //{
+            //    Console.WriteLine(item);
+            /*
+            foreach (var child in item.ChildList)
+            {
+                graphEdges.Add(new Edge
+                {
+                    data = new EdgeData
+                    {
+                        source = Convert.ToString(item.Id),
+                        target = Convert.ToString(child.Id)
+                    }
+                }
+                );
+            }
+            */
+            // }
 
+            /*
             foreach (var item in items.Where(item => item.ChildList.Count > 0))
             {
                 foreach (var child in item.ChildList)
@@ -47,11 +119,12 @@ namespace NET.Processor.Core.Helpers.Mappers
                     );
                 }
             }
+            */
 
             return graphEdges;
         }
 
-        private Edge MapToEdge(Item item)
+        private void MapToEdge(Item item, Item child)
         {
             graphEdges.Add(new Edge
             {

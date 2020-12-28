@@ -276,7 +276,7 @@ namespace NET.Processor.Core.Services.Project
                         //End of document/class
 
                         // Get all comments and assigns comment to specific property id from the item list
-                        var commentReferences = _commentService.GetCommentReferences(root, list.Where(x =>
+                        /*var commentReferences = _commentService.GetCommentReferences(root, list.Where(x =>
                                                     x.GetType() == typeof(Class) ||
                                                     x.GetType() == typeof(Method) ||
                                                     x.GetType() == typeof(Namespace))
@@ -284,6 +284,7 @@ namespace NET.Processor.Core.Services.Project
                         var comments = commentReferences.Select(x => new Comment(x.LineNumber, x.Name, x.AttachedPropertyId, x.AttachedPropertyName, x.MethodOrPropertyIfAny, x.TypeIfAny, x.NamespaceIfAny))
                                 .ToList();
                         list.AddRange(comments);
+                        */
                     }
                 }
                 // Get all documents from one project and add them to list

@@ -11,7 +11,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
     {
         [BsonIgnore]
         public List<File> ChildList { get; } = new List<File>();
-        public Project(Guid guid, string name, List<File> ChildList) : base(guid, name) 
+        public Project(string id, string name, List<File> ChildList) : base(id, name, id) 
         {
             this.ChildList = ChildList;
         }

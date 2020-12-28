@@ -10,8 +10,8 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
     {
         [BsonIgnore]
         public List<Namespace> ChildList { get; set; }
-        public Guid FileId { get; set; }
-        public File(Guid FileId, string FileName, Guid ProjectId, List<Namespace> ChildList) : base(ProjectId, FileName) 
+        public string FileId { get; set; }
+        public File(string FileId, string FileName, string ProjectId, List<Namespace> ChildList) : base(FileId, FileName, ProjectId) 
         {
             this.FileId = FileId;
             this.ChildList = ChildList;

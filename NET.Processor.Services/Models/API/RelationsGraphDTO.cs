@@ -47,8 +47,6 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
     {
         public string source { get; set; }
         public string target { get; set; }
-        public string colorCode { get; set; }
-        public int strength { get; set; }
     }
 
     public class Edge

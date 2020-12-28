@@ -18,10 +18,10 @@ namespace NET.Processor.Core.Models
 
         [BsonElement("FileName")]
         public string FileName { get; set; }
-        public Guid FileId { get; set; }
+        public string FileId { get; set; }
 
-        public Method(int id, string name, Guid ProjectId,
-                      BlockSyntax body, Guid FileId, string FileName,
+        public Method(string id, string name, string ProjectId,
+                      BlockSyntax body, string FileId, string FileName,
                       string ClassName, int ClassId, string language) : base(id, name, ProjectId)
         {
             this.ClassName = ClassName;
@@ -32,11 +32,11 @@ namespace NET.Processor.Core.Models
             Language = language;
         }
 
-        public Method(int id, string name, BlockSyntax body) : base(id, name) 
+        public Method(string id, string name, BlockSyntax body) : base(id, name) 
         {
             Body = body;
         }
 
-        public Method(int id, string name) : base(id, name) {}
+        public Method(string id, string name) : base(id, name) {}
     }
 }
