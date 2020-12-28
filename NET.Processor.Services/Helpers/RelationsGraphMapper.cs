@@ -23,7 +23,7 @@ namespace NET.Processor.Core.Helpers.Mappers
                     {
                         foreach (var child in item.ChildList)
                         {
-                            MapToEdge(item, child);
+                            MapToEdge(item, child, child.GetType().ToString());
                         }
                     }
                 }
@@ -34,7 +34,7 @@ namespace NET.Processor.Core.Helpers.Mappers
                     {
                         foreach (var child in item.ChildList)
                         {
-                            MapToEdge(item, child);
+                            MapToEdge(item, child, child.GetType().ToString());
                         }
                     }
                 }
@@ -45,7 +45,7 @@ namespace NET.Processor.Core.Helpers.Mappers
                     {
                         foreach (var child in item.ChildList)
                         {
-                            MapToEdge(item, child);
+                            MapToEdge(item, child, child.GetType().ToString());
                         }
                     }
                 }
@@ -56,7 +56,7 @@ namespace NET.Processor.Core.Helpers.Mappers
                     {
                         foreach (var child in item.ChildList)
                         {
-                            MapToEdge(item, child);
+                            MapToEdge(item, child, child.GetType().ToString());
                         }
                     }
                 }
@@ -67,7 +67,7 @@ namespace NET.Processor.Core.Helpers.Mappers
                     {
                         foreach (var child in item.ChildList)
                         {
-                            MapToEdge(item, child);
+                            MapToEdge(item, child, child.GetType().ToString());
                         }
                     }
                 }
@@ -124,14 +124,15 @@ namespace NET.Processor.Core.Helpers.Mappers
             return graphEdges;
         }
 
-        private void MapToEdge(Item item, Item child)
+        private void MapToEdge(Item item, Item child, string childType)
         {
             graphEdges.Add(new Edge
             {
                 data = new EdgeData
                 {
                     source = Convert.ToString(item.Id),
-                    target = Convert.ToString(child.Id)
+                    target = Convert.ToString(child.Id),
+                    targetNodeType = childType
                 }
             }
             );

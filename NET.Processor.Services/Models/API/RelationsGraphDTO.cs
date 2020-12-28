@@ -42,11 +42,11 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         // goToMethod
         */
     }
-
     public class EdgeData
     {
         public string source { get; set; }
         public string target { get; set; }
+        public string targetNodeType { get; set; }
     }
 
     public class Edge
