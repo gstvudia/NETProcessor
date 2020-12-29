@@ -205,8 +205,9 @@ namespace NET.Processor.Core.Services.Project
             foreach (var item in relations)
             {
                 NodeRoot nodeBase = _mapper.Map<NodeRoot>(item);
-                nodeBase.nodeType = item.GetType().ToString();
+                nodeBase.nodeType = item.GetType().ToString().Split(".").Last();
                 nodeBase.nodeData.name = item.Name;
+                nodeBase.nodeData.nodeType = item.GetType().ToString().Split(".").Last();
 
                 if (item is Method)
                 {

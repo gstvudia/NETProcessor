@@ -27,6 +27,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
     public class NodeData
     {
         public string name { get; set; }
+        public string nodeType { get; set; }
         public string fileName { get; set; }
         public string className { get; set; }
         public string namespaceName { get; set; }
