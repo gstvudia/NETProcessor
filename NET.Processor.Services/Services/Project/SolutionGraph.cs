@@ -25,13 +25,15 @@ namespace NET.Processor.Core.Services.Project
         private readonly IConfiguration _configuration;
         private readonly IRelationsGraphMapper _relationsGraphMapper;
         private readonly IGithubService _githubService;
+        private readonly ICommentService _commentService;
 
-        public SolutionGraph(IMapper mapper, IConfiguration configuration, IRelationsGraphMapper relationsGraphMapper, IGithubService githubService)
+        public SolutionGraph(IMapper mapper, IConfiguration configuration, IRelationsGraphMapper relationsGraphMapper, IGithubService githubService, ICommentService commentService)
         {
             _githubService = githubService;
             _mapper = mapper;
             _configuration = configuration;
             _relationsGraphMapper = relationsGraphMapper;
+            _commentService = commentService;
         }
 
         public IEnumerable<Item> GetRelationsGraph(Solution solution)
@@ -161,6 +163,25 @@ namespace NET.Processor.Core.Services.Project
             itemList.Add(file);
             // Add Namespaces
             itemList.Add(containingNamespace);
+
+            // Add Comments 
+            // Get all comments and assigns comment to specific property id from the item list
+            var comments = _commentService.GetCommentReferences(root, itemList.Where(x =>
+                                        x.GetType() == typeof(Class) ||
+                                        x.GetType() == typeof(Method) ||
+                                        x.GetType() == typeof(Namespace))
+                                    .Select(x => new KeyValuePair<string, string>(x.Name, x.Id)));
+            // Add all comments to respective nodes
+            foreach(var item in itemList)
+            {
+                foreach(var comment in comments)
+                {
+                    if(comment.AttachedPropertyId.Equals(item.Id))
+                    {
+                        item.CommentList.Add(comment);
+                    }
+                }
+            }
 
             return itemList;
         }

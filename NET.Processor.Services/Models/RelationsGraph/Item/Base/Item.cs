@@ -17,10 +17,18 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         [BsonElement ("Name")]
         public string Name { get; set; }
 
+        public List<Comment> CommentList = new List<Comment>();
+
         public string ProjectId { get; set; }
 
         public Item()
         {
+        }
+
+        public Item(string id)
+        {
+            Id = id;
+            DatabaseId = ObjectId.GenerateNewId();
         }
 
         public Item(string id, string name, string ProjectId)

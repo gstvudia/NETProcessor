@@ -16,7 +16,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         ///  This is the id of the source (method, class, field etc.) that this comment is attached to
         /// </summary>
         [BsonElement("AttachedPropertyId")]
-        public int AttachedPropertyId { get; private set; }
+        public string AttachedPropertyId { get; private set; }
 
         /// <summary>
         ///  This is the name of the source (method, class, field etc.) that this comment is attached to
@@ -42,9 +42,9 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         [BsonIgnore]
         public NamespaceDeclarationSyntax NamespaceIfAny { get; private set; }
 
-        public Comment(int lineNumber, string content, int attachedPropertyId,
+        public Comment(string id, int lineNumber, string content, string attachedPropertyId,
                        string attachedPropertyName, MemberDeclarationSyntax methodOrPropertyIfAny,
-                       TypeDeclarationSyntax typeIfAny, NamespaceDeclarationSyntax namespaceIfAny)                                              
+                       TypeDeclarationSyntax typeIfAny, NamespaceDeclarationSyntax namespaceIfAny) : base(id)                                              
         {
             if (string.IsNullOrEmpty(content))
                 throw new ArgumentException("Null/blank content specified");

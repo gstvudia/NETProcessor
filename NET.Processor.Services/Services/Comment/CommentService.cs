@@ -22,15 +22,15 @@ namespace NET.Processor.Core.Services
 			_env = env;
 		}
 
-        public IEnumerable<Comment> GetCommentReferences(SyntaxNode rootNode, IEnumerable<KeyValuePair<string, int>> itemNames)
+        public IEnumerable<Comment> GetCommentReferences(SyntaxNode rootNode, IEnumerable<KeyValuePair<string, string>> itemNames)
         {
 			List<Comment> comments = new List<Comment>();
 			// Check if an empty key value pair has been passed
 			foreach(var itemName in itemNames)
             {
-				if (itemName.Equals(default(KeyValuePair<string, int>)))
+				if (itemName.Equals(default(KeyValuePair<string, string>)))
 				{
-					throw new Exception("KeyValuePair<string, int> itemNames passed to Comment Service may not be empty!");
+					throw new Exception("KeyValuePair<string, string> itemNames passed to Comment Service may not be empty!");
 				}
 			}
 
@@ -45,29 +45,6 @@ namespace NET.Processor.Core.Services
 			}
 			return comments;
 		}
-
-		/*
-        IEnumerable<Comment> ICommentService.GetCommentReferences(IEnumerable<FileInfo> csharpCompileFileList)
-		{
-			List<Comment> comments = new List<Comment>();
-			var commentIdentifier = new CommentIdentifier();
-
-			foreach (var csharpCompileFile in csharpCompileFileList)
-            {
-				foreach (var comment in commentIdentifier.GetComments(csharpCompileFile.OpenText().ReadToEnd()))
-				{
-					// Print additional console information in dev mode
-					if (_env.IsDevelopment())
-						PrintComment(comment);
-
-					// Adding comment to comment list
-					comments.Add(comment);
-				}
-			}
-
-			return comments;
-		}
-		*/
 
 		void PrintComment(Comment comment)
         {

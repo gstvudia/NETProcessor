@@ -23,13 +23,6 @@ namespace NET.Processor.Core.Interfaces
         void SaveSolutionFromRepository(CodeRepository repository);
 
         /// <summary>
-        /// Loads files from solution path
-        /// </summary>
-        /// <param name="SolutionPath">Path of the .sln file</param>
-        /// <returns>FilePaths</returns>
-        //IEnumerable<FileInfo> LoadFilePaths(string SolutionPath);
-        IEnumerable<Item> GetSolutionItems(Solution solution);
-        /// <summary>
         /// Getting all method nodes and relations
         /// </summary>
         /// <param name="solution"></param>

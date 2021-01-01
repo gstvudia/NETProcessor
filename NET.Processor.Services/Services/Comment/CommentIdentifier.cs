@@ -16,7 +16,7 @@ namespace NET.Processor.Core.Services
 	public class CommentIdentifier
 	{
 		private readonly Predicate<string> _commentMatcher;
-		private static IEnumerable<KeyValuePair<string, int>> ItemNames;
+		private static IEnumerable<KeyValuePair<string, string>> ItemNames;
 
 		public CommentIdentifier(Predicate<string> commentMatcher)
 		{
@@ -57,7 +57,7 @@ namespace NET.Processor.Core.Services
 			}
 		}
 
-		public IEnumerable<Comment> GetComments(SyntaxNode root, IEnumerable<KeyValuePair<string, int>> itemNames)
+		public IEnumerable<Comment> GetComments(SyntaxNode root, IEnumerable<KeyValuePair<string, string>> itemNames)
         {
 			var comments = new List<Comment>();
 			ItemNames = itemNames;
@@ -150,7 +150,7 @@ namespace NET.Processor.Core.Services
 					// IndexerDeclarationSyntax, PropertyDeclarationSyntax but NamespaceDeclarationSyntax and TypeDeclarationSyntax also inherit from MemberDeclarationSyntax and we
 					// don't want those
 					var containingNode = trivia.Token.Parent;
-					KeyValuePair<string, int> assignedProperty = new KeyValuePair<string, int>();
+					KeyValuePair<string, string> assignedProperty = new KeyValuePair<string, string>();
 
 					var containingMethodOrPropertyIfAny = TryToGetContainingNode<MemberDeclarationSyntax>(
 						containingNode,
@@ -174,6 +174,7 @@ namespace NET.Processor.Core.Services
 					}
 
 					_commentLocated(new Comment(
+						Guid.NewGuid().ToString(),
 						trivia.SyntaxTree.GetLineSpan(trivia.Span).StartLinePosition.Line,
 						triviaContent,
 						assignedProperty.Value,
@@ -188,10 +189,10 @@ namespace NET.Processor.Core.Services
 			// Currently, this linq search takes into consideration only the first match it finds! 
 			// Under certain circumstances, this might not be enough, there might have to be a more extensive search needed
 			// Right now it is assumed that linq searches for the Method / Class / Namespace header of that comment!
-			private KeyValuePair<string, int> getIdOfPropertyAssignedToComment(MemberDeclarationSyntax propertyContent, IEnumerable<KeyValuePair<string, int>> itemNames)
+			private KeyValuePair<string, string> getIdOfPropertyAssignedToComment(MemberDeclarationSyntax propertyContent, IEnumerable<KeyValuePair<string, string>> itemNames)
             {
 				var content = propertyContent.GetText().ToString();
-				KeyValuePair<string, int> propertyKeyPair = itemNames
+				KeyValuePair<string, string> propertyKeyPair = itemNames
 						.Where(c => Regex.IsMatch(content, @"\b" + c.Key + @"\b")).First();
 				return propertyKeyPair;
             }
