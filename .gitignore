@@ -49,3 +49,5 @@ NET.Processor.Data/obj/Debug/netcoreapp3.1/NET.Processor.Data.AssemblyInfo.cs
 NET.Processor.Data/bin/Debug/netcoreapp3.1/System.Windows.Forms.dll
 NET.Processor.Data/obj/Debug/netcoreapp3.1/NET.Processor.Data.csproj.CoreCompileInputs.cache
 NET.Processor.Data/obj/Debug/netcoreapp3.1/NET.Processor.Data.pdb
+/NET.Processor.Services/obj
+.vscode

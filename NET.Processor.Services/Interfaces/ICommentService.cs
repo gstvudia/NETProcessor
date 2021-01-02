@@ -15,6 +15,6 @@ namespace NET.Processor.Core.Interfaces
         /// <param name="itemNames"></param>
         /// <returns>Comment</returns>
         // IEnumerable<Comment> GetCommentReferences(IEnumerable<FileInfo> csharpCompileFileList);
-        IEnumerable<Comment> GetCommentReferences(SyntaxNode rootNode, IEnumerable<KeyValuePair<string, int>> itemNames);
+        IEnumerable<Comment> GetCommentReferences(SyntaxNode rootNode, IEnumerable<KeyValuePair<string, string>> itemNames);
     }
 }

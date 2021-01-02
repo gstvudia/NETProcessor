@@ -8,66 +8,49 @@ using System.Text;
 
 namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
-    public class Item : IDisposable
+    public abstract class Item
     {
         [BsonId]
         public ObjectId DatabaseId { get; set; }
         [BsonElement("Id")]
-        public int Id { get; set; }
+        public string Id { get; set; }
         [BsonElement ("Name")]
         public string Name { get; set; }
 
         [BsonIgnore]
-        public Item Parent { get; set; }
+        public List<Comment> CommentList = new List<Comment>();
 
         [BsonIgnore]
-        public List<Method> ChildList { get; } = new List<Method>();
+        public string ProjectId { get; set; }
 
-        [BsonElement("FileName")]
-        public string FileName { get; set; }
-
-        [BsonElement("ClassName")]
-        public string ClassName { get; set; }
         public Item()
         {
         }
 
-        public Item(int id, string name)
+        public Item(string id)
         {
             Id = id;
-            Name = name;
             DatabaseId = ObjectId.GenerateNewId();
         }
 
-        public Item(int id, string name, string fileName, string className)
+        public Item(string id, string name, string ProjectId)
         {
             Id = id;
             Name = name;
-            FileName = fileName;
-            ClassName = className;
+            this.ProjectId = ProjectId;
             DatabaseId = ObjectId.GenerateNewId();
         }
 
-        public Item(string name)
+        public Item(string id, string name)
         {
+            Id = id;
             Name = name;
-
             DatabaseId = ObjectId.GenerateNewId();
         }
 
         public override string ToString()
         {
             return $"{GetType()} {Name}";
-        }
-
-        public Item Clone()
-        {
-            return new Item(Name);
-        }
-
-        public void Dispose()
-        {
-            ChildList.Clear();
         }
     }
 }

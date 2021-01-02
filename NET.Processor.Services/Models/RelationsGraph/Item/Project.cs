@@ -1,20 +1,19 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
+using System.Collections.Generic;
 
 namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
     // BSON Annotation means that Database (MongoDB) ignores any properties it cannot recognize
     [BsonIgnoreExtraElements]
-    public class NodeDocument : Item
+    public class Project : Item
     {
-        [BsonElement("Guid")]
-        public Guid Guid { get; set; }
-
-        public NodeDocument(Guid guid, string name)
+        [BsonIgnore]
+        public List<File> ChildList { get; } = new List<File>();
+        public Project(string id, string name, List<File> ChildList) : base(id, name, id) 
         {
-            Guid = guid;
-            Name = name;
+            this.ChildList = ChildList;
         }
     }
 }

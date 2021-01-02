@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MongoDB.Driver;
 using NET.Processor.Core.Interfaces;
+using NET.Processor.Core.Models.API.Database;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 
@@ -12,6 +14,7 @@ namespace NET.Processor.Core.Services.Database
         private readonly string databaseString = "netProcessorDB";
         private readonly string databaseConnectionString = "mongodb+srv://admin_ben:6IePzWJHwqcPapWV@cluster0.zqe3a.mongodb.net/netProcessorDB?retryWrites=true";
         private readonly string projectsCollectionName = "Projects";
+        private readonly string accountsCollectionName = "Accounts";
         private IMongoClient client;
         private IMongoDatabase database;
 
@@ -28,6 +31,35 @@ namespace NET.Processor.Core.Services.Database
                 {
                     throw new Exception(e.Message);
                 }
+            }
+        }
+
+        public Task<GithubRepository> GetRepositoryToken(string repositoryType)
+        {
+            try
+            {
+                if (repositoryType is "github")
+                {
+                    // Get newly created collection from database based on project name
+                    var collection = database.GetCollection<GithubRepository>(accountsCollectionName);
+                    var result = collection.Find(x => x.github.profile.provider == repositoryType).ToList();
+                    Console.WriteLine(result);
+                    if (result.Count > 1)
+                    {
+                        // TODO: Throw exception is not working here, need to check why!
+                        throw new Exception("GetRepositoryToken method returned more than one token, only one token is allowed");
+                    }
+                    return null;
+                }
+                else
+                {
+                    // TODO: Throw exception is not working here, need to check why!
+                    throw new Exception("No repository type chosen, please specify a repository type");
+                }
+            } catch(Exception e)
+            {
+                // TODO: Throw exception is not working here, need to check why!
+                throw new Exception($"Exception occurred during retrieving repository token, exception is: { e }");
             }
         }
 

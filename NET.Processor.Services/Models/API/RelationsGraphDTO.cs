@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 
@@ -14,30 +13,31 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
 
     public class Node
     {
-        public NodeRoot Data { get; set; }
+        public NodeRoot data { get; set; }
     }
 
     public class NodeRoot
     {
         public string Id { get; set; }
-        public string Name { get; set; }
-        public string Body { get; set; }
-        public string NodeType { get; set; }
-        public int Weight { get; set; }
-        public string ColorCode { get; set; }
-        public string ShapeType { get; set; }
-        public NodeData NodeData { get; set; } = new NodeData();
+        public string projectId { get; set; }
+        public string name { get; set; }
+        public string nodeType { get; set; }
+
+        public NodeData nodeData = new NodeData();
     }
 
     public class NodeData
     {
-        public string Name { get; set; }
-        public string FileName { get; set; }
-        public string ClassName { get; set; }
-        public string Language { get; set; }
+        public string name { get; set; }
+        public string nodeType { get; set; }
+        public string fileName { get; set; }
+        public string className { get; set; }
+        public string language { get; set; }
+        public List<Comment> comments { get; set; }
+        public string repositoryLinkOfMethod { get; set; }
+        public string repositoryCommitLinkOfMethod { get; set; }
 
         /* The following values belonging to this class are pulled in dynamically by trigger through frontend
-        // method body
         // sectionTags
         // tickets
         // history of changes
@@ -45,18 +45,16 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         // goToMethod
         */
     }
-
     public class EdgeData
     {
-        public string Source { get; set; }
-        public string Target { get; set; }
-        public string ColorCode { get; set; }
-        public int Strength { get; set; }
+        public string source { get; set; }
+        public string target { get; set; }
+        public string targetNodeType { get; set; }
     }
 
     public class Edge
     {
-        public EdgeData Data { get; set; }
+        public EdgeData data { get; set; }
     }
 
     public class ProjectRelationsGraph
@@ -68,8 +66,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
 
     public class ProjectRelationsGraphRoot
     {
-        public List<Node> Nodes { get; set; }
-        public List<Edge> Edges { get; set; }
+        public List<Node> nodes { get; set; }
+        public List<Edge> edges { get; set; }
     }
-
 }

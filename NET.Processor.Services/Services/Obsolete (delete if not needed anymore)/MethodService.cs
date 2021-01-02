@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
-using VSSolution = Microsoft.CodeAnalysis.Solution;
 
 namespace NET.Processor.Core.Services
 {
@@ -73,7 +72,7 @@ namespace NET.Processor.Core.Services
         */
 
         
-        public IEnumerable<MethodReference> GetMethodReferencesByName(string methodName, VSSolution solution)
+        public IEnumerable<MethodReference> GetMethodReferencesByName(string methodName, Solution solution)
         {
             List<ReferencedSymbol> referencesToMethod = new List<ReferencedSymbol>();
             ISymbol methodSymbol = null;

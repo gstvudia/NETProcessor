@@ -10,29 +10,132 @@ namespace NET.Processor.Core.Helpers.Mappers
 {
     public class RelationsGraphMapper : IRelationsGraphMapper
     {
+        List<Edge> graphEdges = new List<Edge>();
 
-        public List<Edge> MapItemsToEdges(List<Method> items)
+        public List<Edge> MapItemsToEdges(List<Item> listItems)
         {
-            List<Edge> graphEdges = new List<Edge>();
+            foreach (var listItem in listItems)
+            {
+                if (listItem is Method)
+                {
+                    Method item = (Method)listItem;
+                    if (item.ChildList.Count > 0)
+                    {
+                        foreach (var child in item.ChildList)
+                        {
+                            MapToEdge(item, child, child.GetType().ToString());
+                        }
+                    }
+                }
+                else if (listItem is Class)
+                {
+                    Class item = (Class)listItem;
+                    if (item.ChildList.Count > 0)
+                    {
+                        foreach (var child in item.ChildList)
+                        {
+                            MapToEdge(item, child, child.GetType().ToString());
+                        }
+                    }
+                }
+                else if (listItem is Namespace)
+                {
+                    Namespace item = (Namespace)listItem;
+                    if (item.ChildList.Count > 0)
+                    {
+                        foreach (var child in item.ChildList)
+                        {
+                            MapToEdge(item, child, child.GetType().ToString());
+                        }
+                    }
+                }
+                else if (listItem is Project)
+                {
+                    Project item = (Project)listItem;
+                    if (item.ChildList.Count > 0)
+                    {
+                        foreach (var child in item.ChildList)
+                        {
+                            MapToEdge(item, child, child.GetType().ToString());
+                        }
+                    }
+                }
+                else if (listItem is File)
+                {
+                    File item = (File)listItem;
+                    if (item.ChildList.Count > 0)
+                    {
+                        foreach (var child in item.ChildList)
+                        {
+                            MapToEdge(item, child, child.GetType().ToString());
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception("The Item found for mapping Edges is not handled by any NodeType! Aborting program");
+                }
+            }
+
+            //{
+            //    Console.WriteLine(item);
+            /*
+            foreach (var child in item.ChildList)
+            {
+                graphEdges.Add(new Edge
+                {
+                    data = new EdgeData
+                    {
+                        source = Convert.ToString(item.Id),
+                        target = Convert.ToString(child.Id)
+                    }
+                }
+                );
+            }
+            */
+            // }
+
+            /*
+            foreach (var item in items.Where(item => item.ChildList.Count > 0))
+            {
+                foreach (var child in item.ChildList)
+                {
+                    MapToEdge(item, child);
+                }
+            }
+
             foreach (var item in items.Where(item => item.ChildList.Count > 0))
             {
                 foreach (var child in item.ChildList)
                 {
                     graphEdges.Add(new Edge
                     {
-                        Data = new EdgeData
+                        data = new EdgeData
                         {
-                            Source = Convert.ToString(item.Id),
-                            Target = Convert.ToString(child.Id),
-                            ColorCode = "white",
-                            Strength = 5
+                            source = Convert.ToString(item.Id),
+                            target = Convert.ToString(child.Id)
                         }
                     }
                     );
                 }
             }
+            */
 
             return graphEdges;
+        }
+
+        private void MapToEdge(Item item, Item child, string childType)
+        {
+            graphEdges.Add(new Edge
+            {
+                data = new EdgeData
+                {
+                    source = Convert.ToString(item.Id),
+                    target = Convert.ToString(child.Id),
+                    targetNodeType = childType.Split(".").Last()
+                }
+            }
+            );
         }
     }
 }

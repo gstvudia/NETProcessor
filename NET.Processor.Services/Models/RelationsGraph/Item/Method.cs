@@ -1,6 +1,8 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using MongoDB.Bson.Serialization.Attributes;
 using NET.Processor.Core.Models.RelationsGraph.Item;
+using System;
+using System.Collections.Generic;
 
 namespace NET.Processor.Core.Models
 {
@@ -8,18 +10,33 @@ namespace NET.Processor.Core.Models
     {
         public BlockSyntax Body { get; set; }
         public string Language { get; set; }
-        public Method(int id, string name,
-                      BlockSyntax body, string itemName,
-                      string className, string language) : base(id, name, itemName, className)
+        public string ClassName { get; set; }
+        public int ClassId { get; set; }
+
+        [BsonIgnore]
+        public List<Method> ChildList { get; } = new List<Method>();
+
+        [BsonElement("FileName")]
+        public string FileName { get; set; }
+        public string FileId { get; set; }
+
+        public Method(string id, string name, string ProjectId,
+                      BlockSyntax body, string FileId, string FileName,
+                      string ClassName, int ClassId, string language) : base(id, name, ProjectId)
         {
+            this.ClassName = ClassName;
+            this.ClassId = ClassId;
+            this.FileName = FileName;
+            this.FileId = FileId;
             Body = body;
             Language = language;
         }
 
-        public Method(int id, string name) : base(id, name){}
+        public Method(string id, string name, BlockSyntax body) : base(id, name) 
+        {
+            Body = body;
+        }
 
-        public Method(int id, string name,
-                      string itemName, string className) : base(id, name, itemName, className) {}
-
+        public Method(string id, string name) : base(id, name) {}
     }
 }
