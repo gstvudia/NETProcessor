@@ -77,50 +77,6 @@ namespace NET.Processor.Core.Helpers.Mappers
                 }
             }
 
-            //{
-            //    Console.WriteLine(item);
-            /*
-            foreach (var child in item.ChildList)
-            {
-                graphEdges.Add(new Edge
-                {
-                    data = new EdgeData
-                    {
-                        source = Convert.ToString(item.Id),
-                        target = Convert.ToString(child.Id)
-                    }
-                }
-                );
-            }
-            */
-            // }
-
-            /*
-            foreach (var item in items.Where(item => item.ChildList.Count > 0))
-            {
-                foreach (var child in item.ChildList)
-                {
-                    MapToEdge(item, child);
-                }
-            }
-
-            foreach (var item in items.Where(item => item.ChildList.Count > 0))
-            {
-                foreach (var child in item.ChildList)
-                {
-                    graphEdges.Add(new Edge
-                    {
-                        data = new EdgeData
-                        {
-                            source = Convert.ToString(item.Id),
-                            target = Convert.ToString(child.Id)
-                        }
-                    }
-                    );
-                }
-            }
-            */
-
             return graphEdges;
         }
 

@@ -34,7 +34,7 @@ namespace NETWebTest
             );
 
             services.AddCors();
-            services.AddAutoMapper(typeof(RelationsGraphDTO));
+            services.AddAutoMapper(typeof(ProjectRelationsGraph));
 
             #region Services
                 services.AddScoped<ISolutionService, SolutionService>();

@@ -4,11 +4,17 @@ using System.Collections.Generic;
 
 namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
 {
-    public class RelationsGraphDTO
+    public class ProjectRelationsGraph
     {
-        public Tuple<Int32, string> Nodes { get; set; }
-        public Tuple<Int32, Int32> Edges { get; set; }
-        public RelationsGraphDTO Type { get; set; }
+        public ObjectId Id { get; set; }
+        public string SolutionName { get; set; }
+        public ProjectRelationsGraphRoot graphData = new ProjectRelationsGraphRoot();
+    }
+
+    public class ProjectRelationsGraphRoot
+    {
+        public List<Node> nodes { get; set; }
+        public List<Edge> edges { get; set; }
     }
 
     public class Node
@@ -55,18 +61,5 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
     public class Edge
     {
         public EdgeData data { get; set; }
-    }
-
-    public class ProjectRelationsGraph
-    {
-        public ObjectId Id { get; set; }
-        public string SolutionName { get; set; }
-        public ProjectRelationsGraphRoot graphData = new ProjectRelationsGraphRoot();
-    }
-
-    public class ProjectRelationsGraphRoot
-    {
-        public List<Node> nodes { get; set; }
-        public List<Edge> edges { get; set; }
     }
 }
