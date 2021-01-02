@@ -19,8 +19,10 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
     public class NodeRoot
     {
         public string Id { get; set; }
+        public string projectId { get; set; }
         public string name { get; set; }
         public string nodeType { get; set; }
+
         public NodeData nodeData = new NodeData();
     }
 
@@ -30,8 +32,8 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         public string nodeType { get; set; }
         public string fileName { get; set; }
         public string className { get; set; }
-        public string namespaceName { get; set; }
         public string language { get; set; }
+        public List<Comment> comments { get; set; }
         public string repositoryLinkOfMethod { get; set; }
         public string repositoryCommitLinkOfMethod { get; set; }
 

@@ -132,7 +132,7 @@ namespace NET.Processor.Core.Helpers.Mappers
                 {
                     source = Convert.ToString(item.Id),
                     target = Convert.ToString(child.Id),
-                    targetNodeType = childType
+                    targetNodeType = childType.Split(".").Last()
                 }
             }
             );

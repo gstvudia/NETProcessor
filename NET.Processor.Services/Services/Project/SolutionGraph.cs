@@ -237,6 +237,7 @@ namespace NET.Processor.Core.Services.Project
                     nodeBase.nodeData.fileName = method.FileName;
                     nodeBase.nodeData.className = method.ClassName;
                     nodeBase.nodeData.language = method.Language;
+                    nodeBase.nodeData.comments = method.CommentList;
 
                     // Pulling information for method from Repository (Github)
                     GithubJSONResponse.Root githubJSONResponse = await GetRepositoryInformationForMethod(method.Name, method.FileName, "BennieBe", solutionName);
@@ -249,13 +250,14 @@ namespace NET.Processor.Core.Services.Project
                     Class projectClass = (Class) item;
                     nodeBase.nodeData.name = projectClass.Name;
                     nodeBase.nodeData.fileName = projectClass.FileName;
-                    nodeBase.nodeData.namespaceName = projectClass.NamespaceName;
+                    nodeBase.nodeData.comments = projectClass.CommentList;
                     nodeBase.nodeData.language = projectClass.Language;
                 } 
                 else if(item is Namespace)
                 {
                     Namespace projectNamespace = (Namespace) item;
                     nodeBase.nodeData.name = projectNamespace.Name;
+                    nodeBase.nodeData.comments = projectNamespace.CommentList;
                     nodeBase.nodeData.fileName = projectNamespace.FileName;
                 } 
                 else if(item is NETProcessorProject)
