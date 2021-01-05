@@ -1,4 +1,5 @@
-﻿using NET.Processor.Core.Helpers.Interfaces;
+﻿using Microsoft.Extensions.Hosting;
+using NET.Processor.Core.Helpers.Interfaces;
 using NET.Processor.Core.Models;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
@@ -11,7 +12,6 @@ namespace NET.Processor.Core.Helpers.Mappers
     public class RelationsGraphMapper : IRelationsGraphMapper
     {
         List<Edge> graphEdges = new List<Edge>();
-
         public List<Edge> MapItemsToEdges(List<Item> listItems)
         {
             foreach (var listItem in listItems)
@@ -26,6 +26,9 @@ namespace NET.Processor.Core.Helpers.Mappers
                             MapToEdge(item, child, child.GetType().ToString());
                         }
                     }
+
+                    // Method item = (Method)listItem;
+                    // MapMethodToEdge(item);
                 }
                 else if (listItem is Class)
                 {
@@ -87,11 +90,42 @@ namespace NET.Processor.Core.Helpers.Mappers
                 data = new EdgeData
                 {
                     source = Convert.ToString(item.Id),
+                    sourceName = item.Name,
                     target = Convert.ToString(child.Id),
+                    targetName = child.Name,
                     targetNodeType = childType.Split(".").Last()
                 }
             }
             );
         }
+
+        /*
+        private void MapMethodToEdge(Method method)
+        {
+            if(method.ChildList == null)
+                return;
+
+            // Go through all childs of this method, after all methods have been run through
+            // Proceed to the next method with childs
+            foreach(var child in method.ChildList)
+            {
+                if (method.ChildList.Count > 0)
+                {
+                    graphEdges.Add(new Edge
+                    {
+                        data = new EdgeData
+                        {
+                            source = Convert.ToString(method.Id),
+                            sourceName = method.Name,
+                            target = Convert.ToString(child.Id),
+                            targetName = child.Name,
+                            targetNodeType = child.GetType().ToString().Split(".").Last()
+                        }
+                    }
+                    );
+                }
+            }
+        }
+        */
     }
 }

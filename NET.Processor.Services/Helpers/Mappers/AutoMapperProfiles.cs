@@ -10,9 +10,7 @@ namespace NET.Processor.Core.Helpers.Mappers
         {
             CreateMap<Item, NodeRoot>()
                 .ForMember(property => property.Id, options => options.MapFrom(
-                    source => source.Id))
-                .ForMember(property => property.name, options => options.MapFrom(
-                    source => source.Name));
+                    source => source.Id));
         }
     }
 }

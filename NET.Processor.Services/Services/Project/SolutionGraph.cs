@@ -1,6 +1,10 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
+using System.Linq;
 using DynamicData;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
+using System.Collections.Generic;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Configuration;
 using NET.Processor.Core.Helpers.Interfaces;
@@ -9,13 +13,9 @@ using NET.Processor.Core.Models;
 using NET.Processor.Core.Models.API;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using File = NET.Processor.Core.Models.RelationsGraph.Item.File;
 using NETProcessorProject = NET.Processor.Core.Models.RelationsGraph.Item.Project;
+using Microsoft.Extensions.Hosting;
 
 namespace NET.Processor.Core.Services.Project
 {
@@ -63,33 +63,33 @@ namespace NET.Processor.Core.Services.Project
             return items;
         }
 
-        private List<Method> RemoveThirdPartyMethods(List<Method> methodRelations)
+        /*
+        private Method RemoveThirdPartyMethods(Method method, List<Method> methodRelations)
         {
             // Set Ids for each child for being able to reference them later on edges (relations between nodes)
-            foreach (var method in methodRelations)
+            // After all methods are mapped, we set the respective ids from the list
+            // Remove methods that should not be in the graph like toString() by setting the child.id to 0
+            // If it is not in our methods list, it is being removed and set to child.id 0
+            // 
+            // TODO: Remark: There might be methods that we need to keep, such as Async Methods that would
+            // not show up if we remove them from the Graph, instead of removing the methods we should tag
+            // them as third party, but still remove stuff like toString() by for example creating a custom filter
+            // filtering out those methods by namespace or library
+            foreach (var child in method.ChildList.Where(x => x.Id == "-1").ToList())
             {
-                // After all methods are mapped, we set the respective ids from the list
-                // Remove methods that should not be in the graph like toString() by setting the child.id to 0
-                // If it is not in our methods list, it is being removed and set to child.id 0
-                // 
-                // TODO: Remark: There might be methods that we need to keep, such as Async Methods that would
-                // not show up if we remove them from the Graph, instead of removing the methods we should tag
-                // them as third party, but still remove stuff like toString() by for example creating a custom filter
-                // filtering out those methods by namespace or library
-                foreach (var child in method.ChildList.Where(x => x.Id == "-1").ToList())
-                {
-                    child.Id = methodRelations.Where(x => x.Name == child.Name).Select(x => x.Id).FirstOrDefault();
-                }
+                child.Id = methodRelations.Where(x => x.Name == child.Name).Select(x => x.Id).FirstOrDefault();
             }
+            method.ChildList.RemoveAll(c => c.Id == null || c.Name == string.Empty);
 
             // Remove built or invalid methods, this is where all methods with id 0 are removed
-            foreach (var method in methodRelations)
+            foreach (var child in method.ChildList)
             {
-                method.ChildList.RemoveAll(c => c.Id == null || c.Name == string.Empty);
+                .ChildList.RemoveAll(c => c.Id == null || c.Name == string.Empty);
             }
 
-            return methodRelations;
+            return method;
         }
+    */
 
         /// <summary>
         /// Mapping Method, Class, and Namespace relations
@@ -100,57 +100,56 @@ namespace NET.Processor.Core.Services.Project
         /// <returns></returns>
         private List<Item> MapItemRelations(SyntaxNode root, Guid projectId, string projectName, string fileName, Guid fileId, string language)
         { 
+            // Methods
             List<Method> methodsList = new List<Method>();
-            List<Class> classList = new List<Class>();
-            List<Namespace> namespaceList = new List<Namespace>();
-
             var methodNodes = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
-            var classDeclarations = root.DescendantNodes().OfType<ClassDeclarationSyntax>();
-            var namespaceDeclarations = root.DescendantNodes().OfType<NamespaceDeclarationSyntax>();
 
-            string currentClassName = null;
+            // Classes
+            List<Class> classList = new List<Class>();
+            var classDeclarations = root.DescendantNodes().OfType<ClassDeclarationSyntax>();
             ClassDeclarationSyntax currentClass = null;
+            string currentClassName = "";
+
+            // Namespace
+            List<Namespace> namespaceList = new List<Namespace>();
+            var namespaceDeclarations = root.DescendantNodes().OfType<NamespaceDeclarationSyntax>();
+            var currentNamespace = namespaceDeclarations.FirstOrDefault();
+            var currentNamespaceName = currentNamespace.Name.ToString();
+            namespaceDeclarations.FirstOrDefault(
+                  c => c.SyntaxTree.GetText().ToString().Contains(methodNodes.First().Identifier.ValueText));
 
             //   Save methods and ids in the table, when we load the solution we get the id from the existing
-            //      records, later on it will be equaled based on method name and parameters type and amount
-            //      it is in method class 
+            //   records, later on it will be equaled based on method name and parameters type and amount
+            //   it is in method class 
             foreach (var node in methodNodes)
             {
                 // Class name 
-                currentClass = classDeclarations.FirstOrDefault(
-                  c => c.SyntaxTree.GetText().ToString().Contains(node.Identifier.ValueText));
-
-                currentClassName = classDeclarations.FirstOrDefault(
-                  c => c.SyntaxTree.GetText().ToString().Contains(node.Identifier.ValueText))
-                .Identifier.ValueText;
-
-                // Methods
-                // var members = root.DescendantNodes().OfType<MemberDeclarationSyntax>();
-                var method = new Method(Guid.NewGuid().ToString(), node.Identifier.ValueText,
-                                                            projectId.ToString(), node.Body, fileId.ToString(), fileName, currentClassName, root.DescendantNodes().IndexOf(currentClass), language);
-                
-                // Methods relations towards child methods
-                if (!methodsList.Any(x => x.Name == method.Name))
+                if (classDeclarations.FirstOrDefault(
+                  c => c.SyntaxTree.GetText().ToString().Contains(node.Identifier.ValueText)) == null)
                 {
-                    method.ChildList.AddRange(GetChilds(method));
-                    methodsList.Add(method);
+                   // AddInterfaceMethod();
+                }
+                else
+                {
+                    currentClassName = node.Parent.ChildTokens().ElementAt(1).ToString();
+
+                    currentClass = classDeclarations.Where(
+                        c => c.Identifier.ValueText.Equals(currentClassName)).FirstOrDefault();
+
+                    // Add method to method list
+                    Method method = AddClassMethod(root, node, methodsList, projectId, fileId, fileName, 
+                        language, currentClass, currentClassName);
+
+                    // Add class to method list
+                    AddClass(root, method, classList, currentClass, currentClassName, currentNamespace, 
+                        currentNamespaceName, projectId.ToString(), fileId, fileName, language);
                 }
             }
 
             // Adding class relations towards Namespace
-            var currentNamespace = namespaceDeclarations.FirstOrDefault();
-            var currentNamespaceName = currentNamespace.Name.ToString();
-            var containingNamespace = new Namespace(Guid.NewGuid().ToString(), 
+            var containingNamespace = new Namespace(Guid.NewGuid().ToString(),
                 currentNamespaceName, projectId.ToString(), fileId.ToString(), fileName, classList);
             namespaceList.Add(containingNamespace);
-
-            // Adding Method relations towards Class
-            Class containingClass = new Class(Guid.NewGuid().ToString(), currentClassName, 
-                projectId.ToString(), root.DescendantNodes().IndexOf(currentNamespace), currentNamespaceName, fileId.ToString(), fileName, language, methodsList);
-            classList.Add(containingClass);
-
-            // Remove Third Party Methods 
-            methodsList = RemoveThirdPartyMethods(methodsList);
 
             // Adding all node types to generic item list class
             List<Item> itemList = new List<Item>();
@@ -171,6 +170,7 @@ namespace NET.Processor.Core.Services.Project
                                         x.GetType() == typeof(Method) ||
                                         x.GetType() == typeof(Namespace))
                                     .Select(x => new KeyValuePair<string, string>(x.Name, x.Id)));
+
             // Add all comments to respective nodes
             foreach(var item in itemList)
             {
@@ -184,6 +184,46 @@ namespace NET.Processor.Core.Services.Project
             }
 
             return itemList;
+        }
+
+        private Method AddClassMethod(SyntaxNode root, MethodDeclarationSyntax node, List<Method> methodsList,
+            Guid projectId, Guid fileId, string fileName, string language, ClassDeclarationSyntax currentClass, 
+            string currentClassName)
+        {
+            // Methods
+            var method = new Method(Guid.NewGuid().ToString(), node.Identifier.ValueText,
+                                        projectId.ToString(), node.Body, fileId.ToString(), 
+                                        fileName, currentClassName, root.DescendantNodes().IndexOf(currentClass), 
+                                        language);
+
+            // Methods relations towards child methods
+            if (!methodsList.Any(x => x.Name == method.Name))
+            {
+                method.ChildList.AddRange(GetChilds(method));
+                // Remove Third Party Methods 
+                // method = RemoveThirdPartyMethods(method);
+                methodsList.Add(method);
+            }
+
+            return method;
+        }
+
+        private void AddClass(SyntaxNode root, Method method, List<Class> classList, ClassDeclarationSyntax currentClass, 
+            string currentClassName, NamespaceDeclarationSyntax currentNamespace, string currentNamespaceName,
+            string projectId, Guid fileId, string fileName, string language)
+        {
+            // Adding Method relations towards Class
+            Class existingClass = classList.Where(c => c.Name.Equals(currentClassName)).FirstOrDefault();
+            if (existingClass == null)
+            {
+                Class containingClass = new Class(Guid.NewGuid().ToString(), currentClassName,
+                    projectId.ToString(), root.DescendantNodes().IndexOf(currentNamespace),
+                    currentNamespaceName, fileId.ToString(), fileName, language, method);
+                classList.Add(containingClass);
+            } else
+            {
+                existingClass.ChildList.Add(method);
+            }
         }
 
         private List<Method> GetChilds(Method method)
@@ -200,18 +240,19 @@ namespace NET.Processor.Core.Services.Project
                     string[] child = null;
 
                     child = invoked.ToString().Replace(";", string.Empty).Split(".");
-                    
+
+                    // TODO: If there is a recursive function, this must be handled here by assigning same function ID!
                     if (child.Length > 1)
                     {
                         childList
                             .Add(new Method(
-                                "-1", child[1].Substring(0, child[1].LastIndexOf("(") + 1).Replace("(", string.Empty)));
+                                Guid.NewGuid().ToString(), child[1].Substring(0, child[1].LastIndexOf("(") + 1).Replace("(", string.Empty)));
                     }
                     else
                     {
                         childList
                             .Add(new Method(
-                                "-1", child[0].Substring(0, child[0].LastIndexOf("(") + 1).Replace("(", string.Empty)));
+                                Guid.NewGuid().ToString(), child[0].Substring(0, child[0].LastIndexOf("(") + 1).Replace("(", string.Empty)));
                     }
                 }
             }
@@ -227,12 +268,12 @@ namespace NET.Processor.Core.Services.Project
             {
                 NodeRoot nodeBase = _mapper.Map<NodeRoot>(item);
                 nodeBase.nodeType = item.GetType().ToString().Split(".").Last();
-                nodeBase.nodeData.name = item.Name;
                 nodeBase.nodeData.nodeType = item.GetType().ToString().Split(".").Last();
 
                 if (item is Method)
                 {
                     Method method = (Method) item;
+                    nodeBase.name = method.Name;
                     nodeBase.nodeData.name = method.Name;
                     nodeBase.nodeData.fileName = method.FileName;
                     nodeBase.nodeData.className = method.ClassName;
@@ -244,10 +285,14 @@ namespace NET.Processor.Core.Services.Project
                     nodeBase.nodeData.repositoryCommitLinkOfMethod = githubJSONResponse.items[0]
                         .html_url.Replace("blob", "commits");
                     nodeBase.nodeData.repositoryLinkOfMethod = githubJSONResponse.items[0].html_url;
+
+                    // Add all submethods as nodes to methods since they do not exist in the nodes tree yet
+                    // AddChildMethodsAsNodes(graphNodes, method.ChildList, nodeBase.nodeData.nodeType);
                 }
                 else if(item is Class) 
                 {
                     Class projectClass = (Class) item;
+                    nodeBase.name = projectClass.Name;
                     nodeBase.nodeData.name = projectClass.Name;
                     nodeBase.nodeData.fileName = projectClass.FileName;
                     nodeBase.nodeData.comments = projectClass.CommentList;
@@ -256,6 +301,7 @@ namespace NET.Processor.Core.Services.Project
                 else if(item is Namespace)
                 {
                     Namespace projectNamespace = (Namespace) item;
+                    nodeBase.name = projectNamespace.Name;
                     nodeBase.nodeData.name = projectNamespace.Name;
                     nodeBase.nodeData.comments = projectNamespace.CommentList;
                     nodeBase.nodeData.fileName = projectNamespace.FileName;
@@ -263,12 +309,14 @@ namespace NET.Processor.Core.Services.Project
                 else if(item is NETProcessorProject)
                 {
                     NETProcessorProject netProcessorProject = (NETProcessorProject) item;
+                    nodeBase.name = netProcessorProject.Name;
                     nodeBase.nodeData.name = netProcessorProject.Name;
 
                 } 
                 else if(item is File)
                 {
                     File file = (File) item;
+                    nodeBase.name = file.Name;
                     nodeBase.nodeData.name = file.Name;
                 } 
                 else
@@ -292,6 +340,29 @@ namespace NET.Processor.Core.Services.Project
 
             return relationGraph;
         }
+
+        /*
+        private void AddChildMethodsAsNodes(List<Node> graphNodes, List<Method> childList, string nodeType)
+        {
+            NodeRoot nodeBase = new NodeRoot();
+            foreach (var child in childList)
+            {
+                nodeBase.Id = child.Id;
+                nodeBase.name = child.Name;
+                nodeBase.nodeType = nodeType;
+                nodeBase.nodeData.name = child.Name;
+                nodeBase.nodeData.fileName = child.FileName;
+                nodeBase.nodeData.className = child.ClassName;
+                nodeBase.nodeData.language = child.Language;
+                nodeBase.nodeData.comments = child.CommentList;
+
+                graphNodes.Add(new Node
+                {
+                    data = nodeBase
+                });
+            }
+        }
+        */
 
         private async Task<GithubJSONResponse.Root> GetRepositoryInformationForMethod(string methodName, string fileName, string repositoryOwner, string solutionName)
         {

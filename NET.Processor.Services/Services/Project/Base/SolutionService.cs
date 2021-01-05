@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.MSBuild;
 using NET.Processor.Core.Interfaces;
 using System;
+using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using NET.Processor.Core.Models;
@@ -23,16 +24,14 @@ namespace NET.Processor.Core.Services.Project
     {
         private readonly IDatabaseService _databaseService;
         private readonly ISolutionGraph _solutionGraph;
-        private readonly IConfiguration _configuration;
 
         private Solution solution = null;
         private readonly string path = null;
 
-        public SolutionService(IDatabaseService databaseService, ISolutionGraph solutionGraph, IConfiguration configuration)
+        public SolutionService(IDatabaseService databaseService, ISolutionGraph solutionGraph)
         {
             _solutionGraph = solutionGraph;
             _databaseService = databaseService;
-            _configuration = configuration;
  
             path = Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory())), "repos");
             // Create directory if not existing, otherwise do nothing

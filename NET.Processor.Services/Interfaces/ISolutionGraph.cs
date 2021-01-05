@@ -1,4 +1,5 @@
-﻿using NET.Processor.Core.Models;
+﻿using Microsoft.Extensions.Hosting;
+using NET.Processor.Core.Models;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
 using System.Collections.Generic;

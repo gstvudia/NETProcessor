@@ -11,7 +11,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         public string NamespaceName { get; set; }
 
         [BsonIgnore]
-        public List<Method> ChildList { get; } = new List<Method>();
+        public List<Method> ChildList { get; set; } = new List<Method>();
         public string Language { get; set; }
 
         [BsonElement("FileName")]
@@ -19,9 +19,9 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         public string FileId { get; set; }
 
         public Class(string id, string name, string ProjectId, int NamespaceId, string NamespaceName, 
-            string FileId, string FileName, string Language, List<Method> ChildList) : base(id, name, ProjectId)
+            string FileId, string FileName, string Language, Method child) : base(id, name, ProjectId)
         {
-            this.ChildList = ChildList;
+            ChildList.Add(child);
             this.NamespaceId = NamespaceId;
             this.NamespaceName = NamespaceName;
             this.FileName = FileName;

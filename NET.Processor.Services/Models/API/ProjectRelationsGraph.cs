@@ -54,7 +54,9 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
     public class EdgeData
     {
         public string source { get; set; }
+        public string sourceName { get; set; }
         public string target { get; set; }
+        public string targetName { get; set; }
         public string targetNodeType { get; set; }
     }
 
