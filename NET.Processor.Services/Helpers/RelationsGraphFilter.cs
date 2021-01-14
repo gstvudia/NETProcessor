@@ -1,6 +1,7 @@
 ﻿using Microsoft.Build.Evaluation;
 using Microsoft.CodeAnalysis;
 using NET.Processor.Core.Models;
+using NET.Processor.Core.Models.RelationsGraph.Item;
 using System;
 using System.Collections.Generic;
 using System.Linq;

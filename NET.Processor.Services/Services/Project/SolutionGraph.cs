@@ -13,9 +13,9 @@ using NET.Processor.Core.Models;
 using NET.Processor.Core.Models.API;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
+using Interface = NET.Processor.Core.Models.RelationsGraph.Item.Interface;
 using File = NET.Processor.Core.Models.RelationsGraph.Item.File;
 using NETProcessorProject = NET.Processor.Core.Models.RelationsGraph.Item.Project;
-using Microsoft.Extensions.Hosting;
 
 namespace NET.Processor.Core.Services.Project
 {
@@ -99,56 +99,28 @@ namespace NET.Processor.Core.Services.Project
         /// <param name="language"></param>
         /// <returns></returns>
         private List<Item> MapItemRelations(SyntaxNode root, Guid projectId, string projectName, string fileName, Guid fileId, string language)
-        { 
+        {
             // Methods
             List<Method> methodsList = new List<Method>();
-            var methodNodes = root.DescendantNodes().OfType<MethodDeclarationSyntax>();
-
             // Classes
             List<Class> classList = new List<Class>();
-            var classDeclarations = root.DescendantNodes().OfType<ClassDeclarationSyntax>();
-            ClassDeclarationSyntax currentClass = null;
-            string currentClassName = "";
-
-            // Namespace
+            // Classes
             List<Namespace> namespaceList = new List<Namespace>();
-            var namespaceDeclarations = root.DescendantNodes().OfType<NamespaceDeclarationSyntax>();
-            var currentNamespace = namespaceDeclarations.FirstOrDefault();
-            var currentNamespaceName = currentNamespace.Name.ToString();
-            namespaceDeclarations.FirstOrDefault(
-                  c => c.SyntaxTree.GetText().ToString().Contains(methodNodes.First().Identifier.ValueText));
+            // Interfaces
+            List<Interface> interfaceList = new List<Interface>();
 
-            //   Save methods and ids in the table, when we load the solution we get the id from the existing
-            //   records, later on it will be equaled based on method name and parameters type and amount
-            //   it is in method class 
-            foreach (var node in methodNodes)
+            DocumentWalker documentWalker = new DocumentWalker(root, methodsList, classList, interfaceList, projectId, fileName, fileId, language);
+            documentWalker.Visit(root);
+
+            foreach(var classInterface in interfaceList) 
             {
-                // Class name 
-                if (classDeclarations.FirstOrDefault(
-                  c => c.SyntaxTree.GetText().ToString().Contains(node.Identifier.ValueText)) == null)
-                {
-                   // AddInterfaceMethod();
-                }
-                else
-                {
-                    currentClassName = node.Parent.ChildTokens().ElementAt(1).ToString();
-
-                    currentClass = classDeclarations.Where(
-                        c => c.Identifier.ValueText.Equals(currentClassName)).FirstOrDefault();
-
-                    // Add method to method list
-                    Method method = AddClassMethod(root, node, methodsList, projectId, fileId, fileName, 
-                        language, currentClass, currentClassName);
-
-                    // Add class to method list
-                    AddClass(root, method, classList, currentClass, currentClassName, currentNamespace, 
-                        currentNamespaceName, projectId.ToString(), fileId, fileName, language);
-                }
+                Class c = classList.Single(c => c.AttachedInterfaces.Contains(classInterface.Name));
+                classInterface.AddChild(c);
             }
 
             // Adding class relations towards Namespace
             var containingNamespace = new Namespace(Guid.NewGuid().ToString(),
-                currentNamespaceName, projectId.ToString(), fileId.ToString(), fileName, classList);
+                documentWalker.currentNamespaceName, projectId.ToString(), fileId.ToString(), fileName, classList);
             namespaceList.Add(containingNamespace);
 
             // Adding all node types to generic item list class
@@ -157,6 +129,8 @@ namespace NET.Processor.Core.Services.Project
             itemList.AddRange(methodsList);
             // Add Classes
             itemList.AddRange(classList);
+            // Add Interfaces 
+            itemList.AddRange(interfaceList);
             // Add File
             File file = new File(fileId.ToString(), fileName, projectId.ToString(), namespaceList);
             itemList.Add(file);
@@ -165,10 +139,13 @@ namespace NET.Processor.Core.Services.Project
 
             // Add Comments 
             // Get all comments and assigns comment to specific property id from the item list
+            
+            /*
             var comments = _commentService.GetCommentReferences(root, itemList.Where(x =>
                                         x.GetType() == typeof(Class) ||
                                         x.GetType() == typeof(Method) ||
                                         x.GetType() == typeof(Namespace))
+                // TODO: Might need to add comments for interfaces here!
                                     .Select(x => new KeyValuePair<string, string>(x.Name, x.Id)));
 
             // Add all comments to respective nodes
@@ -182,82 +159,9 @@ namespace NET.Processor.Core.Services.Project
                     }
                 }
             }
+            */
 
             return itemList;
-        }
-
-        private Method AddClassMethod(SyntaxNode root, MethodDeclarationSyntax node, List<Method> methodsList,
-            Guid projectId, Guid fileId, string fileName, string language, ClassDeclarationSyntax currentClass, 
-            string currentClassName)
-        {
-            // Methods
-            var method = new Method(Guid.NewGuid().ToString(), node.Identifier.ValueText,
-                                        projectId.ToString(), node.Body, fileId.ToString(), 
-                                        fileName, currentClassName, root.DescendantNodes().IndexOf(currentClass), 
-                                        language);
-
-            // Methods relations towards child methods
-            if (!methodsList.Any(x => x.Name == method.Name))
-            {
-                method.ChildList.AddRange(GetChilds(method));
-                // Remove Third Party Methods 
-                // method = RemoveThirdPartyMethods(method);
-                methodsList.Add(method);
-            }
-
-            return method;
-        }
-
-        private void AddClass(SyntaxNode root, Method method, List<Class> classList, ClassDeclarationSyntax currentClass, 
-            string currentClassName, NamespaceDeclarationSyntax currentNamespace, string currentNamespaceName,
-            string projectId, Guid fileId, string fileName, string language)
-        {
-            // Adding Method relations towards Class
-            Class existingClass = classList.Where(c => c.Name.Equals(currentClassName)).FirstOrDefault();
-            if (existingClass == null)
-            {
-                Class containingClass = new Class(Guid.NewGuid().ToString(), currentClassName,
-                    projectId.ToString(), root.DescendantNodes().IndexOf(currentNamespace),
-                    currentNamespaceName, fileId.ToString(), fileName, language, method);
-                classList.Add(containingClass);
-            } else
-            {
-                existingClass.ChildList.Add(method);
-            }
-        }
-
-        private List<Method> GetChilds(Method method)
-        {
-            List<Method> childList = new List<Method>();
-
-            if (method.Body != null)
-            {
-                var invokees = method.Body.Statements.Where(x => x.Kind().ToString() == "ExpressionStatement").ToList();
-                foreach (var invoked in invokees)
-                {
-                    var expression = invoked as ExpressionStatementSyntax;
-                    var arguments = expression.Expression as InvocationExpressionSyntax;
-                    string[] child = null;
-
-                    child = invoked.ToString().Replace(";", string.Empty).Split(".");
-
-                    // TODO: If there is a recursive function, this must be handled here by assigning same function ID!
-                    if (child.Length > 1)
-                    {
-                        childList
-                            .Add(new Method(
-                                Guid.NewGuid().ToString(), child[1].Substring(0, child[1].LastIndexOf("(") + 1).Replace("(", string.Empty)));
-                    }
-                    else
-                    {
-                        childList
-                            .Add(new Method(
-                                Guid.NewGuid().ToString(), child[0].Substring(0, child[0].LastIndexOf("(") + 1).Replace("(", string.Empty)));
-                    }
-                }
-            }
-
-            return childList;
         }
 
         public async Task<ProjectRelationsGraph> ProcessRelationsGraph(IEnumerable<Item> relations, string solutionName, string repositoryToken)
@@ -319,9 +223,17 @@ namespace NET.Processor.Core.Services.Project
                     nodeBase.name = file.Name;
                     nodeBase.nodeData.name = file.Name;
                 } 
+                else if(item is Interface)
+                {
+                    Interface i = (Interface) item;
+                    nodeBase.name = i.Name;
+                    nodeBase.nodeData.name = i.Name;
+                    nodeBase.nodeData.fileName = i.FileName;
+                    nodeBase.nodeData.language = i.Language;
+                }
                 else
                 {
-                    throw new Exception("The Item found is not handled by any NodeType! Aborting program");
+                    throw new Exception("The Item found for Nodes is not handled by any NodeType! Aborting program");
                 }
 
                 graphNodes.Add(new Node

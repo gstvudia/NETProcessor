@@ -41,6 +41,17 @@ namespace NET.Processor.Core.Helpers.Mappers
                         }
                     }
                 }
+                else if(listItem is Interface)
+                {
+                    Interface item = (Interface)listItem;
+                    if (item.ChildList.Count > 0)
+                    {
+                        foreach (var child in item.ChildList)
+                        {
+                            MapToEdge(item, child, child.GetType().ToString());
+                        }
+                    }
+                }
                 else if (listItem is Namespace)
                 {
                     Namespace item = (Namespace)listItem;

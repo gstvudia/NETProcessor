@@ -1,10 +1,8 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using MongoDB.Bson.Serialization.Attributes;
-using NET.Processor.Core.Models.RelationsGraph.Item;
-using System;
 using System.Collections.Generic;
 
-namespace NET.Processor.Core.Models
+namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
     public class Method : Item
     {
