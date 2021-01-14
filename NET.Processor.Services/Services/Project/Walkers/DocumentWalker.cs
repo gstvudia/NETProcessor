@@ -13,7 +13,7 @@ namespace NET.Processor.Core.Services.Project
 {
     public class DocumentWalker : CSharpSyntaxWalker
     {
-        private DocumentWalkerFunctions documentWalkerFunctions = new DocumentWalkerFunctions();
+        private DocumentWalkerMethods documentWalkerFunctions = new DocumentWalkerMethods();
         private string currentClassName = string.Empty;
         private  ClassDeclarationSyntax currentClass = null;
         public string currentNamespaceName { get; set; }
@@ -25,7 +25,7 @@ namespace NET.Processor.Core.Services.Project
         private List<Class> classList = new List<Class>();
         // Interfaces
         private List<Interface> interfaceList = new List<Interface>();
-        private List<String> attachedInterfaces = new List<string>();
+        private List<string> attachedInterfaces = new List<string>();
 
         private SyntaxNode root;
         private Guid projectId;
@@ -139,13 +139,15 @@ namespace NET.Processor.Core.Services.Project
         /*
         public override void Visit(SyntaxNode node)
         {
-           base.Visit(node);
+            Console.WriteLine(node);
+            base.Visit(node);
         }
         */
 
         /*
         public override void VisitToken(SyntaxToken token)
         {
+            Console.WriteLine(token);
             base.VisitToken(token);
         }
         */

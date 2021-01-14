@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace NET.Processor.Core.Services.Project.Walkers
 {
-    public class DocumentWalkerFunctions
+    public class DocumentWalkerMethods
     {
         public Method AddClassMethod(SyntaxNode root, MethodDeclarationSyntax node, List<Method> methodsList,
             Guid projectId, Guid fileId, string fileName, string language, ClassDeclarationSyntax currentClass,
@@ -17,12 +17,14 @@ namespace NET.Processor.Core.Services.Project.Walkers
         {
             // Methods
             var method = new Method(Guid.NewGuid().ToString(), node.Identifier.ValueText,
-                                        projectId.ToString(), node.Body, fileId.ToString(),
+                                        projectId.ToString(), node.Body, node.ParameterList, fileId.ToString(),
                                         fileName, currentClassName, root.DescendantNodes().IndexOf(currentClass),
                                         language);
 
             // Methods relations towards child methods
-            if (!methodsList.Any(x => x.Name == method.Name))
+            // Ensure that no methods of the same name are added to methodslist unless they have differing 
+            // parameters
+            if (!methodsList.Any(x => x.Name == method.Name) || !methodsList.Any(x => x.ParameterList.ToString() == method.ParameterList.ToString()))
             {
                 // Remove Third Party Methods 
                 // method = RemoveThirdPartyMethods(method);

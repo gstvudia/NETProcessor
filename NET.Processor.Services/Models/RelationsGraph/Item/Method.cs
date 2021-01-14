@@ -18,8 +18,10 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         public string FileName { get; set; }
         public string FileId { get; set; }
 
+        public ParameterListSyntax ParameterList { get; set; }
+
         public Method(string id, string name, string ProjectId,
-                      BlockSyntax body, string FileId, string FileName,
+                      BlockSyntax body, ParameterListSyntax ParameterList, string FileId, string FileName,
                       string ClassName, int ClassId, string language) : base(id, name, ProjectId)
         {
             this.ClassName = ClassName;
@@ -27,6 +29,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
             this.FileName = FileName;
             this.FileId = FileId;
             Body = body;
+            this.ParameterList = ParameterList;
             Language = language;
         }
 
