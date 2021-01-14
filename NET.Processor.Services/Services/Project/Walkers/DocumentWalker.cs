@@ -5,6 +5,7 @@ using NET.Processor.Core.Models;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using NET.Processor.Core.Services.Project.Walkers;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 
@@ -12,26 +13,25 @@ namespace NET.Processor.Core.Services.Project
 {
     public class DocumentWalker : CSharpSyntaxWalker
     {
-        DocumentWalkerFunctions documentWalkerFunctions = new DocumentWalkerFunctions();
-
-        string currentClassName = string.Empty;
-        ClassDeclarationSyntax currentClass = null;
+        private DocumentWalkerFunctions documentWalkerFunctions = new DocumentWalkerFunctions();
+        private string currentClassName = string.Empty;
+        private  ClassDeclarationSyntax currentClass = null;
         public string currentNamespaceName { get; set; }
-        NamespaceDeclarationSyntax currentNamespace = null;
+        private NamespaceDeclarationSyntax currentNamespace = null;
 
         // Methods
-        List<Method> methodsList = new List<Method>();
+        private List<Method> methodsList = new List<Method>();
         // Classes
-        List<Class> classList = new List<Class>();
+        private List<Class> classList = new List<Class>();
         // Interfaces
-        List<Interface> interfaceList = new List<Interface>();
-        List<String> attachedInterfaces = new List<string>();
+        private List<Interface> interfaceList = new List<Interface>();
+        private List<String> attachedInterfaces = new List<string>();
 
-        SyntaxNode root;
-        Guid projectId;
-        string fileName = string.Empty;
-        Guid fileId;
-        string language = string.Empty;
+        private SyntaxNode root;
+        private Guid projectId;
+        private string fileName = string.Empty;
+        private Guid fileId;
+        private string language = string.Empty;
 
         public DocumentWalker(SyntaxNode root, List<Method> methodsList, List<Class> classList, 
             List<Interface> interfaceList, Guid projectId, string fileName, Guid fileId, string language) 
@@ -49,17 +49,20 @@ namespace NET.Processor.Core.Services.Project
 
         public override void VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
         {
-            currentNamespace = node;
-            currentNamespaceName = node.Name.ToString();
-            Console.WriteLine(currentNamespaceName);
-
+            // Only print namespace if it is a new one
+            if (currentNamespaceName == null || !currentNamespaceName.Equals(node.Name.ToString()))
+            {
+                currentNamespace = node;
+                currentNamespaceName = node.Name.ToString();
+                Console.WriteLine("Namespace of file: " + currentNamespaceName);
+            }
             base.VisitNamespaceDeclaration(node);
         }
 
         public override void VisitInterfaceDeclaration(InterfaceDeclarationSyntax node)
         {
             string interfaceName = node.Identifier.ToString();
-            Console.WriteLine(interfaceName);
+            Console.WriteLine("Interface name in file: " + interfaceName);
 
             documentWalkerFunctions.AddInterface(interfaceName, projectId.ToString(), interfaceList,
                 currentNamespaceName, fileId.ToString(), fileName, language);
@@ -79,7 +82,11 @@ namespace NET.Processor.Core.Services.Project
                     attachedInterfaces.Add(interfaceName.GetFirstToken().ToString());
                 }
             }
-            Console.WriteLine(currentClassName);
+
+            documentWalkerFunctions.AddClass(root, null, classList, currentClass, currentClassName, currentNamespace,
+                currentNamespaceName, projectId.ToString(), fileId, fileName, language, attachedInterfaces);
+
+            Console.WriteLine("Class in file: " + currentClassName);
             base.VisitClassDeclaration(node);
         }
 
@@ -88,8 +95,9 @@ namespace NET.Processor.Core.Services.Project
             // Get Parent of Invocation Expression and then assign the invocation expression
             // to that method
 
-            /*
+           
             // Methods relations towards child methods
+            /*
             if (!methodsList.Any(x => x.Name == method.Name))
             {
                 method.ChildList.AddRange(documentWalkerFunctions.GetChilds(method));
@@ -98,22 +106,31 @@ namespace NET.Processor.Core.Services.Project
                 methodsList.Add(method);
             }
             */
-
+            
             base.VisitInvocationExpression(node);
         }
 
         public override void VisitMethodDeclaration(MethodDeclarationSyntax node)
         {
             string methodName = node.Identifier.ToString();
-            Console.WriteLine(currentClassName + '.' + methodName);
+            Console.WriteLine("Class and Method in file: " + currentClassName + '.' + methodName);
 
             // Add method to method list
             Method method = documentWalkerFunctions.AddClassMethod(root, node, methodsList, projectId, fileId, fileName,
                 language, currentClass, currentClassName);
 
-            // Add class to method list
-            documentWalkerFunctions.AddClass(root, method, classList, currentClass, currentClassName, currentNamespace,
-                currentNamespaceName, projectId.ToString(), fileId, fileName, language, attachedInterfaces);
+            // Check if it is a Class Method or an Interface Method 
+            if(currentClassName == null || currentClassName.Equals(String.Empty))
+            {
+                // It is an interface method
+            }
+            else
+            {
+                // It is a class method
+                Class c = classList.Single(c => c.Name == currentClassName);
+                // Add method to class
+                c.AddChild(method);
+            }
 
             base.VisitMethodDeclaration(node);
         }

@@ -60,6 +60,22 @@ namespace NET.Processor.Core.Services.Project
                     items.Add(netProcessorProject);
                 }
             }
+
+            // Add Child Classes of Interfaces, adding this in the outer loop, because interfaces relations to classes 
+            // can be defined in different parts of the project or even in totally different projects
+            var interfaceList = items
+                            .OfType<Interface>()
+                            .ToList();
+            var classList = items
+                            .OfType<Class>()
+                            .ToList();
+
+            foreach (var classInterface in interfaceList)
+            {
+                Class c = classList.Single(c => c.AttachedInterfaces.Contains(classInterface.Name));
+                classInterface.AddChild(c);
+            }
+
             return items;
         }
 
@@ -111,12 +127,6 @@ namespace NET.Processor.Core.Services.Project
 
             DocumentWalker documentWalker = new DocumentWalker(root, methodsList, classList, interfaceList, projectId, fileName, fileId, language);
             documentWalker.Visit(root);
-
-            foreach(var classInterface in interfaceList) 
-            {
-                Class c = classList.Single(c => c.AttachedInterfaces.Contains(classInterface.Name));
-                classInterface.AddChild(c);
-            }
 
             // Adding class relations towards Namespace
             var containingNamespace = new Namespace(Guid.NewGuid().ToString(),
@@ -185,10 +195,19 @@ namespace NET.Processor.Core.Services.Project
                     nodeBase.nodeData.comments = method.CommentList;
 
                     // Pulling information for method from Repository (Github)
-                    GithubJSONResponse.Root githubJSONResponse = await GetRepositoryInformationForMethod(method.Name, method.FileName, "BennieBe", solutionName);
-                    nodeBase.nodeData.repositoryCommitLinkOfMethod = githubJSONResponse.items[0]
-                        .html_url.Replace("blob", "commits");
-                    nodeBase.nodeData.repositoryLinkOfMethod = githubJSONResponse.items[0].html_url;
+                    // TODO: This needs to be changed to the respective repository token from customer!
+                    if (solutionName == "NETWebhookTest")
+                    {
+                        GithubJSONResponse.Root githubJSONResponse = await GetRepositoryInformationForMethod(method.Name, method.FileName, "BennieBe", solutionName);
+                        nodeBase.nodeData.repositoryCommitLinkOfMethod = githubJSONResponse.items[0]
+                            .html_url.Replace("blob", "commits");
+                        nodeBase.nodeData.repositoryLinkOfMethod = githubJSONResponse.items[0].html_url;
+                    } else
+                    {
+                        nodeBase.nodeData.repositoryCommitLinkOfMethod = "GITHUB TOKEN OF CUSTOMER NEEDED TO GET THIS DATA!";
+                        nodeBase.nodeData.repositoryLinkOfMethod = "GITHUB TOKEN OF CUSTOMER NEEDED TO GET THIS DATA!";
+                    }
+
 
                     // Add all submethods as nodes to methods since they do not exist in the nodes tree yet
                     // AddChildMethodsAsNodes(graphNodes, method.ChildList, nodeBase.nodeData.nodeType);

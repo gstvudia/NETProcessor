@@ -23,15 +23,19 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         public List<string> AttachedInterfaces = new List<String>();
 
         public Class(string id, string name, string ProjectId, int NamespaceId, string NamespaceName, 
-            string FileId, string FileName, string Language, Method Child, List<string> AttachedInterfaces) : base(id, name, ProjectId)
+            string FileId, string FileName, string Language, List<string> AttachedInterfaces) : base(id, name, ProjectId)
         {
-            ChildList.Add(Child);
             this.NamespaceId = NamespaceId;
             this.NamespaceName = NamespaceName;
             this.FileName = FileName;
             this.FileId = FileId;
             this.Language = Language;
             this.AttachedInterfaces.AddRange(AttachedInterfaces);
+        }
+
+        public void AddChild(Method child)
+        {
+            ChildList.Add(child);
         }
     }
 }

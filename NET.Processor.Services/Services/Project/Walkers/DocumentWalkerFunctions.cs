@@ -72,20 +72,11 @@ namespace NET.Processor.Core.Services.Project.Walkers
             string currentClassName, NamespaceDeclarationSyntax currentNamespace, string currentNamespaceName,
             string projectId, Guid fileId, string fileName, string language, List<string> attachedInterfaces)
         {
-            // Adding Method relations towards Class
-            Class existingClass = classList.Where(c => c.Name.Equals(currentClassName)).FirstOrDefault();
-            if (existingClass == null)
-            {
-                Class containingClass = new Class(Guid.NewGuid().ToString(), currentClassName,
-                    projectId.ToString(), root.DescendantNodes().IndexOf(currentNamespace),
-                    currentNamespaceName, fileId.ToString(), fileName, language, method, attachedInterfaces);
-                classList.Add(containingClass);
-                attachedInterfaces.Clear();
-            }
-            else
-            {
-                existingClass.ChildList.Add(method);
-            }
+            Class containingClass = new Class(Guid.NewGuid().ToString(), currentClassName,
+                projectId.ToString(), root.DescendantNodes().IndexOf(currentNamespace),
+                currentNamespaceName, fileId.ToString(), fileName, language, attachedInterfaces);
+            classList.Add(containingClass);
+            attachedInterfaces.Clear();
         }
 
         public void AddInterface(string name, string projectId, List<Interface> interfaceList, 
