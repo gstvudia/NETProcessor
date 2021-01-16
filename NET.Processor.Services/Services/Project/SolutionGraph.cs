@@ -1,15 +1,12 @@
 ﻿using System;
 using AutoMapper;
 using System.Linq;
-using DynamicData;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using System.Collections.Generic;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Configuration;
 using NET.Processor.Core.Helpers.Interfaces;
 using NET.Processor.Core.Interfaces;
-using NET.Processor.Core.Models;
 using NET.Processor.Core.Models.API;
 using NET.Processor.Core.Models.RelationsGraph.Item;
 using NET.Processor.Core.Models.RelationsGraph.Item.Base;
@@ -85,7 +82,7 @@ namespace NET.Processor.Core.Services.Project
             // Set Ids for each child for being able to reference them later on edges (relations between nodes)
             // After all methods are mapped, we set the respective ids from the list
             // Remove methods that should not be in the graph like toString() by setting the child.id to 0
-            // If it is not in our methods list, it is being removed and set to child.id 0
+            // If it is not in our methods list, it iAs being removed and set to child.id 0
             // 
             // TODO: Remark: There might be methods that we need to keep, such as Async Methods that would
             // not show up if we remove them from the Graph, instead of removing the methods we should tag

@@ -96,7 +96,7 @@ namespace NET.Processor.Core.Services.Project
             // to that method
 
            
-            // Methods relations towards child methods
+            // Method relations towards child methods
             /*
             if (!methodsList.Any(x => x.Name == method.Name))
             {
@@ -115,20 +115,18 @@ namespace NET.Processor.Core.Services.Project
             string methodName = node.Identifier.ToString();
             Console.WriteLine("Class and Method in file: " + currentClassName + '.' + methodName);
 
-            // Add method to method list
-            Method method = documentWalkerFunctions.AddClassMethod(root, node, methodsList, projectId, fileId, fileName,
-                language, currentClass, currentClassName);
+            // Check if it is an interface or class method
+            if (node.Parent.Kind().ToString().Equals("InterfaceDeclaration"))
+            {
+                // Add interface method
 
-            // Check if it is a Class Method or an Interface Method 
-            if(currentClassName == null || currentClassName.Equals(String.Empty))
-            {
-                // It is an interface method
-            }
-            else
-            {
-                // It is a class method
-                Class c = classList.Single(c => c.Name == currentClassName);
+            } else {
+                // Add class method to method list
+                Method method = documentWalkerFunctions.AddClassMethod(root, node, methodsList, projectId, fileId, fileName,
+                    language, currentClass, currentClassName);
+
                 // Add method to class
+                Class c = classList.Single(c => c.Name == currentClassName);
                 c.AddChild(method);
             }
 
