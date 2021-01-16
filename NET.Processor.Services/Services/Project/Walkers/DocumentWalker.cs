@@ -33,6 +33,8 @@ namespace NET.Processor.Core.Services.Project
         private Guid fileId;
         private string language = string.Empty;
 
+        private static readonly string INTERFACEDECLARATION = "InterfaceDeclaration";
+
         public DocumentWalker(SyntaxNode root, List<Method> methodsList, List<Class> classList, 
             List<Interface> interfaceList, Guid projectId, string fileName, Guid fileId, string language) 
             : base(SyntaxWalkerDepth.Token)
@@ -116,7 +118,7 @@ namespace NET.Processor.Core.Services.Project
             Console.WriteLine("Class and Method in file: " + currentClassName + '.' + methodName);
 
             // Check if it is an interface or class method
-            if (node.Parent.Kind().ToString().Equals("InterfaceDeclaration"))
+            if (node.Parent.Kind().ToString().Equals(INTERFACEDECLARATION))
             {
                 // Add interface method
 
