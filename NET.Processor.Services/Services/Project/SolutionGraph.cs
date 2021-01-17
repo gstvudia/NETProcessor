@@ -40,20 +40,25 @@ namespace NET.Processor.Core.Services.Project
             {
                 if (project.Language == _configuration["Framework:Language"])
                 {
+                    // This is needed to save File objects properly, otherwise old file objects
+                    // are constantly being added to new projects and added up
+                    List<Item> temporaryItemsList = new List<Item>();
+
                     // Get ALL methods inside of each file and save it into methodsRelations
                     foreach (var document in project.Documents)
                     {
                         SyntaxNode root = document.GetSyntaxRootAsync().Result;
                         // Adding relations of document (file) and all associated Items
-                        items.AddRange(MapItemRelations(root, project.Id.Id, project.Name, document.Name, document.Id.Id, project.Language));
+                        temporaryItemsList.AddRange(MapItemRelations(root, project.Id.Id, project.Name, document.Name, document.Id.Id, project.Language));
                     }
 
-                    var fileList = items
+                    var fileList = temporaryItemsList
                         .OfType<File>()
                         .ToList();
 
                     // Add Project
                     NETProcessorProject netProcessorProject = new NETProcessorProject(project.Id.Id.ToString(), project.Name, fileList);
+                    items.AddRange(temporaryItemsList);
                     items.Add(netProcessorProject);
                 }
             }
@@ -193,7 +198,7 @@ namespace NET.Processor.Core.Services.Project
 
                     // Pulling information for method from Repository (Github)
                     // TODO: This needs to be changed to the respective repository token from customer!
-                    if (solutionName == "NETWebhookTest")
+                    if (solutionName == "NETWebhookTest" || solutionName == "CoreWebhook")
                     {
                         GithubJSONResponse.Root githubJSONResponse = await GetRepositoryInformationForMethod(method.Name, method.FileName, "BennieBe", solutionName);
                         nodeBase.nodeData.repositoryCommitLinkOfMethod = githubJSONResponse.items[0]
