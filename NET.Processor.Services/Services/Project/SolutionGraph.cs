@@ -47,9 +47,13 @@ namespace NET.Processor.Core.Services.Project
                     // Get ALL methods inside of each file and save it into methodsRelations
                     foreach (var document in project.Documents)
                     {
-                        SyntaxNode root = document.GetSyntaxRootAsync().Result;
-                        // Adding relations of document (file) and all associated Items
-                        temporaryItemsList.AddRange(MapItemRelations(root, project.Id.Id, project.Name, document.Name, document.Id.Id, project.Language));
+                        // Exclude files which were auto-generated
+                        if (!GeneratedCodeChecks.IsGeneratedFile(document.FilePath))
+                        {
+                            SyntaxNode root = document.GetSyntaxRootAsync().Result;
+                            // Adding relations of document (file) and all associated Items
+                            temporaryItemsList.AddRange(MapItemRelations(root, project.Id.Id, project.Name, document.Name, document.Id.Id, project.Language));
+                        }
                     }
 
                     var fileList = temporaryItemsList
