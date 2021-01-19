@@ -18,6 +18,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
             this.FileId = FileId;
             this.FileName = FileName;
             this.ChildList = ChildList;
+            TypeHierarchy = 2;
         }
     }
 }

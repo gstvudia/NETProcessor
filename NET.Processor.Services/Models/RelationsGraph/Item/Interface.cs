@@ -22,6 +22,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
             this.FileName = FileName;
             this.FileId = FileId;
             this.Language = Language;
+            TypeHierarchy = 3;
         }
 
         public void AddChild(Class child)

@@ -31,6 +31,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
             this.FileId = FileId;
             this.Language = Language;
             this.AttachedInterfaces.AddRange(AttachedInterfaces);
+            TypeHierarchy = 4;
         }
 
         public void AddChild(Method child)

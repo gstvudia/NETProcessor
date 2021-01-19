@@ -31,13 +31,17 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
             Body = body;
             this.ParameterList = ParameterList;
             Language = language;
+            TypeHierarchy = 5; 
         }
 
         public Method(string id, string name, BlockSyntax body) : base(id, name) 
         {
             Body = body;
+            TypeHierarchy = 5;
         }
 
-        public Method(string id, string name) : base(id, name) {}
+        public Method(string id, string name) : base(id, name) {
+            TypeHierarchy = 5;
+        }
     }
 }

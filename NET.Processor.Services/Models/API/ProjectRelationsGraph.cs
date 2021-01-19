@@ -28,6 +28,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         public string projectId { get; set; }
         public string name { get; set; }
         public string nodeType { get; set; }
+        public int nodeTypeHierarchy { get; set; }
 
         public NodeData nodeData = new NodeData();
     }

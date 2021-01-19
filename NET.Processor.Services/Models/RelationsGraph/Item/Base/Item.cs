@@ -23,6 +23,8 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         [BsonIgnore]
         public string ProjectId { get; set; }
 
+        public int TypeHierarchy { get; set; }
+
         public Item()
         {
         }

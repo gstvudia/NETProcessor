@@ -14,6 +14,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         public Project(string id, string name, List<File> ChildList) : base(id, name, id) 
         {
             this.ChildList = ChildList;
+            TypeHierarchy = 0;
         }
     }
 }

@@ -183,6 +183,7 @@ namespace NET.Processor.Core.Services.Project
             foreach (var item in relations)
             {
                 NodeRoot nodeBase = _mapper.Map<NodeRoot>(item);
+                nodeBase.nodeTypeHierarchy = item.TypeHierarchy;
                 nodeBase.nodeType = item.GetType().ToString().Split(".").Last();
                 nodeBase.nodeData.nodeType = item.GetType().ToString().Split(".").Last();
 

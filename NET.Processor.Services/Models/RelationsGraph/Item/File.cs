@@ -15,6 +15,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         {
             this.FileId = FileId;
             this.ChildList = ChildList;
+            TypeHierarchy = 1;
         }
     }
 }
