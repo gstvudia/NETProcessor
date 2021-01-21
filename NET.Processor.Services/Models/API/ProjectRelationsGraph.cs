@@ -28,7 +28,16 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         public string projectId { get; set; }
         public string name { get; set; }
         public string nodeType { get; set; }
+
+        /// <summary>
+        /// This is used to filter by type of node part
+        /// </summary>
         public int nodeTypeHierarchy { get; set; }
+
+        /// <summary>
+        /// This is used to filter by specific name of a node part
+        /// </summary>
+        public List<string> graphStreamGuid = new List<string>();
 
         public NodeData nodeData = new NodeData();
     }

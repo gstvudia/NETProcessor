@@ -52,7 +52,7 @@ namespace NET.Processor.Core.Services.Project
                         {
                             SyntaxNode root = document.GetSyntaxRootAsync().Result;
                             // Adding relations of document (file) and all associated Items
-                            temporaryItemsList.AddRange(MapItemRelations(root, project.Id.Id, project.Name, document.Name, document.Id.Id, project.Language));
+                            temporaryItemsList.AddRange(MapItemRelations(root, project, document));
                         }
                     }
 
@@ -62,6 +62,11 @@ namespace NET.Processor.Core.Services.Project
 
                     // Add Project
                     NETProcessorProject netProcessorProject = new NETProcessorProject(project.Id.Id.ToString(), project.Name, fileList);
+                    // Add Parent to Files 
+                    foreach(var file in fileList)
+                    {
+                        file.Parent = netProcessorProject;
+                    }
                     items.AddRange(temporaryItemsList);
                     items.Add(netProcessorProject);
                 }
@@ -78,8 +83,8 @@ namespace NET.Processor.Core.Services.Project
 
             foreach (var classInterface in interfaceList)
             {
-                Class c = classList.Single(c => c.AttachedInterfaces.Contains(classInterface.Name));
-                classInterface.AddChild(c);
+                List<Class> cList = classList.Where(c => c.AttachedInterfaces.Contains(classInterface.Name)).ToList();
+                classInterface.AddRangeChild(cList);
             }
 
             return items;
@@ -120,42 +125,37 @@ namespace NET.Processor.Core.Services.Project
         /// <param name="fileName"></param>
         /// <param name="language"></param>
         /// <returns></returns>
-        private List<Item> MapItemRelations(SyntaxNode root, Guid projectId, string projectName, string fileName, Guid fileId, string language)
+        private List<Item> MapItemRelations(SyntaxNode root, Microsoft.CodeAnalysis.Project project, Document document)
         {
-            // Methods
-            List<Method> methodsList = new List<Method>();
-            // Classes
-            List<Class> classList = new List<Class>();
-            // Classes
-            List<Namespace> namespaceList = new List<Namespace>();
-            // Interfaces
-            List<Interface> interfaceList = new List<Interface>();
+            string fileName = document.Name;
+            Guid projectId = project.Id.Id;
+            Guid fileId = document.Id.Id;
+            string language = project.Language;
 
-            DocumentWalker documentWalker = new DocumentWalker(root, methodsList, classList, interfaceList, projectId, fileName, fileId, language);
+            DocumentWalker documentWalker = new DocumentWalker(root, projectId, fileName, fileId, language);
             documentWalker.Visit(root);
-
-            // Adding class relations towards Namespace
-            var containingNamespace = new Namespace(Guid.NewGuid().ToString(),
-                documentWalker.currentNamespaceName, projectId.ToString(), fileId.ToString(), fileName, classList);
-            namespaceList.Add(containingNamespace);
 
             // Adding all node types to generic item list class
             List<Item> itemList = new List<Item>();
             // Add Methods
-            itemList.AddRange(methodsList);
+            itemList.AddRange(documentWalker.methodsList);
             // Add Classes
-            itemList.AddRange(classList);
+            itemList.AddRange(documentWalker.classList);
             // Add Interfaces 
-            itemList.AddRange(interfaceList);
+            itemList.AddRange(documentWalker.interfaceList);
             // Add File
-            File file = new File(fileId.ToString(), fileName, projectId.ToString(), namespaceList);
+            File file = new File(fileId.ToString(), fileName, projectId.ToString(), documentWalker.containingNamespace);
             itemList.Add(file);
+
+            // Adding child and parent relationship for namespace
+            documentWalker.containingNamespace.AddRangeChild(documentWalker.classList);
+            documentWalker.containingNamespace.Parent = file;
             // Add Namespaces
-            itemList.Add(containingNamespace);
+            itemList.Add(documentWalker.containingNamespace);
 
             // Add Comments 
             // Get all comments and assigns comment to specific property id from the item list
-            
+
             /*
             var comments = _commentService.GetCommentReferences(root, itemList.Where(x =>
                                         x.GetType() == typeof(Class) ||
@@ -176,13 +176,16 @@ namespace NET.Processor.Core.Services.Project
                 }
             }
             */
-
+            
             return itemList;
         }
 
         public async Task<ProjectRelationsGraph> ProcessRelationsGraph(IEnumerable<Item> relations, string solutionName, string repositoryToken)
         {
             List<Node> graphNodes = new List<Node>();
+
+            // Sort nodes by hierarchy to allow for building data flow stream with GraphStreamGuid
+            relations = relations.OrderBy(i => i.TypeHierarchy).ToList();
 
             foreach (var item in relations)
             {
@@ -191,7 +194,55 @@ namespace NET.Processor.Core.Services.Project
                 nodeBase.nodeType = item.GetType().ToString().Split(".").Last();
                 nodeBase.nodeData.nodeType = item.GetType().ToString().Split(".").Last();
 
-                if (item is Method)
+                if (item is NETProcessorProject)
+                {
+                    NETProcessorProject netProcessorProject = (NETProcessorProject)item;
+                    nodeBase.name = netProcessorProject.Name;
+                    nodeBase.nodeData.name = netProcessorProject.Name;
+                }
+                else if (item is File)
+                {
+                    string graphStreamGuid = Guid.NewGuid().ToString();
+                    File file = (File)item;
+                    file.GraphStreamGuid.Add(graphStreamGuid);
+                    nodeBase.name = file.Name;
+                    nodeBase.nodeData.name = file.Name;
+                    nodeBase.graphStreamGuid.Add(graphStreamGuid);
+                }
+                else if (item is Namespace)
+                {
+                    Namespace projectNamespace = (Namespace)item;
+                    projectNamespace.GraphStreamGuid = projectNamespace.Parent.GraphStreamGuid;
+                    nodeBase.name = projectNamespace.Name;
+                    nodeBase.nodeData.name = projectNamespace.Name;
+                    nodeBase.nodeData.comments = projectNamespace.CommentList;
+                    nodeBase.nodeData.fileName = projectNamespace.FileName;
+                    nodeBase.graphStreamGuid.Add(projectNamespace.Parent.GraphStreamGuid[0]);
+                }
+                else if (item is Interface)
+                {
+                    Interface i = (Interface)item;
+                    i.GraphStreamGuid = i.Parent.GraphStreamGuid;
+                    nodeBase.name = i.Name;
+                    nodeBase.nodeData.name = i.Name;
+                    nodeBase.nodeData.fileName = i.FileName;
+                    nodeBase.nodeData.language = i.Language;
+
+                    nodeBase.graphStreamGuid.Add(i.Parent.GraphStreamGuid[0]);
+                }
+                else if (item is Class)
+                {
+                    Class projectClass = (Class)item;
+                    projectClass.GraphStreamGuid = projectClass.Parent.GraphStreamGuid;
+                    nodeBase.name = projectClass.Name;
+                    nodeBase.nodeData.name = projectClass.Name;
+                    nodeBase.nodeData.fileName = projectClass.FileName;
+                    nodeBase.nodeData.comments = projectClass.CommentList;
+                    nodeBase.nodeData.language = projectClass.Language;
+
+                    nodeBase.graphStreamGuid.Add(projectClass.Parent.GraphStreamGuid[0]);
+                }
+                else if (item is Method)
                 {
                     Method method = (Method) item;
                     nodeBase.name = method.Name;
@@ -200,6 +251,8 @@ namespace NET.Processor.Core.Services.Project
                     nodeBase.nodeData.className = method.ClassName;
                     nodeBase.nodeData.language = method.Language;
                     nodeBase.nodeData.comments = method.CommentList;
+
+                    nodeBase.graphStreamGuid.Add(method.Parent.GraphStreamGuid[0]);
 
                     // Pulling information for method from Repository (Github)
                     // TODO: This needs to be changed to the respective repository token from customer!
@@ -215,47 +268,8 @@ namespace NET.Processor.Core.Services.Project
                         nodeBase.nodeData.repositoryLinkOfMethod = "GITHUB TOKEN OF CUSTOMER NEEDED TO GET THIS DATA!";
                     }
 
-
                     // Add all submethods as nodes to methods since they do not exist in the nodes tree yet
                     // AddChildMethodsAsNodes(graphNodes, method.ChildList, nodeBase.nodeData.nodeType);
-                }
-                else if(item is Class) 
-                {
-                    Class projectClass = (Class) item;
-                    nodeBase.name = projectClass.Name;
-                    nodeBase.nodeData.name = projectClass.Name;
-                    nodeBase.nodeData.fileName = projectClass.FileName;
-                    nodeBase.nodeData.comments = projectClass.CommentList;
-                    nodeBase.nodeData.language = projectClass.Language;
-                } 
-                else if(item is Namespace)
-                {
-                    Namespace projectNamespace = (Namespace) item;
-                    nodeBase.name = projectNamespace.Name;
-                    nodeBase.nodeData.name = projectNamespace.Name;
-                    nodeBase.nodeData.comments = projectNamespace.CommentList;
-                    nodeBase.nodeData.fileName = projectNamespace.FileName;
-                } 
-                else if(item is NETProcessorProject)
-                {
-                    NETProcessorProject netProcessorProject = (NETProcessorProject) item;
-                    nodeBase.name = netProcessorProject.Name;
-                    nodeBase.nodeData.name = netProcessorProject.Name;
-
-                } 
-                else if(item is File)
-                {
-                    File file = (File) item;
-                    nodeBase.name = file.Name;
-                    nodeBase.nodeData.name = file.Name;
-                } 
-                else if(item is Interface)
-                {
-                    Interface i = (Interface) item;
-                    nodeBase.name = i.Name;
-                    nodeBase.nodeData.name = i.Name;
-                    nodeBase.nodeData.fileName = i.FileName;
-                    nodeBase.nodeData.language = i.Language;
                 }
                 else
                 {

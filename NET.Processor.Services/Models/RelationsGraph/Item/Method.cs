@@ -13,6 +13,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
 
         [BsonIgnore]
         public List<Method> ChildList { get; } = new List<Method>();
+        public Class Parent { get; set; }
 
         [BsonElement("FileName")]
         public string FileName { get; set; }

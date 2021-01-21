@@ -77,12 +77,9 @@ namespace NET.Processor.Core.Helpers.Mappers
                 else if (listItem is File)
                 {
                     File item = (File)listItem;
-                    if (item.ChildList.Count > 0)
+                    if (item.Child != null)
                     {
-                        foreach (var child in item.ChildList)
-                        {
-                            MapToEdge(item, child, child.GetType().ToString());
-                        }
+                        MapToEdge(item, item.Child, item.Child.GetType().ToString());
                     }
                 }
                 else

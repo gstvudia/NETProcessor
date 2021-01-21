@@ -70,22 +70,24 @@ namespace NET.Processor.Core.Services.Project.Walkers
             return childList;
         }
 
-        public void AddClass(SyntaxNode root, Method method, List<Class> classList, ClassDeclarationSyntax currentClass,
+        public void AddClass(SyntaxNode root, Method method, List<Class> classList,
             string currentClassName, NamespaceDeclarationSyntax currentNamespace, string currentNamespaceName,
-            string projectId, Guid fileId, string fileName, string language, List<string> attachedInterfaces)
+            Namespace containingNamespace, string projectId, Guid fileId, string fileName, string language, List<string> attachedInterfaces)
         {
             Class containingClass = new Class(Guid.NewGuid().ToString(), currentClassName,
                 projectId.ToString(), root.DescendantNodes().IndexOf(currentNamespace),
                 currentNamespaceName, fileId.ToString(), fileName, language, attachedInterfaces);
+            containingClass.Parent = containingNamespace;
             classList.Add(containingClass);
             attachedInterfaces.Clear();
         }
 
         public void AddInterface(string name, string projectId, List<Interface> interfaceList, 
-            string namespaceName, string fileId, string fileName, string language)
+            Namespace containingNamespace, string namespaceName, string fileId, string fileName, string language)
         {
             Interface classInterface = new Interface(Guid.NewGuid().ToString(), name, projectId,
                 namespaceName, fileId, fileName, language);
+            classInterface.Parent = containingNamespace;
             interfaceList.Add(classInterface);
         }
     }

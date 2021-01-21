@@ -9,12 +9,13 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
     public class File : Item
     {
         [BsonIgnore]
-        public List<Namespace> ChildList { get; set; }
+        public Namespace Child { get; set; }
+        public Project Parent { get; set; }
         public string FileId { get; set; }
-        public File(string FileId, string FileName, string ProjectId, List<Namespace> ChildList) : base(FileId, FileName, ProjectId) 
+        public File(string FileId, string FileName, string ProjectId, Namespace Child) : base(FileId, FileName, ProjectId) 
         {
             this.FileId = FileId;
-            this.ChildList = ChildList;
+            this.Child = Child;
             TypeHierarchy = 1;
         }
     }

@@ -1,10 +1,6 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.Text;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
@@ -23,7 +19,15 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         [BsonIgnore]
         public string ProjectId { get; set; }
 
+        /// <summary>
+        /// This is used to filter by type of node part
+        /// </summary>
         public int TypeHierarchy { get; set; }
+
+        /// <summary>
+        /// This is used to filter by specific name of a node part
+        /// </summary>
+        public List<string> GraphStreamGuid = new List<string>();
 
         public Item()
         {

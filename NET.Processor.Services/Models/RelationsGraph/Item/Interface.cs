@@ -9,6 +9,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
 
         [BsonIgnore]
         public List<Class> ChildList { get; set; } = new List<Class>();
+        public Namespace Parent { get; set; }
         public string Language { get; set; }
 
         [BsonElement("FileName")]
@@ -25,9 +26,9 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
             TypeHierarchy = 3;
         }
 
-        public void AddChild(Class child)
+        public void AddRangeChild(List<Class> childList)
         {
-            ChildList.Add(child);
+            ChildList.AddRange(childList);
         }
     }
 }
