@@ -36,6 +36,12 @@ namespace NET.Processor.Core.Services.Project
         public IEnumerable<Item> GetRelationsGraph(Solution solution)
         {
             List<Item> items = new List<Item>();
+
+            // Namespace here is needed to save namespaces outside of projects to ensure that several namespaces
+            // can bundle all child classes and its ids, it ensures also that namespace can connect to all file 
+            // nodes on frontend!
+            List<Namespace> namespacesList = new List<Namespace>();
+
             foreach (var project in solution.Projects)
             {
                 if (project.Language == _configuration["Framework:Language"])
@@ -52,7 +58,7 @@ namespace NET.Processor.Core.Services.Project
                         {
                             SyntaxNode root = document.GetSyntaxRootAsync().Result;
                             // Adding relations of document (file) and all associated Items
-                            temporaryItemsList.AddRange(MapItemRelations(root, project, document));
+                            temporaryItemsList.AddRange(MapItemRelations(root, project, document, namespacesList));
                         }
                     }
 
@@ -71,6 +77,9 @@ namespace NET.Processor.Core.Services.Project
                     items.Add(netProcessorProject);
                 }
             }
+
+            // Add all namespaces from namespacesList which were previously gathered together with all Childs and Parents
+            items.AddRange(namespacesList);
 
             // Add Child Classes of Interfaces, adding this in the outer loop, because interfaces relations to classes 
             // can be defined in different parts of the project or even in totally different projects
@@ -129,14 +138,14 @@ namespace NET.Processor.Core.Services.Project
         /// <param name="fileName"></param>
         /// <param name="language"></param>
         /// <returns></returns>
-        private List<Item> MapItemRelations(SyntaxNode root, Microsoft.CodeAnalysis.Project project, Document document)
+        private List<Item> MapItemRelations(SyntaxNode root, Microsoft.CodeAnalysis.Project project, Document document, List<Namespace> namespacesList)
         {
             string fileName = document.Name;
             Guid projectId = project.Id.Id;
             Guid fileId = document.Id.Id;
             string language = project.Language;
-
-            DocumentWalker documentWalker = new DocumentWalker(root, projectId, fileName, fileId, language);
+            
+            DocumentWalker documentWalker = new DocumentWalker(root, projectId, fileName, fileId, language, namespacesList);
             documentWalker.Visit(root);
 
             // Adding all node types to generic item list class
@@ -151,11 +160,8 @@ namespace NET.Processor.Core.Services.Project
             File file = new File(fileId.ToString(), fileName, projectId.ToString(), documentWalker.containingNamespace);
             itemList.Add(file);
 
-            // Adding child and parent relationship for namespace
-            documentWalker.containingNamespace.AddRangeChild(documentWalker.classList);
-            documentWalker.containingNamespace.Parent = file;
-            // Add Namespaces
-            itemList.Add(documentWalker.containingNamespace);
+            // Add childs and parent to Namespace and then add Namespace to itemList
+            AddNamespaceToItems(namespacesList, documentWalker, file);
 
             // Add Comments 
             // Get all comments and assigns comment to specific property id from the item list
@@ -167,7 +173,7 @@ namespace NET.Processor.Core.Services.Project
                                         x.GetType() == typeof(Namespace))
                 // TODO: Might need to add comments for interfaces here!
                                     .Select(x => new KeyValuePair<string, string>(x.Name, x.Id)));
-
+            
             // Add all comments to respective nodes
             foreach(var item in itemList)
             {
@@ -182,6 +188,31 @@ namespace NET.Processor.Core.Services.Project
             */
             
             return itemList;
+        }
+
+        private void AddNamespaceToItems(List<Namespace> namespacesList, DocumentWalker documentWalker, File file)
+        {
+            Namespace n = namespacesList.Where(i => i.Name == documentWalker.containingNamespace.Name).FirstOrDefault();
+            if(n != null)
+            {
+                foreach (var c in documentWalker.classList)
+                {
+                    // Adding child and parent relationship for namespace    
+                    if (n.ChildList.SingleOrDefault(n => n.Name.Equals(c.Name)) == null)
+                    {
+                        n.AddChild(c);
+                    }
+                }
+                    n.ParentList.Add(file);
+                } else
+            {
+                // Add child classes to namespace
+                documentWalker.containingNamespace.AddRangeChild(documentWalker.classList);
+                // Add parent of file
+                documentWalker.containingNamespace.ParentList.Add(file);
+                // Add namespace to list
+                namespacesList.Add(documentWalker.containingNamespace);
+            }
         }
 
         private List<Item> BuildGraphStreamGuidSystem(List<Item> items)
@@ -205,7 +236,10 @@ namespace NET.Processor.Core.Services.Project
             // Adding unique stream guid to namespace
             foreach(var item in items.OfType<Namespace>())
             {
-                item.GraphStreamGuid.AddRange(item.ChildList.SelectMany(cl => cl.GraphStreamGuid));
+                if (item.GraphStreamGuid.Count == 0)
+                {
+                    item.GraphStreamGuid.AddRange(item.ChildList.SelectMany(cl => cl.GraphStreamGuid));
+                }
             }
             // Adding unique stream guid to file
             foreach (var item in items.OfType<File>())

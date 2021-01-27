@@ -8,7 +8,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
     {
         [BsonIgnore]
         public List<Class> ChildList { get; } = new List<Class>();
-        public File Parent { get; set; }
+        public List<File> ParentList { get; set; } = new List<File>();
 
         [BsonElement("FileName")]
         public string FileName { get; set; }
@@ -19,6 +19,11 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
             this.FileId = FileId;
             this.FileName = FileName;
             TypeHierarchy = 2;
+        }
+
+        public void AddChild(Class Child)
+        {
+            ChildList.Add(Child);
         }
 
         public void AddRangeChild(List<Class> ChildList)

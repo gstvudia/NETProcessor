@@ -35,8 +35,10 @@ namespace NET.Processor.Core.Services.Project
         public Namespace containingNamespace = null;
         // Interfaces
         public List<Interface> interfaceList = new List<Interface>();
+        // Namespaces
+        List<Namespace> namespacesList = new List<Namespace>();
 
-        public DocumentWalker(SyntaxNode root, Guid projectId, string fileName, Guid fileId, string language) 
+        public DocumentWalker(SyntaxNode root, Guid projectId, string fileName, Guid fileId, string language, List<Namespace> namespacesList) 
             : base(SyntaxWalkerDepth.Token)
         {
             this.root = root;
@@ -44,23 +46,29 @@ namespace NET.Processor.Core.Services.Project
             this.fileName = fileName;
             this.fileId = fileId;
             this.language = language;
+            this.namespacesList = namespacesList;
         }
 
         public override void VisitNamespaceDeclaration(NamespaceDeclarationSyntax node)
         {
-            // Only print namespace if it is a new one
-            if (currentNamespaceName == null || !currentNamespaceName.Equals(node.Name.ToString()))
-            {
-                currentNamespaceNode = node;
-                currentNamespaceName = node.Name.ToString();
-                Console.WriteLine("Namespace of file: " + currentNamespaceName);
-            }
+            currentNamespaceNode = node;
+            currentNamespaceName = node.Name.ToString();
+            Console.WriteLine("Namespace of file: " + currentNamespaceName);
 
-            // Adding class relations towards Namespace
-            containingNamespace = new Namespace(Guid.NewGuid().ToString(),
+            // This is needed to ensure that the id of the namespace remains the same if identical node,
+            // otherwise the system might not be able to find the correct namespace edge id for different file nodes!
+            Namespace n = namespacesList.Where(i => i.Name.Equals(currentNamespaceName)).FirstOrDefault();
+            if (n != null)
+            {
+                containingNamespace = n;
+            } else
+            {
+                // Adding class relations towards Namespace
+                containingNamespace = new Namespace(Guid.NewGuid().ToString(),
                 currentNamespaceName, projectId.ToString(),
                 fileId.ToString(), fileName);
-
+            }
+                
             base.VisitNamespaceDeclaration(node);
         }
 
