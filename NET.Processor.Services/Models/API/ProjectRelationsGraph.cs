@@ -48,6 +48,8 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         public string nodeType { get; set; }
         public string fileName { get; set; }
         public string className { get; set; }
+        public string returnType { get; set; }
+        public List<string> parameterList { get; set; }
         public string language { get; set; }
         public List<Comment> comments { get; set; }
         public string repositoryLinkOfMethod { get; set; }

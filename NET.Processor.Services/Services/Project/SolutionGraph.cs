@@ -87,6 +87,10 @@ namespace NET.Processor.Core.Services.Project
                 classInterface.AddRangeChild(cList);
             }
 
+            // Building the graph stream guid system to allow for quick search by name on frontend
+            // By assigning each node of the stream the same unique graph stream guid
+            items = BuildGraphStreamGuidSystem(items);
+
             return items;
         }
 
@@ -180,12 +184,46 @@ namespace NET.Processor.Core.Services.Project
             return itemList;
         }
 
+        private List<Item> BuildGraphStreamGuidSystem(List<Item> items)
+        {
+            // Assign all classes unique stream guid
+            foreach(var item in items.OfType<Class>())
+            {
+                string graphStreamGuid = Guid.NewGuid().ToString();
+                item.GraphStreamGuid.Add(graphStreamGuid);
+            }
+            // Assign methods to unique stream guid of parent classes
+            foreach (var item in items.OfType<Method>())
+            {
+                item.GraphStreamGuid = item.Parent.GraphStreamGuid;
+            }
+            // Adding unique stream guid to class childs of interface
+            foreach (var item in items.OfType<Interface>())
+            {
+                item.GraphStreamGuid.AddRange(item.ChildList.SelectMany(cl => cl.GraphStreamGuid));
+            }
+            // Adding unique stream guid to namespace
+            foreach(var item in items.OfType<Namespace>())
+            {
+                item.GraphStreamGuid.AddRange(item.ChildList.SelectMany(cl => cl.GraphStreamGuid));
+            }
+            // Adding unique stream guid to file
+            foreach (var item in items.OfType<File>())
+            {
+                item.GraphStreamGuid = item.Child.GraphStreamGuid;
+            }
+            // Adding unique stream guid to file
+            foreach (var item in items.OfType<NETProcessorProject>())
+            {
+                item.GraphStreamGuid.AddRange(item.ChildList.SelectMany(fl => fl.GraphStreamGuid));
+            }
+
+            return items;
+        }
+
         public async Task<ProjectRelationsGraph> ProcessRelationsGraph(IEnumerable<Item> relations, string solutionName, string repositoryToken)
         {
             List<Node> graphNodes = new List<Node>();
-
-            // Sort nodes by hierarchy to allow for building data flow stream with GraphStreamGuid
-            relations = relations.OrderBy(i => i.TypeHierarchy).ToList();
 
             foreach (var item in relations)
             {
@@ -198,61 +236,56 @@ namespace NET.Processor.Core.Services.Project
                 {
                     NETProcessorProject netProcessorProject = (NETProcessorProject)item;
                     nodeBase.name = netProcessorProject.Name;
+                    nodeBase.graphStreamGuid = netProcessorProject.GraphStreamGuid;
                     nodeBase.nodeData.name = netProcessorProject.Name;
                 }
                 else if (item is File)
                 {
-                    string graphStreamGuid = Guid.NewGuid().ToString();
                     File file = (File)item;
-                    file.GraphStreamGuid.Add(graphStreamGuid);
                     nodeBase.name = file.Name;
+                    nodeBase.graphStreamGuid = file.GraphStreamGuid;
                     nodeBase.nodeData.name = file.Name;
-                    nodeBase.graphStreamGuid.Add(graphStreamGuid);
                 }
                 else if (item is Namespace)
                 {
                     Namespace projectNamespace = (Namespace)item;
-                    projectNamespace.GraphStreamGuid = projectNamespace.Parent.GraphStreamGuid;
                     nodeBase.name = projectNamespace.Name;
+                    nodeBase.graphStreamGuid = projectNamespace.GraphStreamGuid;
                     nodeBase.nodeData.name = projectNamespace.Name;
                     nodeBase.nodeData.comments = projectNamespace.CommentList;
                     nodeBase.nodeData.fileName = projectNamespace.FileName;
-                    nodeBase.graphStreamGuid.Add(projectNamespace.Parent.GraphStreamGuid[0]);
                 }
                 else if (item is Interface)
                 {
                     Interface i = (Interface)item;
-                    i.GraphStreamGuid = i.Parent.GraphStreamGuid;
                     nodeBase.name = i.Name;
+                    nodeBase.graphStreamGuid = i.GraphStreamGuid;
                     nodeBase.nodeData.name = i.Name;
                     nodeBase.nodeData.fileName = i.FileName;
                     nodeBase.nodeData.language = i.Language;
-
-                    nodeBase.graphStreamGuid.Add(i.Parent.GraphStreamGuid[0]);
                 }
                 else if (item is Class)
                 {
                     Class projectClass = (Class)item;
-                    projectClass.GraphStreamGuid = projectClass.Parent.GraphStreamGuid;
                     nodeBase.name = projectClass.Name;
+                    nodeBase.graphStreamGuid = projectClass.GraphStreamGuid;
                     nodeBase.nodeData.name = projectClass.Name;
                     nodeBase.nodeData.fileName = projectClass.FileName;
                     nodeBase.nodeData.comments = projectClass.CommentList;
                     nodeBase.nodeData.language = projectClass.Language;
-
-                    nodeBase.graphStreamGuid.Add(projectClass.Parent.GraphStreamGuid[0]);
                 }
                 else if (item is Method)
                 {
                     Method method = (Method) item;
                     nodeBase.name = method.Name;
+                    nodeBase.graphStreamGuid = method.GraphStreamGuid;
                     nodeBase.nodeData.name = method.Name;
+                    nodeBase.nodeData.parameterList = method.ParameterList;
+                    nodeBase.nodeData.returnType = method.ReturnType;
                     nodeBase.nodeData.fileName = method.FileName;
                     nodeBase.nodeData.className = method.ClassName;
                     nodeBase.nodeData.language = method.Language;
                     nodeBase.nodeData.comments = method.CommentList;
-
-                    nodeBase.graphStreamGuid.Add(method.Parent.GraphStreamGuid[0]);
 
                     // Pulling information for method from Repository (Github)
                     // TODO: This needs to be changed to the respective repository token from customer!

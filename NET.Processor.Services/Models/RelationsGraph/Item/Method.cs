@@ -18,11 +18,11 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         [BsonElement("FileName")]
         public string FileName { get; set; }
         public string FileId { get; set; }
-
-        public ParameterListSyntax ParameterList { get; set; }
+        public List<string> ParameterList { get; set; }
+        public string ReturnType { get; set; }
 
         public Method(string id, string name, string ProjectId,
-                      BlockSyntax body, ParameterListSyntax ParameterList, string FileId, string FileName,
+                      BlockSyntax body, List<string> ParameterList, string ReturnType, string FileId, string FileName,
                       string ClassName, int ClassId, string language) : base(id, name, ProjectId)
         {
             this.ClassName = ClassName;
@@ -31,6 +31,7 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
             this.FileId = FileId;
             Body = body;
             this.ParameterList = ParameterList;
+            this.ReturnType = ReturnType;
             Language = language;
             TypeHierarchy = 5; 
         }
