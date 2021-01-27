@@ -15,12 +15,11 @@ namespace NET.Processor.Core.Services.Project.Walkers
             Guid projectId, Guid fileId, string fileName, string language, ClassDeclarationSyntax currentClass,
             string currentClassName)
         {
-            List<string> parameters = node.ParameterList.ToString().Replace("(", "").Replace(")", "").Split(",").Select(p => p.Trim()).ToList();
             string returnType = node.ReturnType.ToString();
 
             // Methods
             Method method = new Method(Guid.NewGuid().ToString(), node.Identifier.ValueText,
-                                        projectId.ToString(), node.Body, parameters, returnType, fileId.ToString(),
+                                        projectId.ToString(), node.Body, node.ParameterList, returnType, fileId.ToString(),
                                         fileName, currentClassName, root.DescendantNodes().IndexOf(currentClass),
                                         language);
 

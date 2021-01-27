@@ -1,6 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace NET.Processor.Core.Models.RelationsGraph.Item
 {
@@ -18,11 +19,11 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
         [BsonElement("FileName")]
         public string FileName { get; set; }
         public string FileId { get; set; }
-        public List<string> ParameterList { get; set; }
+        public ParameterListSyntax ParameterList { get; set; }
         public string ReturnType { get; set; }
 
         public Method(string id, string name, string ProjectId,
-                      BlockSyntax body, List<string> ParameterList, string ReturnType, string FileId, string FileName,
+                      BlockSyntax body, ParameterListSyntax ParameterList, string ReturnType, string FileId, string FileName,
                       string ClassName, int ClassId, string language) : base(id, name, ProjectId)
         {
             this.ClassName = ClassName;
@@ -44,6 +45,11 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item
 
         public Method(string id, string name) : base(id, name) {
             TypeHierarchy = 5;
+        }
+
+        public List<string> NodeParameters()
+        {
+            return ParameterList.ToString().Replace("(", "").Replace(")", "").Split(",").Select(p => p.Trim()).ToList();
         }
     }
 }

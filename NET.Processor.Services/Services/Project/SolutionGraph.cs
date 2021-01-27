@@ -280,7 +280,7 @@ namespace NET.Processor.Core.Services.Project
                     nodeBase.name = method.Name;
                     nodeBase.graphStreamGuid = method.GraphStreamGuid;
                     nodeBase.nodeData.name = method.Name;
-                    nodeBase.nodeData.parameterList = method.ParameterList;
+                    nodeBase.nodeData.parameterList = method.NodeParameters();
                     nodeBase.nodeData.returnType = method.ReturnType;
                     nodeBase.nodeData.fileName = method.FileName;
                     nodeBase.nodeData.className = method.ClassName;
