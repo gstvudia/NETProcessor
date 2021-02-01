@@ -104,22 +104,7 @@ namespace NET.Processor.Core.Services.Project
         }
 
         public override void VisitInvocationExpression(InvocationExpressionSyntax node)
-        {
-            // Get Parent of Invocation Expression and then assign the invocation expression
-            // to that method
-
-           
-            // Method relations towards child methods
-            /*
-            if (!methodsList.Any(x => x.Name == method.Name))
-            {
-                method.ChildList.AddRange(documentWalkerFunctions.GetChilds(method));
-                // Remove Third Party Methods 
-                // method = RemoveThirdPartyMethods(method);
-                methodsList.Add(method);
-            }
-            */
-            
+        {           
             base.VisitInvocationExpression(node);
         }
 
@@ -144,7 +129,7 @@ namespace NET.Processor.Core.Services.Project
 
                 // Add parent to method 
                 method.Parent = c;
-            }
+            }                       
 
             base.VisitMethodDeclaration(node);
         }

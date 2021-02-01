@@ -30,15 +30,53 @@ namespace NET.Processor.Core.Services.Project.Walkers
             {
                 // Remove Third Party Methods 
                 // method = RemoveThirdPartyMethods(method);
+                method.ChildList.AddRange(GetMethodChilds(node, methodsList));
+                MapMethodsId(methodsList, method);
                 methodsList.Add(method);
             }
 
             return method;
         }
 
-        private List<Method> GetChilds(Method method)
+        private List<Method> GetMethodChilds(MethodDeclarationSyntax parent, List<Method> methodsList)
         {
             List<Method> childList = new List<Method>();
+
+            //GET methods call stack/depth
+            if (parent.Body != null)
+            {
+                var bodyStatements = parent.Body.Statements;
+                List<StatementSyntax> invokedList = new List<StatementSyntax>();
+                bodyStatements.ToList().ForEach(x => invokedList.Add(x));
+
+                foreach (var invokedNode in invokedList)
+                {
+                    string childName = string.Empty;
+                    if (invokedNode.GetType() == typeof(ReturnStatementSyntax) &&
+                        ((InvocationExpressionSyntax)((ReturnStatementSyntax)invokedNode).Expression) != null)
+                    {
+                        childName = ((IdentifierNameSyntax)((MemberAccessExpressionSyntax)((InvocationExpressionSyntax)((ReturnStatementSyntax)invokedNode).Expression).Expression).Name).Identifier.ValueText;
+                    }
+                    else if (invokedNode.GetType() == typeof(ExpressionStatementSyntax))
+                    {
+                        var InvocationExpressionSyntax = ((InvocationExpressionSyntax)((ExpressionStatementSyntax)invokedNode).Expression);
+
+                        if (InvocationExpressionSyntax.Expression.GetType() == typeof(IdentifierNameSyntax))
+                        {
+                            childName = ((IdentifierNameSyntax)((InvocationExpressionSyntax)((ExpressionStatementSyntax)invokedNode).Expression).Expression).Identifier.ValueText;
+                        }
+                        else if (InvocationExpressionSyntax.Expression.GetType() == typeof(MemberAccessExpressionSyntax))
+                        {
+                            childName = ((IdentifierNameSyntax)((MemberAccessExpressionSyntax)((InvocationExpressionSyntax)((ExpressionStatementSyntax)invokedNode).Expression).Expression).Name).Identifier.ValueText;
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(childName))
+                    {
+                        childList.Add(new Method (string.Empty, childName));
+                    }
+                }
+            }
             /*
 
             if (method.Body != null)
@@ -70,6 +108,15 @@ namespace NET.Processor.Core.Services.Project.Walkers
             */
 
             return childList;
+        }
+
+        public void MapMethodsId(List<Method> methodsList, Method currentMethod)
+        {
+            var childsToMap = methodsList.Select(m => m.ChildList.Where(c => c.Id == string.Empty));
+            foreach (var child in childsToMap)
+            {
+                var a = child;
+            }
         }
 
         public void AddClass(SyntaxNode root, Method method, List<Class> classList,

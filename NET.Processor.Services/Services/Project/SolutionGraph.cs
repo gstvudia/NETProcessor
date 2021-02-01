@@ -90,6 +90,10 @@ namespace NET.Processor.Core.Services.Project
                             .OfType<Class>()
                             .ToList();
 
+            var methodsList = items
+                            .OfType<Method>()
+                            .ToList();
+
             foreach (var classInterface in interfaceList)
             {
                 List<Class> cList = classList.Where(c => c.AttachedInterfaces.Contains(classInterface.Name)).ToList();
@@ -99,6 +103,14 @@ namespace NET.Processor.Core.Services.Project
             // Building the graph stream guid system to allow for quick search by name on frontend
             // By assigning each node of the stream the same unique graph stream guid
             items = BuildGraphStreamGuidSystem(items);
+
+            foreach(var method in methodsList)
+            {
+                foreach (var child in method.ChildList)
+                {
+                    child.Id = methodsList.FirstOrDefault(m => m.Name == child.Name)?.Id;
+                }
+            }
 
             return items;
         }
@@ -335,8 +347,6 @@ namespace NET.Processor.Core.Services.Project
                         nodeBase.nodeData.repositoryLinkOfMethod = "GITHUB TOKEN OF CUSTOMER NEEDED TO GET THIS DATA!";
                     }
 
-                    // Add all submethods as nodes to methods since they do not exist in the nodes tree yet
-                    // AddChildMethodsAsNodes(graphNodes, method.ChildList, nodeBase.nodeData.nodeType);
                 }
                 else
                 {
