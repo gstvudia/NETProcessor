@@ -110,6 +110,9 @@ namespace NET.Processor.Core.Services.Project
                 {
                     child.Id = methodsList.FirstOrDefault(m => m.Name == child.Name)?.Id;
                 }
+
+                //Remove unmapped methods from childs
+                method.ChildList.RemoveAll(c => c.Id == null);
             }
 
             return items;
