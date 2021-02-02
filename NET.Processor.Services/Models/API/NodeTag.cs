@@ -6,7 +6,7 @@ namespace NET.Processor.Core.Models.API
     /// <summary>
     /// User Tags assigned to nodes from Frontend
     /// </summary>
-    public class Tag
+    public class NodeTag
     {
         [BsonId]
         public ObjectId DatabaseId { get; set; }
