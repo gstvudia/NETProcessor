@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using NET.Processor.Core.Models.API;
 using System;
 using System.Collections.Generic;
 
@@ -50,13 +51,13 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
         public string className { get; set; }
         public string returnType { get; set; }
         public List<string> parameterList { get; set; }
+        public List<NodeTag> tags { get; set; } = new List<NodeTag>();
         public string language { get; set; }
         public List<Comment> comments { get; set; }
         public string repositoryLinkOfMethod { get; set; }
         public string repositoryCommitLinkOfMethod { get; set; }
 
         /* The following values belonging to this class are pulled in dynamically by trigger through frontend
-        // sectionTags
         // tickets
         // history of changes
         // documentation
