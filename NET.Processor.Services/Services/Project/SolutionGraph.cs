@@ -276,7 +276,9 @@ namespace NET.Processor.Core.Services.Project
 
             foreach (var item in relations)
             {
-                NodeRoot nodeBase = _mapper.Map<NodeRoot>(item);
+                NodeRoot nodeBase = new NodeRoot();
+                nodeBase.Id = MongoDB.Bson.ObjectId.GenerateNewId();
+                nodeBase.id = item.Id;
                 nodeBase.nodeTypeHierarchy = item.TypeHierarchy;
                 nodeBase.nodeType = item.GetType().ToString().Split(".").Last();
                 nodeBase.nodeData.nodeType = item.GetType().ToString().Split(".").Last();

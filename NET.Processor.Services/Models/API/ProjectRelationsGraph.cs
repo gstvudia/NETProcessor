@@ -25,7 +25,8 @@ namespace NET.Processor.Core.Models.RelationsGraph.Item.Base
 
     public class NodeRoot
     {
-        public string Id { get; set; }
+        public ObjectId Id { get; set; }
+        public string id { get; set; }
         public string projectId { get; set; }
         public string name { get; set; }
         public string nodeType { get; set; }
